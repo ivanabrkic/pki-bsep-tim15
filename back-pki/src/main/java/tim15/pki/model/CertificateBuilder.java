@@ -1,5 +1,8 @@
 package tim15.pki.model;
 
+import tim15.pki.model.enums.CertificateStatus;
+import tim15.pki.model.enums.RevokeReason;
+
 public class CertificateBuilder {
     private String certificateVersion;
     private Long id;

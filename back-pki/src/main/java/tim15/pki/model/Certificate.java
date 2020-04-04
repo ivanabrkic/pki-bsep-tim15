@@ -1,13 +1,13 @@
 package tim15.pki.model;
 
+import tim15.pki.model.enums.CertificateStatus;
+import tim15.pki.model.enums.RevokeReason;
+
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Set;
 
 @Entity
 public class Certificate {
-
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
@@ -27,7 +27,8 @@ public class Certificate {
     @Column(name="status", nullable = false)
     private CertificateStatus certificateStatus;
 
-    @Column(name="revoke_reason", nullable = false)
+    //PROMENIO NULABLE SAM NA TRUE UKOLIKO NECEMO PRAVITI KLASU ZA REVOKOVANE ONDA CE NAM BITI NULL AKO NIJE REVOKOVAN
+    @Column(name="revoke_reason")
     private RevokeReason revokeReason;
 
     @OneToMany
@@ -47,6 +48,9 @@ public class Certificate {
     @OneToMany
     @JoinColumn(name="serial_number_owners", referencedColumnName = "serial_number")
     private Set<Certificate> certificationPath;
+
+    @Column(name = "issued_cetificates")
+    private Set<String> issuedCertificates;
 
     public Certificate() {
     }
@@ -121,6 +125,63 @@ public class Certificate {
 
     public void setRevokeReason(RevokeReason revokeReason) {
         this.revokeReason = revokeReason;
+    }
+
+    //DODAO SAM GETERE I SETERE
+    /////
+    public Set<Extension> getExtensions() {
+        return extensions;
+    }
+
+    public void setExtensions(Set<Extension> extensions) {
+        this.extensions = extensions;
+    }
+
+    public ValidityPeriod getValidityPeriod() {
+        return validityPeriod;
+    }
+
+    public void setValidityPeriod(ValidityPeriod validityPeriod) {
+        this.validityPeriod = validityPeriod;
+    }
+
+    public String getIssuer() {
+        return issuer;
+    }
+
+    public void setIssuer(String issuer) {
+        this.issuer = issuer;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    //REFAKTURISI
+    public Set<Certificate> getCertificationPath() {
+        return certificationPath;
+    }
+
+    public void setCertificationPath(Set<Certificate> certificationPath) {
+        this.certificationPath = certificationPath;
+    }
+    /////////
+
+
+    public Set<String> getIssuedCertificates() {
+        return issuedCertificates;
+    }
+
+    public void setIssuedCertificates(Set<String> issuedCertificates) {
+        this.issuedCertificates = issuedCertificates;
+    }
+
+    public void addIssuedCertificate(String serialNumber) {
+        this.issuedCertificates.add(serialNumber);
     }
 
     @Override

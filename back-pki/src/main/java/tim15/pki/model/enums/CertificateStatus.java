@@ -1,4 +1,4 @@
-package tim15.pki.model;
+package tim15.pki.model.enums;
 
 public enum CertificateStatus {
     VALID,
