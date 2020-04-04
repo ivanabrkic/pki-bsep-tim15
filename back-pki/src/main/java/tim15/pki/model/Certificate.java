@@ -12,9 +12,6 @@ public class Certificate {
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="version", nullable = false)
-    private String certificateVersion;
-
     @Column(name="serial_number", nullable = false, unique = true)
     private String serialNumber;
 
@@ -27,52 +24,43 @@ public class Certificate {
     @Column(name="status", nullable = false)
     private CertificateStatus certificateStatus;
 
-    @Column(name="revoke_reason", nullable = false)
+    @Column(name="revoke_reason")
     private RevokeReason revokeReason;
 
     @OneToMany
-    @JoinColumn(name = "extension", referencedColumnName = "id")
-    private Set<Extension> extensions;
+    @JoinColumn(name = "issuer_certificate", referencedColumnName = "serial_number")
+    private Set<Certificate> issuerCertificates;
+
+    @OneToMany
+    @JoinColumn(name = "subject_certificate", referencedColumnName = "serial_number")
+    private Set<Certificate> subjectCertificates;
 
     @OneToOne
     @JoinColumn(name="validity_period_id", referencedColumnName = "id", nullable = false)
     private ValidityPeriod validityPeriod;
 
-    @Column(name = "issuer", nullable = false)
-    private String issuer;
+    @Column(name = "issued_to", nullable = false)
+    private String issuedTo;
 
-    @Column(name = "subject", nullable = false)
-    private String subject;
-
-    @OneToMany
-    @JoinColumn(name="serial_number_owners", referencedColumnName = "serial_number")
-    private Set<Certificate> certificationPath;
+    @Column(name = "issued_by", nullable = false)
+    private String issuedBy;
 
     public Certificate() {
     }
 
-    public Certificate(String certificateVersion, Long id, String serialNumber, boolean isActive, boolean isCA, CertificateStatus certificateStatus, RevokeReason revokeReason, String issuer, String subject) {
-        this.certificateVersion = certificateVersion;
+    public Certificate(Long id, String serialNumber, boolean isActive, boolean isCA, CertificateStatus certificateStatus, RevokeReason revokeReason, String issuer, String subject) {
         this.id = id;
         this.serialNumber = serialNumber;
         this.isActive = isActive;
         this.isCA = isCA;
         this.certificateStatus = certificateStatus;
         this.revokeReason = revokeReason;
-        this.issuer = issuer;
-        this.subject = subject;
+        this.issuedTo = issuer;
+        this.issuedBy = subject;
     }
 
     public static CertificateBuilder builder(){
         return new CertificateBuilder();
-    }
-
-    public String getCertificateVersion() {
-        return certificateVersion;
-    }
-
-    public void setCertificateVersion(String certificateVersion) {
-        this.certificateVersion = certificateVersion;
     }
 
     public Long getId() {
@@ -127,13 +115,11 @@ public class Certificate {
     public String toString() {
         return "Certificate{" +
                 "id=" + id +
-                ", certificateVersion='" + certificateVersion + '\'' +
                 ", serialNumber='" + serialNumber + '\'' +
                 ", isActive=" + isActive +
                 ", isCA=" + isCA +
                 ", certificateStatus=" + certificateStatus +
                 ", revokeReason=" + revokeReason +
-                ", extensions=" + extensions +
                 ", validityPeriod=" + validityPeriod +
                 '}';
     }

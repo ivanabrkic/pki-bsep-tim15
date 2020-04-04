@@ -8,8 +8,8 @@ public class CertificateBuilder {
     private boolean isCA;
     private CertificateStatus certificateStatus;
     private RevokeReason revokeReason;
-    private String issuer;
-    private String subject;
+    private String issuedTo;
+    private String issuedBy;
 
     public CertificateBuilder setCertificateVersion(String certificateVersion) {
         this.certificateVersion = certificateVersion;
@@ -47,16 +47,16 @@ public class CertificateBuilder {
     }
 
     public CertificateBuilder setIssuer(String issuer) {
-        this.issuer = issuer;
+        this.issuedTo = issuer;
         return this;
     }
 
     public CertificateBuilder setSubject(String subject) {
-        this.subject = subject;
+        this.issuedBy = subject;
         return this;
     }
 
     public Certificate createCertificate() {
-        return new Certificate(certificateVersion, id, serialNumber, isActive, isCA, certificateStatus, revokeReason, issuer, subject);
+        return new Certificate(id, serialNumber, isActive, isCA, certificateStatus, revokeReason, issuedTo, issuedBy);
     }
 }

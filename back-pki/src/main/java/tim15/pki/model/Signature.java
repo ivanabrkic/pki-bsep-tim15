@@ -1,7 +1,4 @@
 package tim15.pki.model;
-
-import javax.persistence.*;
-
 public class Signature {
 
     private String algorithmID;
