@@ -8,8 +8,8 @@ public class CertificateBuilder {
     private boolean isCA;
     private CertificateStatus certificateStatus;
     private RevokeReason revokeReason;
-    private String signatureAlgorithmID;
-    private String extensions;
+    private String issuer;
+    private String subject;
 
     public CertificateBuilder setCertificateVersion(String certificateVersion) {
         this.certificateVersion = certificateVersion;
@@ -46,17 +46,17 @@ public class CertificateBuilder {
         return this;
     }
 
-    public CertificateBuilder setSignatureAlgorithmID(String signatureAlgorithmID) {
-        this.signatureAlgorithmID = signatureAlgorithmID;
+    public CertificateBuilder setIssuer(String issuer) {
+        this.issuer = issuer;
         return this;
     }
 
-    public CertificateBuilder setExtensions(String extensions) {
-        this.extensions = extensions;
+    public CertificateBuilder setSubject(String subject) {
+        this.subject = subject;
         return this;
     }
 
     public Certificate createCertificate() {
-        return new Certificate(certificateVersion, id, serialNumber, isActive, isCA, certificateStatus, revokeReason);
+        return new Certificate(certificateVersion, id, serialNumber, isActive, isCA, certificateStatus, revokeReason, issuer, subject);
     }
 }

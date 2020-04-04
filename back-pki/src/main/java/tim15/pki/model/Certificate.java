@@ -51,7 +51,7 @@ public class Certificate {
     public Certificate() {
     }
 
-    public Certificate(String certificateVersion, Long id, String serialNumber, boolean isActive, boolean isCA, CertificateStatus certificateStatus, RevokeReason revokeReason) {
+    public Certificate(String certificateVersion, Long id, String serialNumber, boolean isActive, boolean isCA, CertificateStatus certificateStatus, RevokeReason revokeReason, String issuer, String subject) {
         this.certificateVersion = certificateVersion;
         this.id = id;
         this.serialNumber = serialNumber;
@@ -59,6 +59,8 @@ public class Certificate {
         this.isCA = isCA;
         this.certificateStatus = certificateStatus;
         this.revokeReason = revokeReason;
+        this.issuer = issuer;
+        this.subject = subject;
     }
 
     public static CertificateBuilder builder(){
