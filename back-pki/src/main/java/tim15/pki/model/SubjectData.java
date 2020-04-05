@@ -1,27 +1,28 @@
 package tim15.pki.model;
 
 import sun.security.x509.X500Name;
+import java.security.PublicKey;
 
 public class SubjectData {
 
-    private transient PublicKeyInfo publicKeyInfo;
+    private PublicKey publicKey;
 
-    private transient X500Name name;
+    private X500Name name;
 
     public SubjectData() {
     }
 
-    public SubjectData(PublicKeyInfo publicKeyInfo, X500Name name){
-        this.publicKeyInfo = publicKeyInfo;
+    public SubjectData(PublicKey publicKey, X500Name name){
+        this.publicKey = publicKey;
         this.name = name;
     }
 
-    public PublicKeyInfo getPublicKeyInfo() {
-        return publicKeyInfo;
+    public PublicKey getPublicKey() {
+        return publicKey;
     }
 
-    public void setPublicKeyInfo(PublicKeyInfo publicKeyInfo) {
-        this.publicKeyInfo = publicKeyInfo;
+    public void setPublicKey(PublicKey publicKey) {
+        this.publicKey = publicKey;
     }
 
     public X500Name getName() {
@@ -32,11 +33,4 @@ public class SubjectData {
         this.name = name;
     }
 
-    @Override
-    public String toString() {
-        return "SubjectData{" +
-                ", publicKeyInfo=" + publicKeyInfo +
-                ", name=" + name +
-                '}';
-    }
 }

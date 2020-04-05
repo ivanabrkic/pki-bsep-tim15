@@ -1,7 +1,6 @@
 package tim15.pki.repository;
 
 import tim15.pki.model.Certificate;
-
 import java.util.List;
 
 //FALI extends JpaRepository<Certificate, Long>
