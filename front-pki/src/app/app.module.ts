@@ -1,6 +1,6 @@
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HttpClientModule } from "@angular/common/http";
 import { RouterModule } from "@angular/router";
 import { ToastrModule } from 'ngx-toastr';
@@ -13,6 +13,23 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { ComponentsModule } from "./components/components.module";
+import { CertFormComponent } from './pki/pki-components/certificate/cert-form/cert-form.component';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatStepperModule} from '@angular/material/stepper';
+import { CertTableComponent } from './pki/pki-components/certificate/cert-table/cert-table.component';
+import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+
+import {MatInputModule} from '@angular/material/input'
+import {MatSelectModule} from '@angular/material/select';
+import {MatListModule} from '@angular/material/list';
+
+import {MatTableModule} from '@angular/material/table';
+
+
 
 @NgModule({
   imports: [
@@ -23,9 +40,21 @@ import { ComponentsModule } from "./components/components.module";
     NgbModule,
     RouterModule,
     AppRoutingModule,
-    ToastrModule.forRoot()
+    MatRadioModule,
+    MatStepperModule,
+    ReactiveFormsModule,
+    ToastrModule.forRoot(),
+    DropDownsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatListModule,
+    MatTableModule
   ],
-  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent],
+  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, CertFormComponent, CertTableComponent],
   providers: [],
   bootstrap: [AppComponent]
 })
