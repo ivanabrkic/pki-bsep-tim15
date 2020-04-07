@@ -1,0 +1,46 @@
+.mat-stepper-horizontal {
+    margin-top: 8px;
+  }
+  
+  .mat-form-field {
+    margin-top: 16px;
+  }
+
+  ::ng-deep .mat-step-header .mat-step-icon-selected{
+    background: #fd5d93;
+    background-image: -webkit-gradient(linear, right top, left bottom, from(#fd5d93), color-stop(#ec250d), to(#fd5d93));
+    background-image: linear-gradient(to bottom left, #fd5d93, #ec250d, #fd5d93);
+    background-size: 210% 210%;
+    background-position: top right;
+    background-color: #fd5d93;
+    -webkit-transition: all 0.15s ease;
+    transition: all 0.15s ease;
+    box-shadow: none;
+    color: #ffffff;
+ }
+
+ ::ng-deep .mat-step-header .mat-step-icon-state-edit{
+    background: #fd5d93;
+    background-image: -webkit-gradient(linear, right top, left bottom, from(#fd5d93), color-stop(#ec250d), to(#fd5d93));
+    background-image: linear-gradient(to bottom left, #fd5d93, #ec250d, #fd5d93);
+    background-size: 210% 210%;
+    background-position: top right;
+    background-color: #fd5d93;
+    -webkit-transition: all 0.15s ease;
+    transition: all 0.15s ease;
+    box-shadow: none;
+    color: #ffffff;
+ }
+
+.k-input{
+  background: #fd5d93;
+    background-image: -webkit-gradient(linear, right top, left bottom, from(#fd5d93), color-stop(#ec250d), to(#fd5d93));
+    background-image: linear-gradient(to bottom left, #fd5d93, #ec250d, #fd5d93);
+    background-size: 210% 210%;
+    background-position: top right;
+    background-color: #fd5d93;
+    -webkit-transition: all 0.15s ease;
+    transition: all 0.15s ease;
+    box-shadow: none;
+    color: #ffffff;
+ }
