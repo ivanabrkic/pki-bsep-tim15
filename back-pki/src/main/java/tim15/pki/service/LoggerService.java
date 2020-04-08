@@ -1,10 +1,13 @@
 package tim15.pki.service;
 
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+@Service
 public class LoggerService {
     public void print(String text) {
         String nameOfSubsystem = "CertificateServicesLog";

@@ -1,0 +1,361 @@
+<div class=" content">
+  <div class=" row">
+    <div class=" col-md-8">
+      <div class=" card">
+        <div class=" card-header">
+          <div class=" row">
+            <div class=" col-sm-6 text-left">
+              <h2 class=" card-title">Create certificate</h2>
+            </div>
+          </div>
+        </div>
+        <div class=" card-body">
+          <mat-horizontal-stepper style="background-color: transparent;" [linear]="true" #stepper>
+            <mat-step>
+              <ng-template matStepLabel><span style="color: white;">Type of certificate</span></ng-template>
+              <mat-label></mat-label>
+              <mat-radio-group style="display: flex;
+            flex-direction: column;
+            margin: 15px 0;" aria-label="Select an option">
+                <mat-radio-button style="margin: 5px;" value="1">Self-signed</mat-radio-button>
+                <mat-radio-button style="margin: 5px;" value="2">CA</mat-radio-button>
+                <mat-radio-button style="margin: 5px;" value="3">End-entity</mat-radio-button>
+              </mat-radio-group>
+              <div>
+                <button class=" btn btn-fill btn-danger" mat-button matStepperNext>Next</button>
+              </div>
+            </mat-step>
+            <mat-step>
+              <ng-template matStepLabel><span style="color: white;">Issuer Info</span></ng-template>
+              <form>
+                <div class="row">
+                  <div class=" col-md-6 pr-md-1">
+                    <mat-form-field>
+                      <div class="form-group">
+                        <label>Choose CA</label>
+                        <mat-select>
+                          <mat-option *ngFor="let ca of existingCAs" [value]="selectedCA">
+                            {{ca}}
+                          </mat-option>
+                        </mat-select>
+                      </div>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class=" row">
+                  <div class=" col-md-5 pr-md-1">
+                    <div class="form-group">
+                      <label> Common name </label>
+                      <input class="form-control" placeholder="Common name" type="text" />
+                    </div>
+                  </div>
+                  <div class=" col-md-3 px-md-1">
+                    <div class="form-group">
+                      <label> Organization </label>
+                      <input class="form-control" placeholder="Organization" type="text" />
+                    </div>
+                  </div>
+                  <div class=" col-md-4 pl-md-1">
+                    <div class="form-group">
+                      <label> Organizational unit </label>
+                      <input class="form-control" placeholder="Organizational unit" type="text" />
+                    </div>
+                  </div>
+                </div>
+                <div class=" row">
+                  <div class=" col-md-4 px-md-1">
+                    <div class="form-group">
+                      <label> Locality or City </label>
+                      <input class="form-control" placeholder="Locality or City" type="text" />
+                    </div>
+                  </div>
+                  <div class=" col-md-4 px-md-1">
+                    <div class="form-group">
+                      <label> State or Province </label>
+                      <input class="form-control" placeholder="State or Province" type="text" />
+                    </div>
+                  </div>
+                  <div class=" col-md-4 px-md-1">
+                    <div class="form-group">
+                      <label> Country Name </label>
+                      <input class="form-control" placeholder="Country Name" type="text" />
+                    </div>
+                  </div>
+                </div>
+                <div class=" row">
+                  <div class=" col-md-6 px-md-1">
+                    <div class="form-group">
+                      <label> Company Street Address (Optional) </label>
+                      <input class="form-control" placeholder="Company Street Address" type="text" />
+                    </div>
+                  </div>
+                  <div class=" col-md-6 px-md-1">
+                    <div class="form-group">
+                      <label> Postal Code (Optional)
+                      </label>
+                      <input class="form-control" placeholder="Postal Code" type="text" />
+                    </div>
+                  </div>
+                </div>
+                <div class=" row">
+                  <div class=" col-md-6 pl-md-1">
+                    <div class="form-group">
+                      <label> Business Category (Optional) </label>
+                      <input class="form-control" placeholder="Business Category" type="number" />
+                    </div>
+                  </div>
+                  <div class=" col-md-6 pr-md-1">
+                    <div class="form-group">
+                      <label> Serial Number (Business Registration Number) (Optional) </label>
+                      <input class="form-control" placeholder="Serial Number (Business Registration Number)"
+                        type="text" />
+                    </div>
+                  </div>
+                </div>
+                <div class=" row">
+                  <div class=" col-md-6 px-md-1">
+                    <div class="form-group">
+                      <label>Jurisdiction State (Optional)
+                      </label>
+                      <input class=" form-control" placeholder="Jurisdiction State" type="text" />
+                    </div>
+                  </div>
+                  <div class=" col-md-6 pl-md-1">
+                    <div class=" form-group">
+                      <label> Jurisdiction Locality (Optional)</label>
+                      <input class=" form-control" placeholder="Jurisdiction Locality" type="text" />
+                    </div>
+                  </div>
+                </div>
+              </form>
+              <br>
+              <div>
+                <button class=" btn btn-fill btn-danger" mat-button matStepperPrevious>Back</button>
+                <span style="width: 10px; color: transparent;">M</span>
+                <button class=" btn btn-fill btn-danger" mat-button matStepperNext>Next (Generate Key Pair)</button>
+              </div>
+            </mat-step>
+            <mat-step>
+              <ng-template matStepLabel><span style="color: white;">Subject Info</span></ng-template>
+              <form>
+                <div class=" row">
+                  <div class=" col-md-5 pr-md-1">
+                    <div class="form-group">
+                      <label> Common name </label>
+                      <input class="form-control" placeholder="Common name" type="text" />
+                    </div>
+                  </div>
+                  <div class=" col-md-3 px-md-1">
+                    <div class="form-group">
+                      <label> Organization </label>
+                      <input class="form-control" placeholder="Organization" type="text" />
+                    </div>
+                  </div>
+                  <div class=" col-md-4 pl-md-1">
+                    <div class="form-group">
+                      <label> Organizational unit </label>
+                      <input class="form-control" placeholder="Organizational unit" type="text" />
+                    </div>
+                  </div>
+                </div>
+                <div class=" row">
+                  <div class=" col-md-4 px-md-1">
+                    <div class="form-group">
+                      <label> Locality or City </label>
+                      <input class="form-control" placeholder="Locality or City" type="text" />
+                    </div>
+                  </div>
+                  <div class=" col-md-4 px-md-1">
+                    <div class="form-group">
+                      <label> State or Province </label>
+                      <input class="form-control" placeholder="State or Province" type="text" />
+                    </div>
+                  </div>
+                  <div class=" col-md-4 px-md-1">
+                    <div class="form-group">
+                      <label> Country Name </label>
+                      <input class="form-control" placeholder="Country Name" type="text" />
+                    </div>
+                  </div>
+                </div>
+                <div class=" row">
+                  <div class=" col-md-6 px-md-1">
+                    <div class="form-group">
+                      <label> Company Street Address (Optional)</label>
+                      <input class="form-control" placeholder="Company Street Address" type="text" />
+                    </div>
+                  </div>
+                  <div class=" col-md-6 px-md-1">
+                    <div class="form-group">
+                      <label> Postal Code (Optional)
+                      </label>
+                      <input class="form-control" placeholder="Postal Code" type="text" />
+                    </div>
+                  </div>
+                </div>
+                <div class=" row">
+                  <div class=" col-md-6 pl-md-1">
+                    <div class="form-group">
+                      <label> Business Category (Optional)</label>
+                      <input class="form-control" placeholder="Business Category" type="number" />
+                    </div>
+                  </div>
+                  <div class=" col-md-6 pr-md-1">
+                    <div class="form-group">
+                      <label> Serial Number (Business Registration Number) (Optional)</label>
+                      <input class="form-control" placeholder="Serial Number (Business Registration Number)"
+                        type="text" />
+                    </div>
+                  </div>
+                </div>
+                <div class=" row">
+                  <div class=" col-md-6 px-md-1">
+                    <div class="form-group">
+                      <label>Jurisdiction State (Optional)
+                      </label>
+                      <input class=" form-control" placeholder="Jurisdiction State" type="text" />
+                    </div>
+                  </div>
+                  <div class=" col-md-6 pl-md-1">
+                    <div class=" form-group">
+                      <label> Jurisdiction Locality (Optional)</label>
+                      <input class=" form-control" placeholder="Jurisdiction Locality" type="text" />
+                    </div>
+                  </div>
+                </div>
+              </form>
+              <br>
+              <div>
+                <button class=" btn btn-fill btn-danger" mat-button matStepperPrevious>Back</button>
+                <span style="width: 10px; color: transparent;">M</span>
+                <button class=" btn btn-fill btn-danger" mat-button matStepperNext>Next (Generate Key Pair)</button>
+              </div>
+            </mat-step>
+            <mat-step>
+              <ng-template matStepLabel><span style="color: white;">Extensions</span></ng-template>
+              <div class="row">
+                <div class=" col-md-6 pl-md-1">
+                  <div class=" form-group">
+                    <label> Extension OID </label>
+                    <input class=" form-control" placeholder="" type="text" />
+                  </div>
+                </div>
+                <div class=" col-md-6 pl-md-1">
+                  <button  style="margin-top: 25px;" class=" btn btn-fill btn-danger" mat-button>Add extension</button>
+                </div>
+              </div>
+              <div class="row">
+                <div class=" col-md-6 pl-md-1">
+                  <div class=" form-group">
+                    <label> Is critical </label>
+                    <div class=" form-check">
+                      <label class=" form-check-label">
+                        <input class=" form-check-input" type="checkbox" value="" />
+                        <span class=" form-check-sign">
+                          <span class=" check"> </span>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style="margin-top: 30px;" class="row">
+                <div class=" col-md-12 pl-md-1">
+                  <div class=" form-group">
+                    <label> Value </label>
+                    <textarea class=" form-control" placeholder="" type="text">
+                      </textarea>
+                  </div>
+                </div>
+              </div>
+              <div style="margin-top: 30px;" class="row">
+
+                <table style="width: 100%;" mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+                  <!--- Note that these columns can be defined in any order.
+                      The actual rendered columns are set as a property on the row definition" -->
+
+                  <!-- Position Column -->
+                  <ng-container matColumnDef="position">
+                    <th mat-header-cell *matHeaderCellDef> No. </th>
+                    <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+                  </ng-container>
+
+                  <!-- Name Column -->
+                  <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef> Name </th>
+                    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                  </ng-container>
+
+                  <!-- Weight Column -->
+                  <ng-container matColumnDef="weight">
+                    <th mat-header-cell *matHeaderCellDef> Weight </th>
+                    <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
+                  </ng-container>
+
+                  <!-- Symbol Column -->
+                  <ng-container matColumnDef="symbol">
+                    <th mat-header-cell *matHeaderCellDef> Symbol </th>
+                    <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+              </div>
+              <br>
+              <div>
+                <button class=" btn btn-fill btn-danger" mat-button matStepperPrevious>Back</button>
+                <span style="width: 10px; color: transparent;">M</span>
+                <button class=" btn btn-fill btn-danger" mat-button matStepperNext>Next</button>
+              </div>
+            </mat-step>
+            <mat-step>
+              <ng-template matStepLabel><span style="color: white;">Validity Date</span></ng-template>
+              <div class="row">
+                <div class=" col-md-12 pl-md-1">
+                  <div class=" form-group">
+                    <div class="row">
+                      <div class=" col-md-3 pl-md-1">
+                        <label> Valid from </label>
+                        <input class="form-control" [matDatepicker]="picker">
+                      </div>
+                      <div style="margin-top: 20px;" class=" col-md-3 pl-md-1">
+                        <mat-datepicker-toggle style="outline-width: 0;" matSuffix [for]="picker">
+                        </mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                      </div>
+                      <div class=" col-md-3 pl-md-1">
+                        <label> Valid to </label>
+                        <input class="form-control" [matDatepicker]="picker2">
+                      </div>
+                      <div style="margin-top: 20px;" class=" col-md-3 pl-md-1">
+                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                        <mat-datepicker #picker2></mat-datepicker>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <br>
+              <div>
+                <button class=" btn btn-fill btn-danger" mat-button matStepperPrevious>Back</button>
+                <span style="width: 10px; color: transparent;">M</span>
+                <button class=" btn btn-fill btn-danger" mat-button matStepperNext>Next</button>
+              </div>
+            </mat-step>
+            <mat-step>
+              <ng-template matStepLabel><span style="color: white;">Done</span></ng-template>
+              <p>You are now done.</p>
+              <div>
+                <button class=" btn btn-fill btn-danger" mat-button matStepperPrevious>Back</button>
+                <span style="width: 10px; color: transparent;">M</span>
+                <button class=" btn btn-fill btn-danger" mat-button (click)="stepper.reset()">Reset</button>
+              </div>
+            </mat-step>
+          </mat-horizontal-stepper>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
