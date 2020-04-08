@@ -1,5 +1,8 @@
 package tim15.pki.model;
 
+import tim15.pki.model.enums.CertificateStatus;
+import tim15.pki.model.enums.RevokeReason;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,11 +31,11 @@ public class Certificate {
     private RevokeReason revokeReason;
 
     @OneToMany
-    @JoinColumn(name = "issuer_certificate", referencedColumnName = "serial_number")
-    private Set<Certificate> issuerCertificates;
+    @JoinColumn(name = "issuer_to_certificates", referencedColumnName = "serial_number")
+    private Set<Certificate> issuerToCertificates;
 
     @OneToMany
-    @JoinColumn(name = "subject_certificate", referencedColumnName = "serial_number")
+    @JoinColumn(name = "subject_certificates", referencedColumnName = "serial_number")
     private Set<Certificate> subjectCertificates;
 
     @OneToOne
@@ -109,6 +112,46 @@ public class Certificate {
 
     public void setRevokeReason(RevokeReason revokeReason) {
         this.revokeReason = revokeReason;
+    }
+
+    public Set<Certificate> getSubjectCertificates() {
+        return subjectCertificates;
+    }
+
+    public void setSubjectCertificates(Set<Certificate> subjectCertificates) {
+        this.subjectCertificates = subjectCertificates;
+    }
+
+    public ValidityPeriod getValidityPeriod() {
+        return validityPeriod;
+    }
+
+    public void setValidityPeriod(ValidityPeriod validityPeriod) {
+        this.validityPeriod = validityPeriod;
+    }
+
+    public String getIssuedTo() {
+        return issuedTo;
+    }
+
+    public void setIssuedTo(String issuedTo) {
+        this.issuedTo = issuedTo;
+    }
+
+    public String getIssuedBy() {
+        return issuedBy;
+    }
+
+    public void setIssuedBy(String issuedBy) {
+        this.issuedBy = issuedBy;
+    }
+
+    public Set<Certificate> getIssuerToCertificates() {
+        return issuerToCertificates;
+    }
+
+    public void setIssuerCertificates(Set<Certificate> issuerToCertificates) {
+        this.issuerToCertificates = issuerToCertificates;
     }
 
     @Override
