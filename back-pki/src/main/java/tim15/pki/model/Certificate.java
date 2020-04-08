@@ -4,8 +4,6 @@ import tim15.pki.model.enums.CertificateStatus;
 import tim15.pki.model.enums.RevokeReason;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Set;
 
 @Entity
@@ -60,6 +58,46 @@ public class Certificate {
         this.revokeReason = revokeReason;
         this.issuedTo = issuer;
         this.issuedBy = subject;
+    }
+
+    public Set<Certificate> getIssuerCertificates() {
+        return issuerCertificates;
+    }
+
+    public void setIssuerCertificates(Set<Certificate> issuerCertificates) {
+        this.issuerCertificates = issuerCertificates;
+    }
+
+    public Set<Certificate> getSubjectCertificates() {
+        return subjectCertificates;
+    }
+
+    public void setSubjectCertificates(Set<Certificate> subjectCertificates) {
+        this.subjectCertificates = subjectCertificates;
+    }
+
+    public ValidityPeriod getValidityPeriod() {
+        return validityPeriod;
+    }
+
+    public void setValidityPeriod(ValidityPeriod validityPeriod) {
+        this.validityPeriod = validityPeriod;
+    }
+
+    public String getIssuedTo() {
+        return issuedTo;
+    }
+
+    public void setIssuedTo(String issuedTo) {
+        this.issuedTo = issuedTo;
+    }
+
+    public String getIssuedBy() {
+        return issuedBy;
+    }
+
+    public void setIssuedBy(String issuedBy) {
+        this.issuedBy = issuedBy;
     }
 
     public static CertificateBuilder builder(){
