@@ -12,13 +12,9 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
     Certificate findOneBySerialNumber(String serialNumber);
 
-    List<Certificate> findAllByName(String name);
-
     Certificate save(Certificate certificate);
 
     void removeBySerialNumber(String serialNumber);
 
-    //@Query("select c from Certificate c where c.revokeReason != null")
-    //PROVERITI upit!!
-    List<Certificate> findRevokedCertificates();
+    List<String> findByIsCA(boolean b);
 }

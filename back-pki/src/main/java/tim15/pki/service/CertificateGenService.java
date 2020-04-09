@@ -1,31 +1,23 @@
 package tim15.pki.service;
 
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.cert.X509v3CertificateBuilder;
-import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
-import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
-import org.bouncycastle.operator.ContentSigner;
-import org.bouncycastle.operator.OperatorCreationException;
-import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tim15.pki.dto.CertificateGenDTO;
 import tim15.pki.dto.TextMessage;
+import tim15.pki.model.Extension;
 import tim15.pki.repository.CertificateRepository;
+import tim15.pki.repository.ExtensionRepository;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
+import java.util.List;
 
 @Service
 public class CertificateGenService {
@@ -34,51 +26,71 @@ public class CertificateGenService {
     private CertificateRepository certificateRepository;
 
     @Autowired
+    private ExtensionRepository extensionRepository;
+
+    @Autowired
     private LoggerService loggerService;
+
+    /// OBAVEZNO SAMO SA STATUSOM AKTIVNI I VALIDNI ------------- DODAJ!!!!!!!!!!!!!!!!!!
+    public List<String> getAllCAs(){
+        return certificateRepository.findByIsCA(true);
+    }
+
+    public List<Extension> getAllExtensions(){
+        return extensionRepository.findAll();
+    }
 
     public TextMessage generateCertificate(CertificateGenDTO certificateGenDTO) {
 
-        try {
+//        try {
+//
+//            JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
+//            builder = builder.setProvider("BC");
 
-            JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
-            builder = builder.setProvider("BC");
+///           RESI GET ISSUER DATA - POVUCI ISSUERA IZ KEYSTORA :)
+///            ContentSigner contentSigner = builder.build(certificateGenDTO.getIssuerData().getPrivateKey());
 
-            ContentSigner contentSigner = builder.build(certificateGenDTO.getIssuerData().getPrivateKey());
+///         RESI SUBJECT X500NAME + POTREBNE METODE ZA GENERISANJE OBJEKATA KLASE ISSUER DATA I SUBJECT DATA
 
-            X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(certificateGenDTO.getIssuerData().getName(),
-                    new BigInteger(certificateGenDTO.getSerialNumber()),
-                    certificateGenDTO.getValidityPeriod().getStartDate(),
-                    certificateGenDTO.getValidityPeriod().getEndDate(),
-                    certificateGenDTO.getSubjectData().getName(),
-                    certificateGenDTO.getSubjectData().getPublicKey());
+//            X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(certificateGenDTO.getIssuerData().getName(),
+//                    new BigInteger(certificateGenDTO.getSerialNumber()),
+//                    certificateGenDTO.getStartDate(),
+//                    certificateGenDTO.getEndDate(),
+//                    certificateGenDTO.getName(),
+//                    certificateGenDTO.getSubjectData().getPublicKey());
 
-            X509CertificateHolder certHolder = certGen.build(contentSigner);
-            JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
-            certConverter = certConverter.setProvider("BC");
+//            X509CertificateHolder certHolder = certGen.build(contentSigner);
+//            JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
+//            certConverter = certConverter.setProvider("BC");
+//
+//      //////// DODATI KOD ZA DODAVANJE EKSTENZIJA ---- https://github.com/DanijelRadakovic/BSEP/blob/master/src/main/java/megatravel/com/pki/service/CertificateService.java
+//
+//            X509Certificate certificate = certConverter.getCertificate(certHolder);
 
-            X509Certificate certificate = certConverter.getCertificate(certHolder);
-
-            loggerService.print("Certificate successfully generated.");
-            return new TextMessage("Certificate successfully generated.");
-
-        } catch (CertificateEncodingException e) {
-            loggerService.print(e.getMessage());
-        } catch (IllegalArgumentException e) {
-            loggerService.print(e.getMessage());
-        } catch (IllegalStateException e) {
-            loggerService.print(e.getMessage());
-        } catch (OperatorCreationException e) {
-            loggerService.print(e.getMessage());
-        } catch (CertificateException e) {
-            loggerService.print(e.getMessage());
-        } catch (Exception e) {
-            loggerService.print(e.getMessage());
-        }
+//            loggerService.print("Certificate successfully generated.");
+//            return new TextMessage("Certificate successfully generated.");
+//
+//        } catch (CertificateEncodingException e) {
+//            loggerService.print(e.getMessage());
+//        } catch (IllegalArgumentException e) {
+//            loggerService.print(e.getMessage());
+//        } catch (IllegalStateException e) {
+//            loggerService.print(e.getMessage());
+//        } catch (OperatorCreationException e) {
+//            loggerService.print(e.getMessage());
+//        } catch (CertificateException e) {
+//            loggerService.print(e.getMessage());
+//        } catch (Exception e) {
+//            loggerService.print(e.getMessage());
+//        }
 
         loggerService.print("Certificate failed to generate.");
         return new TextMessage("Certificate failed to generate.");
     }
 
+    //////// IMPLEMENTIRATI CUVANJE CHAIN-A U KEYSTORE
+    //////// SETOVATI PASSWORD ZA KEY STORE
+    //////// DVA ODVOJENA KEY STORE-a
     public TextMessage saveKeyStore(CertificateGenDTO certificateGenDTO, String fileName, char[] password) {
 
         java.security.cert.Certificate certificate = null;
@@ -91,7 +103,8 @@ public class CertificateGenService {
             } else {
                 keyStore.load(null, password);
             }
-            keyStore.setKeyEntry(alias, certificateGenDTO.getIssuerData().getPrivateKey(), password, new Certificate[] {certificate});
+            /// RESI GET ISSUER DATA - POVUCI ISSUERA IZ KEYSTORA :)
+//            keyStore.setKeyEntry(alias, certificateGenDTO.getIssuerData().getPrivateKey(), password, new Certificate[] {certificate});
             keyStore.store(new FileOutputStream(fileName), password);
             loggerService.print("Certificate successfully saved.");
             return new TextMessage("Certificate successfully saved.");

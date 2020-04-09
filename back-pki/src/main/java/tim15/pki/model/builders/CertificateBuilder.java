@@ -1,5 +1,6 @@
-package tim15.pki.model;
+package tim15.pki.model.builders;
 
+import tim15.pki.model.Certificate;
 import tim15.pki.model.enums.CertificateStatus;
 import tim15.pki.model.enums.RevokeReason;
 

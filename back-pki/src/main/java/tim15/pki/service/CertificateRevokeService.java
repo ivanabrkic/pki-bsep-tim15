@@ -16,8 +16,7 @@ public class CertificateRevokeService {
              certificate.setRevokeReason(revokeReason);
              certificate.setActive(false);
              certificate.setCertificateStatus(CertificateStatus.REVOKED);
-//// Izmenila sam ti kod ovde Milane zbog gresaka
-             for (Certificate issuedCertificate : certificate.getSubjectCertificates()) {
+             for (Certificate issuedCertificate : certificate.getCertificateChildren()) {
                  String issuedCertificateSerial = issuedCertificate.getSerialNumber();
                  switch (revokeReason) {
                      case EXPIRED:
