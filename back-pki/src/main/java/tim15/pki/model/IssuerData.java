@@ -1,7 +1,7 @@
 package tim15.pki.model;
 
-import org.bouncycastle.asn1.x500.X500Name;
 
+import org.bouncycastle.asn1.x500.X500Name;
 import java.security.PrivateKey;
 
 public class IssuerData {

@@ -37,6 +37,7 @@ public class Certificate {
     @JoinColumn(name = "certificate_child", referencedColumnName = "serial_number")
     private Set<Certificate> certificateChildren;
 
+
     @OneToOne
     @JoinColumn(name="validity_period_id", referencedColumnName = "id", nullable = false)
     private ValidityPeriod validityPeriod;
@@ -103,7 +104,6 @@ public class Certificate {
 
     public void setIssuedBy(String issuedBy) {
         this.issuedBy = issuedBy;
-    }
 
     public Long getId() {
         return id;
