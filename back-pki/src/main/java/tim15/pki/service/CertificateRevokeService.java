@@ -18,7 +18,8 @@ public class CertificateRevokeService {
              certificate.setRevokeReason(revokeReason);
              certificate.setActive(false);
              certificate.setCertificateStatus(CertificateStatus.REVOKED);
-             Collection<Certificate> issuedCertificates = certificate.getIssuerToCertificates();
+
+             Collection<Certificate> issuedCertificates = certificate.getCertificateChildren();
              for (Certificate issuedCertificate : issuedCertificates) {
                  switch (issuedCertificate.getRevokeReason()) {
                      case EXPIRED:

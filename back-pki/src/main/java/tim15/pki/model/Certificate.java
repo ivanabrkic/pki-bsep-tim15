@@ -1,5 +1,6 @@
 package tim15.pki.model;
 
+import tim15.pki.model.builders.CertificateBuilder;
 import tim15.pki.model.enums.CertificateStatus;
 import tim15.pki.model.enums.RevokeReason;
 
@@ -29,12 +30,13 @@ public class Certificate {
     private RevokeReason revokeReason;
 
     @OneToMany
-    @JoinColumn(name = "issuer_to_certificates", referencedColumnName = "serial_number")
-    private Set<Certificate> issuerToCertificates;
+    @JoinColumn(name = "certificate_parent", referencedColumnName = "serial_number")
+    private Set<Certificate> certificateParents;
 
     @OneToMany
-    @JoinColumn(name = "subject_certificates", referencedColumnName = "serial_number")
-    private Set<Certificate> subjectCertificates;
+    @JoinColumn(name = "certificate_child", referencedColumnName = "serial_number")
+    private Set<Certificate> certificateChildren;
+
 
     @OneToOne
     @JoinColumn(name="validity_period_id", referencedColumnName = "id", nullable = false)
@@ -60,17 +62,48 @@ public class Certificate {
         this.issuedBy = subject;
     }
 
-    public Set<Certificate> getIssuerToCertificates() {
-        return issuerToCertificates;
-    }
-
-    public void setIssuerToCertificates(Set<Certificate> issuerCertificates) {
-        this.issuerToCertificates = issuerCertificates;
-    }
-
     public static CertificateBuilder builder(){
         return new CertificateBuilder();
     }
+
+    public Set<Certificate> getCertificateParents() {
+        return certificateParents;
+    }
+
+    public void setCertificateParents(Set<Certificate> certificateParents) {
+        this.certificateParents = certificateParents;
+    }
+
+    public Set<Certificate> getCertificateChildren() {
+        return certificateChildren;
+    }
+
+    public void setCertificateChildren(Set<Certificate> certificateChildren) {
+        this.certificateChildren = certificateChildren;
+    }
+
+    public ValidityPeriod getValidityPeriod() {
+        return validityPeriod;
+    }
+
+    public void setValidityPeriod(ValidityPeriod validityPeriod) {
+        this.validityPeriod = validityPeriod;
+    }
+
+    public String getIssuedTo() {
+        return issuedTo;
+    }
+
+    public void setIssuedTo(String issuedTo) {
+        this.issuedTo = issuedTo;
+    }
+
+    public String getIssuedBy() {
+        return issuedBy;
+    }
+
+    public void setIssuedBy(String issuedBy) {
+        this.issuedBy = issuedBy;
 
     public Long getId() {
         return id;
@@ -118,38 +151,6 @@ public class Certificate {
 
     public void setRevokeReason(RevokeReason revokeReason) {
         this.revokeReason = revokeReason;
-    }
-
-    public Set<Certificate> getSubjectCertificates() {
-        return subjectCertificates;
-    }
-
-    public void setSubjectCertificates(Set<Certificate> subjectCertificates) {
-        this.subjectCertificates = subjectCertificates;
-    }
-
-    public ValidityPeriod getValidityPeriod() {
-        return validityPeriod;
-    }
-
-    public void setValidityPeriod(ValidityPeriod validityPeriod) {
-        this.validityPeriod = validityPeriod;
-    }
-
-    public String getIssuedTo() {
-        return issuedTo;
-    }
-
-    public void setIssuedTo(String issuedTo) {
-        this.issuedTo = issuedTo;
-    }
-
-    public String getIssuedBy() {
-        return issuedBy;
-    }
-
-    public void setIssuedBy(String issuedBy) {
-        this.issuedBy = issuedBy;
     }
 
     @Override

@@ -10,6 +10,7 @@ import java.util.List;
 //FALI extends JpaRepository<Certificate, Long>
 //U KRAJNJEM SLUCAJU TREBA GA CELOG IMPLEMENTIRATI
 public interface CertificateRepository extends JpaRepository<Certificate, Long> {
+    
     List<Certificate> findAll();
 
     Certificate findOneBySerialNumber(String serialNumber);
@@ -18,8 +19,8 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
     void removeBySerialNumber(String serialNumber);
 
+    List<String> findByIsCA(boolean b);
 
-    //PROVERITI upit!!
     @Query("select c from Certificate c where c.revokeReason is not null")
     List<Certificate> findRevokedCertificates();
 

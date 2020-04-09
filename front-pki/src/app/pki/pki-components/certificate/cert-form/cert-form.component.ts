@@ -9,7 +9,11 @@ export class CertFormComponent implements OnInit {
 
   public existingCAs: Array<string> = ["New CA", "Root", "CA 1"];
 
+  public extensions: Array<string> = ["2.5.29.35 (Authority Key Identifier)", "EXT 1", "EXT 2", "EXT 3"];
+
   public selectedCA : string = "New CA";
+
+  public selectedExtension : string = "2.5.29.35 (Authority Key Identifier)";
 
   public displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
 
@@ -30,6 +34,7 @@ export class CertFormComponent implements OnInit {
 
   constructor() {
     this.selectedCA = "New CA";
+    this.selectedExtension = "2.5.29.35 (Authority Key Identifier)";
     this.dataSource = this.data;
   }
 
