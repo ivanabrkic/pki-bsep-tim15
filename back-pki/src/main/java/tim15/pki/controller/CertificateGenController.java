@@ -24,7 +24,7 @@ public class CertificateGenController {
     private CertificateGenService certificateGenService;
 
     /**
-     * GET /server/create
+     * POST /server/create
      *
      * @return string which indicates status of operation creating certificate
      */
@@ -41,7 +41,7 @@ public class CertificateGenController {
      * @return all CA certificates
      */
     @GetMapping(value = "/getCAs", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<String>> getCAs() {
+    public ResponseEntity<List<String>> getCAs() throws Exception{
         loggerService.print("action = getCAs, status = success");
         List<String> cas = certificateGenService.getAllCAs();
         return new ResponseEntity<>(cas, HttpStatus.OK);
@@ -53,7 +53,7 @@ public class CertificateGenController {
      * @return all extensions
      */
     @GetMapping(value = "/getExtensions", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Extension>> getExtensions() {
+    public ResponseEntity<List<Extension>> getExtensions() throws Exception{
         loggerService.print("action = getExtensions, status = success");
         List<Extension> extensions = certificateGenService.getAllExtensions();
         return new ResponseEntity<>(extensions, HttpStatus.OK);

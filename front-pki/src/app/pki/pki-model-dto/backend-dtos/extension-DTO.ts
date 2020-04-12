@@ -1,4 +1,4 @@
-export class Extension{
+export class ExtensionDTO{
 
     id:number;
     
@@ -10,6 +10,6 @@ export class Extension{
 
     value:string;
 
-    Extension(){}
+    ExtensionDTO(){}
 
 }

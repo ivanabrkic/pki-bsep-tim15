@@ -8,13 +8,25 @@ public class X500NameCustomBuilder {
     private String organizationalUnit;
     private String localityCity;
     private String stateProvince;
-    private String countryName;
-    private String companyStreetAddress;
+    private String countryCode;
+    private String streetAddress;
     private String postalCode;
     private String businessCategory;
-    private String businessRegistrationNumber;
-    private String jurisdictionState;
-    private String jurisdictionLocality;
+    private String uid;
+    private String serialNumber;
+    private String title;
+    private String name;
+    private String surname;
+    private String givenName;
+    private String initials;
+    private String dateOfBirth;
+    private String placeOfBirth;
+    private String gender;
+    private String countryOfCitizenship;
+    private String countryOfResidence;
+    private String email;
+    private String telephoneNumber;
+    private String generation;
 
     public X500NameCustomBuilder setCommonName(String commonName) {
         this.commonName = commonName;
@@ -41,13 +53,13 @@ public class X500NameCustomBuilder {
         return this;
     }
 
-    public X500NameCustomBuilder setCountryName(String countryName) {
-        this.countryName = countryName;
+    public X500NameCustomBuilder setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
         return this;
     }
 
-    public X500NameCustomBuilder setCompanyStreetAddress(String companyStreetAddress) {
-        this.companyStreetAddress = companyStreetAddress;
+    public X500NameCustomBuilder setStreetAddress(String streetAddress) {
+        this.streetAddress = streetAddress;
         return this;
     }
 
@@ -61,22 +73,82 @@ public class X500NameCustomBuilder {
         return this;
     }
 
-    public X500NameCustomBuilder setBusinessRegistrationNumber(String businessRegistrationNumber) {
-        this.businessRegistrationNumber = businessRegistrationNumber;
+    public X500NameCustomBuilder setUID(String uid) {
+        this.uid = uid;
         return this;
     }
 
-    public X500NameCustomBuilder setJurisdictionState(String jurisdictionState) {
-        this.jurisdictionState = jurisdictionState;
+    public X500NameCustomBuilder setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
         return this;
     }
 
-    public X500NameCustomBuilder setJurisdictionLocality(String jurisdictionLocality) {
-        this.jurisdictionLocality = jurisdictionLocality;
+    public X500NameCustomBuilder setTitle(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public X500NameCustomBuilder setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public X500NameCustomBuilder setSurname(String surname) {
+        this.surname = surname;
+        return this;
+    }
+
+    public X500NameCustomBuilder setGivenName(String givenName) {
+        this.givenName = givenName;
+        return this;
+    }
+
+    public X500NameCustomBuilder setInitials(String initials) {
+        this.initials = initials;
+        return this;
+    }
+
+    public X500NameCustomBuilder setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+        return this;
+    }
+
+    public X500NameCustomBuilder setPlaceOfBirth(String placeOfBirth) {
+        this.placeOfBirth = placeOfBirth;
+        return this;
+    }
+
+    public X500NameCustomBuilder setGender(String gender) {
+        this.gender = gender;
+        return this;
+    }
+
+    public X500NameCustomBuilder setCountryOfCitizenship(String countryOfCitizenship) {
+        this.countryOfCitizenship = countryOfCitizenship;
+        return this;
+    }
+
+    public X500NameCustomBuilder setCountryOfResidence(String countryOfResidence) {
+        this.countryOfResidence = countryOfResidence;
+        return this;
+    }
+
+    public X500NameCustomBuilder setEmail(String email) {
+        this.email = email;
+        return this;
+    }
+
+    public X500NameCustomBuilder setTelephoneNumber(String telephoneNumber) {
+        this.telephoneNumber = telephoneNumber;
+        return this;
+    }
+
+    public X500NameCustomBuilder setGeneration(String generation) {
+        this.generation = generation;
         return this;
     }
 
     public X500NameCustom createX500NameCustom() {
-        return new X500NameCustom(commonName, organization, organizationalUnit, localityCity, stateProvince, countryName, companyStreetAddress, postalCode, businessCategory, businessRegistrationNumber, jurisdictionState, jurisdictionLocality);
+        return new X500NameCustom(commonName, organization, organizationalUnit, localityCity, stateProvince, countryCode, streetAddress, postalCode, businessCategory, uid, serialNumber, title, name, surname, givenName, initials, dateOfBirth, placeOfBirth, gender, countryOfCitizenship, countryOfResidence, email, telephoneNumber, generation);
     }
 }

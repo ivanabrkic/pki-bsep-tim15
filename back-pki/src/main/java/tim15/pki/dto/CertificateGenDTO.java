@@ -2,7 +2,6 @@ package tim15.pki.dto;
 
 import tim15.pki.dto.builders.CertificateGenDTOBuilder;
 
-import java.util.Date;
 import java.util.Set;
 
 public class CertificateGenDTO {
@@ -18,8 +17,8 @@ public class CertificateGenDTO {
     private String issuedTo;
     private String issuedBy;
 
-    private Date startDate;
-    private Date endDate;
+    private String startDate;
+    private String endDate;
 
     private Set<ExtensionDTO> extensions;
 
@@ -28,7 +27,7 @@ public class CertificateGenDTO {
     public CertificateGenDTO() {
     }
 
-    public CertificateGenDTO(Long id, String serialNumber, boolean isCA, String parentSerialNumber, String issuedTo, String issuedBy, Date startDate, Date endDate, Set<ExtensionDTO> extensions, X500NameCustom x500NameCustom) {
+    public CertificateGenDTO(Long id, String serialNumber, boolean isCA, String parentSerialNumber, String issuedTo, String issuedBy, String startDate, String endDate, Set<ExtensionDTO> extensions, X500NameCustom x500NameCustom) {
         this.id = id;
         this.serialNumber = serialNumber;
         this.isCA = isCA;
@@ -61,11 +60,11 @@ public class CertificateGenDTO {
         this.serialNumber = serialNumber;
     }
 
-    public boolean isCA() {
+    public boolean getIsCA() {
         return isCA;
     }
 
-    public void setCA(boolean CA) {
+    public void setIsCA(boolean CA) {
         isCA = CA;
     }
 
@@ -93,19 +92,19 @@ public class CertificateGenDTO {
         this.issuedBy = issuedBy;
     }
 
-    public Date getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 

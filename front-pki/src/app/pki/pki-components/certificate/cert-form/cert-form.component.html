@@ -27,112 +27,30 @@
             </mat-step>
             <mat-step>
               <ng-template matStepLabel><span style="color: white;">Issuer Info</span></ng-template>
-              <form>
-                <div class="row">
-                  <div class=" col-md-6 pr-md-1">
-                    <mat-form-field>
-                      <div class="form-group">
-                        <label>Choose CA</label>
-                        <mat-select [(value)]="selectedCA">
-                          <mat-option *ngFor="let ca of existingCAs" [value]="ca">
-                            {{ca}}
-                          </mat-option>
-                        </mat-select>
-                      </div>
-                    </mat-form-field>
-                  </div>
+              <div class="row">
+                <div class=" col-md-6 pr-md-1">
+                  <mat-form-field>
+                    <div class="form-group">
+                      <label>Choose CA</label>
+                      <mat-select [(value)]="selectedCA.issuedTo">
+                        <mat-option *ngFor="let ca of existingCAs" [value]="ca.issuedTo">
+                          {{ca}}
+                        </mat-option>
+                      </mat-select>
+                    </div>
+                  </mat-form-field>
                 </div>
-                <div class=" row">
-                  <div class=" col-md-5 pr-md-1">
-                    <div class="form-group">
-                      <label> Common name </label>
-                      <input class="form-control" placeholder="Common name" type="text" />
-                    </div>
-                  </div>
-                  <div class=" col-md-3 px-md-1">
-                    <div class="form-group">
-                      <label> Organization </label>
-                      <input class="form-control" placeholder="Organization" type="text" />
-                    </div>
-                  </div>
-                  <div class=" col-md-4 pl-md-1">
-                    <div class="form-group">
-                      <label> Organizational unit </label>
-                      <input class="form-control" placeholder="Organizational unit" type="text" />
-                    </div>
-                  </div>
+              </div>
+              <div class=" row">
+                <div class=" col-md-12 pr-md-1">
+                  DETAILS ...
                 </div>
-                <div class=" row">
-                  <div class=" col-md-4 px-md-1">
-                    <div class="form-group">
-                      <label> Locality or City </label>
-                      <input class="form-control" placeholder="Locality or City" type="text" />
-                    </div>
-                  </div>
-                  <div class=" col-md-4 px-md-1">
-                    <div class="form-group">
-                      <label> State or Province </label>
-                      <input class="form-control" placeholder="State or Province" type="text" />
-                    </div>
-                  </div>
-                  <div class=" col-md-4 px-md-1">
-                    <div class="form-group">
-                      <label> Country Name </label>
-                      <input class="form-control" placeholder="Country Name" type="text" />
-                    </div>
-                  </div>
-                </div>
-                <div class=" row">
-                  <div class=" col-md-6 px-md-1">
-                    <div class="form-group">
-                      <label> Company Street Address (Optional) </label>
-                      <input class="form-control" placeholder="Company Street Address" type="text" />
-                    </div>
-                  </div>
-                  <div class=" col-md-6 px-md-1">
-                    <div class="form-group">
-                      <label> Postal Code (Optional)
-                      </label>
-                      <input class="form-control" placeholder="Postal Code" type="text" />
-                    </div>
-                  </div>
-                </div>
-                <div class=" row">
-                  <div class=" col-md-6 pl-md-1">
-                    <div class="form-group">
-                      <label> Business Category (Optional) </label>
-                      <input class="form-control" placeholder="Business Category" type="number" />
-                    </div>
-                  </div>
-                  <div class=" col-md-6 pr-md-1">
-                    <div class="form-group">
-                      <label> Serial Number (Business Registration Number) (Optional) </label>
-                      <input class="form-control" placeholder="Serial Number (Business Registration Number)"
-                        type="text" />
-                    </div>
-                  </div>
-                </div>
-                <div class=" row">
-                  <div class=" col-md-6 px-md-1">
-                    <div class="form-group">
-                      <label>Jurisdiction State (Optional)
-                      </label>
-                      <input class=" form-control" placeholder="Jurisdiction State" type="text" />
-                    </div>
-                  </div>
-                  <div class=" col-md-6 pl-md-1">
-                    <div class=" form-group">
-                      <label> Jurisdiction Locality (Optional)</label>
-                      <input class=" form-control" placeholder="Jurisdiction Locality" type="text" />
-                    </div>
-                  </div>
-                </div>
-              </form>
+              </div>
               <br>
               <div>
                 <button class=" btn btn-fill btn-danger" mat-button matStepperPrevious>Back</button>
                 <span style="width: 10px; color: transparent;">M</span>
-                <button class=" btn btn-fill btn-danger" mat-button matStepperNext>Next (Generate Key Pair)</button>
+                <button class=" btn btn-fill btn-danger" mat-button matStepperNext>Next</button>
               </div>
             </mat-step>
             <mat-step>
@@ -238,9 +156,9 @@
                   <mat-form-field>
                     <div class="form-group">
                       <label>Choose extension</label>
-                      <mat-select style="width: 130%;" [(value)]="selectedExtension">
-                        <mat-option *ngFor="let extension of extensions" [value]="extension">
-                          {{extension}}
+                      <mat-select style="width: 130%;" [(value)]="selectedExtension.name">
+                        <mat-option *ngFor="let extension of extensions" [value]="extension.name">
+                          {{extension.name}}
                         </mat-option>
                       </mat-select>
                     </div>
@@ -272,9 +190,9 @@
                 </div>
               </div>
               <div style="margin-top: 30px;" class="row">
-              <div class=" col-md-6 pl-md-1">
-                <button style="margin-top: 25px;" class=" btn btn-fill btn-danger" mat-button>Add extension</button>
-              </div>
+                <div class=" col-md-6 pl-md-1">
+                  <button style="margin-top: 25px;" class=" btn btn-fill btn-danger" mat-button>Add extension</button>
+                </div>
               </div>
               <div style="margin-top: 30px;" class="row">
 
@@ -284,9 +202,9 @@
                       The actual rendered columns are set as a property on the row definition" -->
 
                   <!-- Position Column -->
-                  <ng-container matColumnDef="position">
-                    <th mat-header-cell *matHeaderCellDef> No. </th>
-                    <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+                  <ng-container matColumnDef="oid">
+                    <th mat-header-cell *matHeaderCellDef> OID </th>
+                    <td mat-cell *matCellDef="let element"> {{element.oid}} </td>
                   </ng-container>
 
                   <!-- Name Column -->
@@ -296,15 +214,15 @@
                   </ng-container>
 
                   <!-- Weight Column -->
-                  <ng-container matColumnDef="weight">
-                    <th mat-header-cell *matHeaderCellDef> Weight </th>
-                    <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
+                  <ng-container matColumnDef="value">
+                    <th mat-header-cell *matHeaderCellDef> Value </th>
+                    <td mat-cell *matCellDef="let element"> {{element.value}} </td>
                   </ng-container>
 
                   <!-- Symbol Column -->
-                  <ng-container matColumnDef="symbol">
-                    <th mat-header-cell *matHeaderCellDef> Symbol </th>
-                    <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
+                  <ng-container matColumnDef="isCritical">
+                    <th mat-header-cell *matHeaderCellDef> Is critical </th>
+                    <td mat-cell *matCellDef="let element"> {{element.isCritical}} </td>
                   </ng-container>
 
                   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

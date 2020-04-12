@@ -37,10 +37,7 @@ public class Certificate {
     @JoinColumn(name = "certificate_child", referencedColumnName = "serial_number")
     private Set<Certificate> certificateChildren;
 
-
-    @OneToOne
-    @JoinColumn(name="validity_period_id", referencedColumnName = "id", nullable = false)
-    private ValidityPeriod validityPeriod;
+    private transient ValidityPeriod validityPeriod;
 
     @Column(name = "issued_to", nullable = false)
     private String issuedTo;
@@ -51,16 +48,18 @@ public class Certificate {
     public Certificate() {
     }
 
-    public Certificate(Long id, String serialNumber, boolean isActive, boolean isCA, CertificateStatus certificateStatus, RevokeReason revokeReason, String issuer, String subject) {
+    public Certificate(Long id, String serialNumber, boolean isActive, boolean isCA, CertificateStatus certificateStatus, RevokeReason revokeReason, String issuedTo, String issuedBy) {
         this.id = id;
         this.serialNumber = serialNumber;
         this.isActive = isActive;
         this.isCA = isCA;
         this.certificateStatus = certificateStatus;
         this.revokeReason = revokeReason;
-        this.issuedTo = issuer;
-        this.issuedBy = subject;
+        this.issuedTo = issuedTo;
+        this.issuedBy = issuedBy;
     }
+
+
 
     public static CertificateBuilder builder(){
         return new CertificateBuilder();
@@ -104,6 +103,7 @@ public class Certificate {
 
     public void setIssuedBy(String issuedBy) {
         this.issuedBy = issuedBy;
+    }
 
     public Long getId() {
         return id;
@@ -121,19 +121,19 @@ public class Certificate {
         this.serialNumber = serialNumber;
     }
 
-    public boolean isActive() {
+    public boolean getIsActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
+    public void setIsActive(boolean active) {
         isActive = active;
     }
 
-    public boolean isCA() {
+    public boolean getIsCA() {
         return isCA;
     }
 
-    public void setCA(boolean CA) {
+    public void setIsCA(boolean CA) {
         isCA = CA;
     }
 

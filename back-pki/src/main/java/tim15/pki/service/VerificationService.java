@@ -2,7 +2,6 @@ package tim15.pki.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tim15.pki.model.Certificate;
 import tim15.pki.repository.CertificateRepository;
 
 import java.security.InvalidKeyException;
@@ -50,7 +49,7 @@ public class VerificationService {
     }
 
     private boolean verifyActivity(X509Certificate certificate) {
-        boolean isActive = certificateRepository.findOneBySerialNumber(certificate.getSerialNumber().toString()).isActive();
+        boolean isActive = certificateRepository.findOneBySerialNumber(certificate.getSerialNumber().toString()).getIsActive();
 
         boolean isValidDate = checkDate(certificate);
         return isActive && isValidDate;
