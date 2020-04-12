@@ -76,7 +76,8 @@ public class CertificateViewService {
 
         ValidityPeriod vp = new ValidityPeriod(cert.getNotBefore(),cert.getNotAfter());
 
-        certDTO.setValidityPeriod(vp);
+        certDTO.setValidFrom(vp.getStartDate());
+        certDTO.setValidTo(vp.getEndDate());
         certDTO.setSerialNumber(cert.getSerialNumber().toString(16));
 
         return certDTO;

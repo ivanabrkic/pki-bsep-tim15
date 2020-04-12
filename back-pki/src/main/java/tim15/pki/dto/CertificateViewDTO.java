@@ -4,23 +4,28 @@ import tim15.pki.model.IssuerData;
 import tim15.pki.model.SubjectData;
 import tim15.pki.model.ValidityPeriod;
 
+import java.util.Date;
+
 public class CertificateViewDTO {
 
     private String subjectName;
 
     private String issuerName;
 
-    private ValidityPeriod validityPeriod;
+    private Date validFrom;
+
+    private Date validTo;
 
     private String serialNumber;
 
     public CertificateViewDTO() {
     }
 
-    public CertificateViewDTO(String subjectName, String issuerName, ValidityPeriod validityPeriod, String serialNumber) {
+    public CertificateViewDTO(String subjectName, String issuerName, Date validFrom, Date validTo, String serialNumber) {
         this.subjectName = subjectName;
         this.issuerName = issuerName;
-        this.validityPeriod = validityPeriod;
+        this.validFrom = validFrom;
+        this.validTo = validTo;
         this.serialNumber = serialNumber;
     }
 
@@ -30,10 +35,6 @@ public class CertificateViewDTO {
 
     public String getIssuerName() {
         return issuerName;
-    }
-
-    public ValidityPeriod getValidityPeriod() {
-        return validityPeriod;
     }
 
     public String getSerialNumber() {
@@ -48,11 +49,23 @@ public class CertificateViewDTO {
         this.issuerName = issuerName;
     }
 
-    public void setValidityPeriod(ValidityPeriod validityPeriod) {
-        this.validityPeriod = validityPeriod;
-    }
-
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
+    }
+
+    public Date getValidFrom() {
+        return validFrom;
+    }
+
+    public Date getValidTo() {
+        return validTo;
+    }
+
+    public void setValidFrom(Date validFrom) {
+        this.validFrom = validFrom;
+    }
+
+    public void setValidTo(Date validTo) {
+        this.validTo = validTo;
     }
 }

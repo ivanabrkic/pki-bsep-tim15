@@ -16,7 +16,6 @@
                         <mat-label>Select certificate role</mat-label>
                         <mat-select formControlName="certRole">
                             <mat-option value="root">Root</mat-option>
-                            <mat-option value="intermediate">Intermediate</mat-option>
                             <mat-option value="end-entity">End-entity</mat-option>
                         </mat-select>
                         <mat-error
@@ -33,7 +32,7 @@
                     </mat-form-field>
                     <div class="col-3">
                         <button mat-raised-button color="primary" [disabled]="!keyStoreForm.valid"
-                            (click)="fetchCertificates()">Show certificates</button>
+                            (click)="getCertificates()">Show certificates</button>
                     </div>
                 </div>
             </form>
