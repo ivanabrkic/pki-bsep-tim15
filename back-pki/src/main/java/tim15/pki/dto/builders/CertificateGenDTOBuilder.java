@@ -4,7 +4,6 @@ import tim15.pki.dto.CertificateGenDTO;
 import tim15.pki.dto.ExtensionDTO;
 import tim15.pki.dto.X500NameCustom;
 
-import java.util.Date;
 import java.util.Set;
 
 public class CertificateGenDTOBuilder {
@@ -14,8 +13,8 @@ public class CertificateGenDTOBuilder {
     private String parentSerialNumber;
     private String issuedTo;
     private String issuedBy;
-    private Date startDate;
-    private Date endDate;
+    private String startDate;
+    private String endDate;
     private Set<ExtensionDTO> extensions;
     private X500NameCustom x500NameCustom;
 
@@ -49,12 +48,12 @@ public class CertificateGenDTOBuilder {
         return this;
     }
 
-    public CertificateGenDTOBuilder setStartDate(Date startDate) {
+    public CertificateGenDTOBuilder setStartDate(String startDate) {
         this.startDate = startDate;
         return this;
     }
 
-    public CertificateGenDTOBuilder setEndDate(Date endDate) {
+    public CertificateGenDTOBuilder setEndDate(String endDate) {
         this.endDate = endDate;
         return this;
     }

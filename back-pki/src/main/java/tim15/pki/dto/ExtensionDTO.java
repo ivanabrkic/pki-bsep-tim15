@@ -51,11 +51,11 @@ public class ExtensionDTO {
         this.value = value;
     }
 
-    public boolean isCritical() {
+    public boolean getIsCritical() {
         return isCritical;
     }
 
-    public void setCritical(boolean critical) {
+    public void setIsCritical(boolean critical) {
         isCritical = critical;
     }
 

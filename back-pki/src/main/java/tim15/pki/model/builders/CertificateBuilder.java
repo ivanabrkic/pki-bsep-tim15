@@ -5,7 +5,6 @@ import tim15.pki.model.enums.CertificateStatus;
 import tim15.pki.model.enums.RevokeReason;
 
 public class CertificateBuilder {
-    private String certificateVersion;
     private Long id;
     private String serialNumber;
     private boolean isActive;
@@ -14,11 +13,6 @@ public class CertificateBuilder {
     private RevokeReason revokeReason;
     private String issuedTo;
     private String issuedBy;
-
-    public CertificateBuilder setCertificateVersion(String certificateVersion) {
-        this.certificateVersion = certificateVersion;
-        return this;
-    }
 
     public CertificateBuilder setId(Long id) {
         this.id = id;
@@ -50,13 +44,13 @@ public class CertificateBuilder {
         return this;
     }
 
-    public CertificateBuilder setIssuer(String issuer) {
-        this.issuedTo = issuer;
+    public CertificateBuilder setIssuedTo(String issuedTo) {
+        this.issuedTo = issuedTo;
         return this;
     }
 
-    public CertificateBuilder setSubject(String subject) {
-        this.issuedBy = subject;
+    public CertificateBuilder setIssuedBy(String issuedBy) {
+        this.issuedBy = issuedBy;
         return this;
     }
 

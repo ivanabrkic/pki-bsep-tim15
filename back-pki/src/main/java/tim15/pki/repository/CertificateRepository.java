@@ -4,11 +4,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import org.springframework.data.jpa.repository.Query;
 
+import org.springframework.stereotype.Repository;
 import tim15.pki.model.Certificate;
+import tim15.pki.model.enums.CertificateStatus;
+
 import java.util.List;
 
-//FALI extends JpaRepository<Certificate, Long>
-//U KRAJNJEM SLUCAJU TREBA GA CELOG IMPLEMENTIRATI
+@Repository
 public interface CertificateRepository extends JpaRepository<Certificate, Long> {
     
     List<Certificate> findAll();
@@ -19,7 +21,7 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
     void removeBySerialNumber(String serialNumber);
 
-    List<String> findByIsCA(boolean b);
+    List<Certificate> findByIsCAAndIsActiveAndCertificateStatus(boolean ca, boolean active, CertificateStatus status);
 
     @Query("select c from Certificate c where c.revokeReason is not null")
     List<Certificate> findRevokedCertificates();

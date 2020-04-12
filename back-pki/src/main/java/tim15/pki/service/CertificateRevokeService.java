@@ -16,7 +16,7 @@ public class CertificateRevokeService {
 
          if(certificate.getCertificateStatus() != CertificateStatus.REVOKED) {
              certificate.setRevokeReason(revokeReason);
-             certificate.setActive(false);
+             certificate.setIsActive(false);
              certificate.setCertificateStatus(CertificateStatus.REVOKED);
 
              Collection<Certificate> issuedCertificates = certificate.getCertificateChildren();

@@ -9,30 +9,55 @@ public class X500NameCustom {
     private String organizationalUnit;
     private String localityCity;
     private String stateProvince;
-    private String countryName;
-    private String companyStreetAddress;
+    private String countryCode;
+    private String streetAddress;
     private String postalCode;
     private String businessCategory;
-    private String businessRegistrationNumber;
-    private String jurisdictionState;
-    private String jurisdictionLocality;
+
+    private String UID;
+    private String serialNumber;
+    private String title;
+    private String name;
+    private String surname;
+    private String givenName;
+    private String initials;
+    private String dateOfBirth;
+    private String placeOfBirth;
+    private String gender;
+    private String countryOfCitizenship;
+    private String countryOfResidence;
+    private String email;
+    private String telephoneNumber;
+    private String generation;
 
     public X500NameCustom() {
     }
 
-    public X500NameCustom(String commonName, String organization, String organizationalUnit, String localityCity, String stateProvince, String countryName, String companyStreetAddress, String postalCode, String businessCategory, String businessRegistrationNumber, String jurisdictionState, String jurisdictionLocality) {
+    public X500NameCustom(String commonName, String organization, String organizationalUnit, String localityCity, String stateProvince, String countryCode, String streetAddress, String postalCode, String businessCategory, String UID, String serialNumber, String title, String name, String surname, String givenName, String initials, String dateOfBirth, String placeOfBirth, String gender, String countryOfCitizenship, String countryOfResidence, String email, String telephoneNumber, String generation) {
         this.commonName = commonName;
         this.organization = organization;
         this.organizationalUnit = organizationalUnit;
         this.localityCity = localityCity;
         this.stateProvince = stateProvince;
-        this.countryName = countryName;
-        this.companyStreetAddress = companyStreetAddress;
+        this.countryCode = countryCode;
+        this.streetAddress = streetAddress;
         this.postalCode = postalCode;
         this.businessCategory = businessCategory;
-        this.businessRegistrationNumber = businessRegistrationNumber;
-        this.jurisdictionState = jurisdictionState;
-        this.jurisdictionLocality = jurisdictionLocality;
+        this.UID = UID;
+        this.serialNumber = serialNumber;
+        this.title = title;
+        this.name = name;
+        this.surname = surname;
+        this.givenName = givenName;
+        this.initials = initials;
+        this.dateOfBirth = dateOfBirth;
+        this.placeOfBirth = placeOfBirth;
+        this.gender = gender;
+        this.countryOfCitizenship = countryOfCitizenship;
+        this.countryOfResidence = countryOfResidence;
+        this.email = email;
+        this.telephoneNumber = telephoneNumber;
+        this.generation = generation;
     }
 
     public static X500NameCustomBuilder builder(){
@@ -79,22 +104,6 @@ public class X500NameCustom {
         this.stateProvince = stateProvince;
     }
 
-    public String getCountryName() {
-        return countryName;
-    }
-
-    public void setCountryName(String countryName) {
-        this.countryName = countryName;
-    }
-
-    public String getCompanyStreetAddress() {
-        return companyStreetAddress;
-    }
-
-    public void setCompanyStreetAddress(String companyStreetAddress) {
-        this.companyStreetAddress = companyStreetAddress;
-    }
-
     public String getPostalCode() {
         return postalCode;
     }
@@ -111,28 +120,140 @@ public class X500NameCustom {
         this.businessCategory = businessCategory;
     }
 
-    public String getBusinessRegistrationNumber() {
-        return businessRegistrationNumber;
+    public String getCountryCode() {
+        return countryCode;
     }
 
-    public void setBusinessRegistrationNumber(String businessRegistrationNumber) {
-        this.businessRegistrationNumber = businessRegistrationNumber;
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 
-    public String getJurisdictionState() {
-        return jurisdictionState;
+    public String getStreetAddress() {
+        return streetAddress;
     }
 
-    public void setJurisdictionState(String jurisdictionState) {
-        this.jurisdictionState = jurisdictionState;
+    public void setStreetAddress(String streetAddress) {
+        this.streetAddress = streetAddress;
     }
 
-    public String getJurisdictionLocality() {
-        return jurisdictionLocality;
+    public String getUID() {
+        return UID;
     }
 
-    public void setJurisdictionLocality(String jurisdictionLocality) {
-        this.jurisdictionLocality = jurisdictionLocality;
+    public void setUID(String UID) {
+        this.UID = UID;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getGivenName() {
+        return givenName;
+    }
+
+    public void setGivenName(String givenName) {
+        this.givenName = givenName;
+    }
+
+    public String getInitials() {
+        return initials;
+    }
+
+    public void setInitials(String initials) {
+        this.initials = initials;
+    }
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getPlaceOfBirth() {
+        return placeOfBirth;
+    }
+
+    public void setPlaceOfBirth(String placeOfBirth) {
+        this.placeOfBirth = placeOfBirth;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getCountryOfCitizenship() {
+        return countryOfCitizenship;
+    }
+
+    public void setCountryOfCitizenship(String countryOfCitizenship) {
+        this.countryOfCitizenship = countryOfCitizenship;
+    }
+
+    public String getCountryOfResidence() {
+        return countryOfResidence;
+    }
+
+    public void setCountryOfResidence(String countryOfResidence) {
+        this.countryOfResidence = countryOfResidence;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getTelephoneNumber() {
+        return telephoneNumber;
+    }
+
+    public void setTelephoneNumber(String telephoneNumber) {
+        this.telephoneNumber = telephoneNumber;
+    }
+
+    public String getGeneration() {
+        return generation;
+    }
+
+    public void setGeneration(String generation) {
+        this.generation = generation;
     }
 
     @Override
@@ -143,13 +264,25 @@ public class X500NameCustom {
                 ", organizationalUnit='" + organizationalUnit + '\'' +
                 ", localityCity='" + localityCity + '\'' +
                 ", stateProvince='" + stateProvince + '\'' +
-                ", countryName='" + countryName + '\'' +
-                ", companyStreetAddress='" + companyStreetAddress + '\'' +
+                ", countryCode='" + countryCode + '\'' +
+                ", streetAddress='" + streetAddress + '\'' +
                 ", postalCode='" + postalCode + '\'' +
                 ", businessCategory='" + businessCategory + '\'' +
-                ", businessRegistrationNumber='" + businessRegistrationNumber + '\'' +
-                ", jurisdictionState='" + jurisdictionState + '\'' +
-                ", jurisdictionLocality='" + jurisdictionLocality + '\'' +
+                ", UID='" + UID + '\'' +
+                ", serialNumber='" + serialNumber + '\'' +
+                ", title='" + title + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", givenName='" + givenName + '\'' +
+                ", initials='" + initials + '\'' +
+                ", dateOfBirth='" + dateOfBirth + '\'' +
+                ", placeOfBirth='" + placeOfBirth + '\'' +
+                ", gender='" + gender + '\'' +
+                ", countryOfCitizenship='" + countryOfCitizenship + '\'' +
+                ", countryOfResidence='" + countryOfResidence + '\'' +
+                ", email='" + email + '\'' +
+                ", telephoneNumber='" + telephoneNumber + '\'' +
+                ", generation='" + generation + '\'' +
                 '}';
     }
 }
