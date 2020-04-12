@@ -1,6 +1,7 @@
 package tim15.pki.service;
 
 import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.springframework.stereotype.Service;
 import tim15.pki.model.IssuerData;
 
@@ -16,9 +17,6 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-
-
-import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 
 
 
@@ -82,7 +80,7 @@ public class CertificateReaderService {
 
     }
 
-    private IssuerData readIssuerFromStore(String keyStoreFile, String alias, char[] password, char[] keypass) {
+    public IssuerData readIssuerFromStore(String keyStoreFile, String alias, char[] password, char[] keypass) {
         try {
             //Datoteka se ucitava
             KeyStore keyStore = KeyStore.getInstance("JKS", "SUN");

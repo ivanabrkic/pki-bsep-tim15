@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { CertFormService } from 'src/app/pki/pki-services/cert-form-services/cert-form.service';
+import { Certificate } from 'src/app/pki/pki-model-dto/backend-model/certificate';
+import { Extension } from 'src/app/pki/pki-model-dto/backend-model/extension';
 
 @Component({
   selector: 'app-cert-form',
@@ -7,29 +10,28 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CertFormComponent implements OnInit {
 
-  public existingCAs: Array<string> = ["New CA", "Root", "CA 1"];
+  public validCAs: Array<Certificate> = [];
+  public extensions: Array<Extension> = [];
 
-  public selectedCA : string = "New CA";
+  public selectedCA : Certificate;
+  public selectedExtension : Extension;
 
-  public displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
+  public displayedColumns: string[] = ['oid', 'name', 'value', 'isCritical'];
 
-  public dataSource;
+  public dataSource = null;
+  public data = null;
 
-  public data = [
-    {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-    {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-    {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-    {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-    {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-    {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-    {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-    {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-    {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-    {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
-  ];
-
-  constructor() {
-    this.selectedCA = "New CA";
+  constructor(private certFormService : CertFormService) {
+    this.certFormService.getAllCAs()
+    .subscribe(cas => {
+      this.validCAs = cas;
+      this.certFormService.getAllExtensions()
+      .subscribe(extensions => {
+        this.extensions = extensions;
+      });
+    });
+    this.selectedCA = this.validCAs[0];
+    this.selectedExtension = this.extensions[0];
     this.dataSource = this.data;
   }
 

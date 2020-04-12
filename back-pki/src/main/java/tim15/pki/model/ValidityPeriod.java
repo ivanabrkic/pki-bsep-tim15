@@ -52,6 +52,14 @@ public class ValidityPeriod {
         this.id = id;
     }
 
+    public Certificate getCertificate() {
+        return certificate;
+    }
+
+    public void setCertificate(Certificate certificate) {
+        this.certificate = certificate;
+    }
+
     @Override
     public String toString() {
         return "ValidityPeriod{" +

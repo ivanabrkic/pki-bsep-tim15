@@ -1,5 +1,6 @@
 package tim15.pki.model;
 
+import tim15.pki.model.builders.CertificateBuilder;
 import tim15.pki.model.enums.CertificateStatus;
 import tim15.pki.model.enums.RevokeReason;
 
@@ -29,16 +30,14 @@ public class Certificate {
     private RevokeReason revokeReason;
 
     @OneToMany
-    @JoinColumn(name = "issuer_to_certificates", referencedColumnName = "serial_number")
-    private Set<Certificate> issuerToCertificates;
+    @JoinColumn(name = "certificate_parent", referencedColumnName = "serial_number")
+    private Set<Certificate> certificateParents;
 
     @OneToMany
-    @JoinColumn(name = "subject_certificates", referencedColumnName = "serial_number")
-    private Set<Certificate> subjectCertificates;
+    @JoinColumn(name = "certificate_child", referencedColumnName = "serial_number")
+    private Set<Certificate> certificateChildren;
 
-    @OneToOne
-    @JoinColumn(name="validity_period_id", referencedColumnName = "id", nullable = false)
-    private ValidityPeriod validityPeriod;
+    private transient ValidityPeriod validityPeriod;
 
     @Column(name = "issued_to", nullable = false)
     private String issuedTo;
@@ -49,83 +48,37 @@ public class Certificate {
     public Certificate() {
     }
 
-    public Certificate(Long id, String serialNumber, boolean isActive, boolean isCA, CertificateStatus certificateStatus, RevokeReason revokeReason, String issuer, String subject) {
+    public Certificate(Long id, String serialNumber, boolean isActive, boolean isCA, CertificateStatus certificateStatus, RevokeReason revokeReason, String issuedTo, String issuedBy) {
         this.id = id;
         this.serialNumber = serialNumber;
         this.isActive = isActive;
         this.isCA = isCA;
         this.certificateStatus = certificateStatus;
         this.revokeReason = revokeReason;
-        this.issuedTo = issuer;
-        this.issuedBy = subject;
+        this.issuedTo = issuedTo;
+        this.issuedBy = issuedBy;
     }
 
-    public Set<Certificate> getIssuerToCertificates() {
-        return issuerToCertificates;
-    }
 
-    public void setIssuerToCertificates(Set<Certificate> issuerCertificates) {
-        this.issuerToCertificates = issuerCertificates;
-    }
 
     public static CertificateBuilder builder(){
         return new CertificateBuilder();
     }
 
-    public Long getId() {
-        return id;
+    public Set<Certificate> getCertificateParents() {
+        return certificateParents;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCertificateParents(Set<Certificate> certificateParents) {
+        this.certificateParents = certificateParents;
     }
 
-    public String getSerialNumber() {
-        return serialNumber;
+    public Set<Certificate> getCertificateChildren() {
+        return certificateChildren;
     }
 
-    public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    public boolean isCA() {
-        return isCA;
-    }
-
-    public void setCA(boolean CA) {
-        isCA = CA;
-    }
-
-    public CertificateStatus getCertificateStatus() {
-        return certificateStatus;
-    }
-
-    public void setCertificateStatus(CertificateStatus certificateStatus) {
-        this.certificateStatus = certificateStatus;
-    }
-
-    public RevokeReason getRevokeReason() {
-        return revokeReason;
-    }
-
-    public void setRevokeReason(RevokeReason revokeReason) {
-        this.revokeReason = revokeReason;
-    }
-
-    public Set<Certificate> getSubjectCertificates() {
-        return subjectCertificates;
-    }
-
-    public void setSubjectCertificates(Set<Certificate> subjectCertificates) {
-        this.subjectCertificates = subjectCertificates;
+    public void setCertificateChildren(Set<Certificate> certificateChildren) {
+        this.certificateChildren = certificateChildren;
     }
 
     public ValidityPeriod getValidityPeriod() {
@@ -150,6 +103,54 @@ public class Certificate {
 
     public void setIssuedBy(String issuedBy) {
         this.issuedBy = issuedBy;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
+    }
+
+    public boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(boolean active) {
+        isActive = active;
+    }
+
+    public boolean getIsCA() {
+        return isCA;
+    }
+
+    public void setIsCA(boolean CA) {
+        isCA = CA;
+    }
+
+    public CertificateStatus getCertificateStatus() {
+        return certificateStatus;
+    }
+
+    public void setCertificateStatus(CertificateStatus certificateStatus) {
+        this.certificateStatus = certificateStatus;
+    }
+
+    public RevokeReason getRevokeReason() {
+        return revokeReason;
+    }
+
+    public void setRevokeReason(RevokeReason revokeReason) {
+        this.revokeReason = revokeReason;
     }
 
     @Override

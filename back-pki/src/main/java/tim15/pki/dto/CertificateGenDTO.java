@@ -1,62 +1,55 @@
 package tim15.pki.dto;
 
-import tim15.pki.model.IssuerData;
-import tim15.pki.model.SubjectData;
-import tim15.pki.model.ValidityPeriod;
+import tim15.pki.dto.builders.CertificateGenDTOBuilder;
+
+import java.util.Set;
 
 public class CertificateGenDTO {
 
-    private SubjectData subjectData;
+    private Long id;
 
-    private IssuerData issuerData;
-
-    private ValidityPeriod validityPeriod;
+    private String serialNumber;
 
     private boolean isCA;
 
-    private String serialNumber;
+    private String parentSerialNumber;
+
+    private String issuedTo;
+    private String issuedBy;
+
+    private String startDate;
+    private String endDate;
+
+    private Set<ExtensionDTO> extensions;
+
+    private X500NameCustom x500NameCustom;
 
     public CertificateGenDTO() {
     }
 
-    public CertificateGenDTO(SubjectData subjectData, IssuerData issuerData, ValidityPeriod validityPeriod, boolean isCA, String serialNumber) {
-        this.subjectData = subjectData;
-        this.issuerData = issuerData;
-        this.validityPeriod = validityPeriod;
-        this.isCA = isCA;
+    public CertificateGenDTO(Long id, String serialNumber, boolean isCA, String parentSerialNumber, String issuedTo, String issuedBy, String startDate, String endDate, Set<ExtensionDTO> extensions, X500NameCustom x500NameCustom) {
+        this.id = id;
         this.serialNumber = serialNumber;
+        this.isCA = isCA;
+        this.parentSerialNumber = parentSerialNumber;
+        this.issuedTo = issuedTo;
+        this.issuedBy = issuedBy;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.extensions = extensions;
+        this.x500NameCustom = x500NameCustom;
     }
 
-    public SubjectData getSubjectData() {
-        return subjectData;
+    public static CertificateGenDTOBuilder builder(){
+        return new CertificateGenDTOBuilder();
     }
 
-    public void setSubjectData(SubjectData subjectData) {
-        this.subjectData = subjectData;
+    public Long getId() {
+        return id;
     }
 
-    public IssuerData getIssuerData() {
-        return issuerData;
-    }
-
-    public void setIssuerData(IssuerData issuerData) {
-        this.issuerData = issuerData;
-    }
-
-    public ValidityPeriod getValidityPeriod() {
-        return validityPeriod;
-    }
-
-    public void setValidityPeriod(ValidityPeriod validityPeriod) {
-        this.validityPeriod = validityPeriod;
-    }
-
-    public boolean isCA() {
-        return isCA;
-    }
-
-    public void setCA(boolean CA) {
-        isCA = CA;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getSerialNumber() {
@@ -67,14 +60,83 @@ public class CertificateGenDTO {
         this.serialNumber = serialNumber;
     }
 
+    public boolean getIsCA() {
+        return isCA;
+    }
+
+    public void setIsCA(boolean CA) {
+        isCA = CA;
+    }
+
+    public String getParentSerialNumber() {
+        return parentSerialNumber;
+    }
+
+    public void setParentSerialNumber(String parentSerialNumber) {
+        this.parentSerialNumber = parentSerialNumber;
+    }
+
+    public String getIssuedTo() {
+        return issuedTo;
+    }
+
+    public void setIssuedTo(String issuedTo) {
+        this.issuedTo = issuedTo;
+    }
+
+    public String getIssuedBy() {
+        return issuedBy;
+    }
+
+    public void setIssuedBy(String issuedBy) {
+        this.issuedBy = issuedBy;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+    public Set<ExtensionDTO> getExtensions() {
+        return extensions;
+    }
+
+    public void setExtensions(Set<ExtensionDTO> extensions) {
+        this.extensions = extensions;
+    }
+
+    public X500NameCustom getX500NameCustom() {
+        return x500NameCustom;
+    }
+
+    public void setX500NameCustom(X500NameCustom x500NameCustom) {
+        this.x500NameCustom = x500NameCustom;
+    }
+
     @Override
     public String toString() {
         return "CertificateGenDTO{" +
-                "subjectData=" + subjectData +
-                ", issuerData=" + issuerData +
-                ", validityPeriod=" + validityPeriod +
-                ", isCA=" + isCA +
+                "id=" + id +
                 ", serialNumber='" + serialNumber + '\'' +
+                ", isCA=" + isCA +
+                ", parentSerialNumber='" + parentSerialNumber + '\'' +
+                ", issuedTo='" + issuedTo + '\'' +
+                ", issuedBy='" + issuedBy + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", extensions=" + extensions +
+                ", x500NameCustom=" + x500NameCustom +
                 '}';
     }
 }
