@@ -1,9 +1,11 @@
 package tim15.pki.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tim15.pki.dto.CertificateViewDTO;
 import tim15.pki.model.Certificate;
 import tim15.pki.model.ValidityPeriod;
+import tim15.pki.repository.CertificateRepository;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -15,13 +17,20 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
+
+
 @Service
 public class CertificateViewService {
 
+
+    @Autowired
+    private CertificateRepository certificateRepository;
     /*
     * Getting one specific keyStore,
     * params are key store path and password for keystore
@@ -30,10 +39,17 @@ public class CertificateViewService {
     * */
     public KeyStore getKeyStore(String keyStorePath, String keyStorePassword) throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException, NoSuchProviderException {
         char[] keyStorePassArray = keyStorePassword.toCharArray();
-
+        String keyStoreFileName = "";
+        if (keyStorePath.equals("ca")) {
+             keyStoreFileName = "keystoreCA.jks";
+        } else if (keyStorePath.equals("end-entity")) {
+             keyStoreFileName = "keystoreEE.jks";
+        } else {
+            System.out.println("nije dobio dobar parametar sa fronta!");
+        }
         KeyStore ks = KeyStore.getInstance("JKS", "SUN");
         try {
-            BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStorePath));
+            BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFileName));
             ks.load(in, keyStorePassArray);
         } catch (FileNotFoundException e) {
             ks.load(null, keyStorePassArray);
@@ -71,14 +87,24 @@ public class CertificateViewService {
     public CertificateViewDTO createCertificateDTO(X509Certificate cert) {
         CertificateViewDTO certDTO = new CertificateViewDTO();
 
-        certDTO.setIssuerName(cert.getIssuerX500Principal().getName());
-        certDTO.setSubjectName(cert.getSubjectX500Principal().getName());
+        String serialNumber = cert.getSerialNumber().toString(16);
+
+        Certificate databaseCertificate = certificateRepository.findOneBySerialNumber(serialNumber);
+
+        certDTO.setIssuerName(databaseCertificate.getIssuedBy());
+        certDTO.setSubjectName(databaseCertificate.getIssuedTo());
 
         ValidityPeriod vp = new ValidityPeriod(cert.getNotBefore(),cert.getNotAfter());
 
-        certDTO.setValidFrom(vp.getStartDate());
-        certDTO.setValidTo(vp.getEndDate());
-        certDTO.setSerialNumber(cert.getSerialNumber().toString(16));
+        DateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
+
+        String date1 = dateFormat.format(vp.getStartDate());
+        String date2 = dateFormat.format(vp.getEndDate());
+
+
+        certDTO.setValidFrom(date1);
+        certDTO.setValidTo(date2);
+        certDTO.setSerialNumber(serialNumber);
 
         return certDTO;
     }
@@ -91,6 +117,7 @@ public class CertificateViewService {
         List<CertificateViewDTO> DTOList = new ArrayList<CertificateViewDTO>();
 
         for(X509Certificate cert: certs) {
+
             CertificateViewDTO dto = createCertificateDTO(cert);
             DTOList.add(dto);
         }
