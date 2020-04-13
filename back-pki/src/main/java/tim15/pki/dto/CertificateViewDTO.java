@@ -12,16 +12,16 @@ public class CertificateViewDTO {
 
     private String issuerName;
 
-    private Date validFrom;
+    private String validFrom;
 
-    private Date validTo;
+    private String validTo;
 
     private String serialNumber;
 
     public CertificateViewDTO() {
     }
 
-    public CertificateViewDTO(String subjectName, String issuerName, Date validFrom, Date validTo, String serialNumber) {
+    public CertificateViewDTO(String subjectName, String issuerName, String validFrom, String validTo, String serialNumber) {
         this.subjectName = subjectName;
         this.issuerName = issuerName;
         this.validFrom = validFrom;
@@ -53,19 +53,19 @@ public class CertificateViewDTO {
         this.serialNumber = serialNumber;
     }
 
-    public Date getValidFrom() {
+    public String getValidFrom() {
         return validFrom;
     }
 
-    public Date getValidTo() {
+    public String getValidTo() {
         return validTo;
     }
 
-    public void setValidFrom(Date validFrom) {
+    public void setValidFrom(String validFrom) {
         this.validFrom = validFrom;
     }
 
-    public void setValidTo(Date validTo) {
+    public void setValidTo(String validTo) {
         this.validTo = validTo;
     }
 }
