@@ -1,6 +1,0 @@
-Apr 14, 2020 11:26:50 PM tim15.pki.service.LoggerService print
-INFO: action = getCAs, status = success
-Apr 14, 2020 11:26:51 PM tim15.pki.service.LoggerService print
-INFO: action = getExtensions, status = success
-Apr 14, 2020 11:26:51 PM tim15.pki.service.LoggerService print
-INFO: action = getUIDs, status = success

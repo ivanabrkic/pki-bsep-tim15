@@ -1,6 +1,0 @@
-Apr 14, 2020 11:06:33 PM tim15.pki.service.LoggerService print
-INFO: action = getUIDs, status = success
-Apr 14, 2020 11:07:26 PM tim15.pki.service.LoggerService print
-INFO: action = create certificate, status = success
-Apr 14, 2020 11:07:26 PM tim15.pki.service.LoggerService print
-INFO: Generated key pair
