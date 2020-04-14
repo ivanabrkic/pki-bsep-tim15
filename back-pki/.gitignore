@@ -29,3 +29,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### log files and keystores ###
+log/
+keystore/

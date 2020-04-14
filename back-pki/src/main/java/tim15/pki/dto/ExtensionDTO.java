@@ -1,6 +1,8 @@
 package tim15.pki.dto;
 
-public class ExtensionDTO {
+import java.io.Serializable;
+
+public class ExtensionDTO implements Serializable {
 
     private Long id;
     private String oid;

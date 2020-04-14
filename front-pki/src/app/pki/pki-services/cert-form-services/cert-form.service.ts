@@ -4,6 +4,7 @@ import { TextMessage } from '../../pki-model-dto/backend-dtos/text-message';
 import { CertificateGenDTO } from '../../pki-model-dto/backend-dtos/certificate-gen-DTO';
 import { Extension } from '../../pki-model-dto/backend-model/extension';
 import { Certificate } from '../../pki-model-dto/backend-model/certificate';
+import { SystemEntity } from '../../pki-model-dto/backend-model/system-entity';
 
 const httpOptions = {headers: new HttpHeaders({'Content-Type' : 'application/json'})};
 
@@ -24,5 +25,13 @@ export class CertFormService {
 
   public getAllExtensions() {
     return this.http.get<Extension[]>('/server/certificate_gen/getExtensions' , httpOptions);
+  }
+
+  public getAllUIDs() {
+    return this.http.get<SystemEntity[]>('/server/certificate_gen/getUIDs' , httpOptions);
+  }
+
+  public getCountryCodes() {
+    return this.http.get<{"Name","Code"}[]>('/assets/data/countries.json' , httpOptions);
   }
 }

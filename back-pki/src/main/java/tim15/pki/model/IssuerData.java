@@ -2,9 +2,11 @@ package tim15.pki.model;
 
 
 import org.bouncycastle.asn1.x500.X500Name;
+
+import java.io.Serializable;
 import java.security.PrivateKey;
 
-public class IssuerData {
+public class IssuerData implements Serializable {
 
     private transient X500Name name;
 

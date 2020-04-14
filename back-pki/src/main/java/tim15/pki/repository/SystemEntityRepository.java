@@ -6,5 +6,5 @@ import tim15.pki.model.SystemEntity;
 
 @Repository
 public interface SystemEntityRepository extends JpaRepository<SystemEntity, Long> {
-    SystemEntity getOneByUid(String valueOf);
+    SystemEntity findByUid(String valueOf);
 }
