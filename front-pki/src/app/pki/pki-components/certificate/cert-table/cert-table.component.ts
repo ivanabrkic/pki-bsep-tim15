@@ -1,4 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import {MatSelectModule} from '@angular/material/select';
+import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
+import { ViewCertificateService } from 'src/app/pki/pki-services/view-certificate.service';
+import { CertificateViewDTO } from 'src/app/pki/pki-model-dto/backend-dtos/certificateViewDTO';
 
 @Component({
   selector: 'app-cert-table',
@@ -7,9 +13,30 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CertTableComponent implements OnInit {
 
-  constructor() { }
+  keyStoreForm: FormGroup;
+  displayedColumns: string[] = ['serialNumber', 'subjectName', 'issuerName', 'validFrom', 'validTo', 'buttons'];
+  certificatesDataSource: MatTableDataSource<CertificateViewDTO>;
+  
+  constructor(public dialog: MatDialog,
+    private formBuilder: FormBuilder,private viewCertificateService: ViewCertificateService) {
+   }
 
   ngOnInit(): void {
+    this.keyStoreForm = this.formBuilder.group({
+      certRole: new FormControl(null, Validators.required),
+      keyStorePassword: new FormControl(null, Validators.required)
+    });
+  }
+
+  getCertificates() {
+    this.viewCertificateService.getCertificates(this.keyStoreForm.value.certRole, this.keyStoreForm.value.keyStorePassword).subscribe(
+      (data: CertificateViewDTO[]) => {
+        this.certificatesDataSource = new MatTableDataSource(data)
+        if (data.length == 0) {
+          alert('Error, no certificates found!');
+        }
+      }
+    );
   }
 
 }
