@@ -1,10 +1,13 @@
 package tim15.pki.service;
 
+import tim15.pki.dto.TextMessage;
 import tim15.pki.model.Certificate;
 import tim15.pki.model.enums.CertificateStatus;
 import tim15.pki.model.enums.RevokeReason;
 import tim15.pki.repository.CertificateRepository;
-
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchProviderException;
 import java.util.Collection;
 
 public class CertificateRevokeService {
