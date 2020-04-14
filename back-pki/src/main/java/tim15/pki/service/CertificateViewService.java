@@ -41,9 +41,9 @@ public class CertificateViewService {
         char[] keyStorePassArray = keyStorePassword.toCharArray();
         String keyStoreFileName = "";
         if (keyStorePath.equals("ca")) {
-             keyStoreFileName = "keystoreCA.jks";
+             keyStoreFileName = "./keystore/keystoreCA.jks";
         } else if (keyStorePath.equals("end-entity")) {
-             keyStoreFileName = "keystoreEE.jks";
+             keyStoreFileName = "./keystore/keystoreEE.jks";
         } else {
             System.out.println("nije dobio dobar parametar sa fronta!");
         }
@@ -89,7 +89,7 @@ public class CertificateViewService {
 
         String serialNumber = cert.getSerialNumber().toString(16);
 
-        Certificate databaseCertificate = certificateRepository.findOneBySerialNumber(serialNumber);
+        Certificate databaseCertificate = certificateRepository.findBySerialNumber(serialNumber);
 
         certDTO.setIssuerName(databaseCertificate.getIssuedBy());
         certDTO.setSubjectName(databaseCertificate.getIssuedTo());
