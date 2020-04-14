@@ -1,0 +1,18 @@
+Apr 14, 2020 11:14:13 PM tim15.pki.service.LoggerService print
+INFO: action = create certificate, status = success
+Apr 14, 2020 11:14:13 PM tim15.pki.service.LoggerService print
+INFO: Generated key pair
+Apr 14, 2020 11:14:14 PM tim15.pki.service.LoggerService print
+INFO: .............................DOB2..............................
+Apr 14, 2020 11:14:14 PM tim15.pki.service.LoggerService print
+INFO: Generated subject data.
+Apr 14, 2020 11:14:15 PM tim15.pki.service.LoggerService print
+INFO: Exception in function generateCertificate():null
+Apr 14, 2020 11:14:15 PM tim15.pki.service.LoggerService print
+INFO: Certificate failed to create and save.
+Apr 14, 2020 11:14:15 PM tim15.pki.service.LoggerService print
+INFO: action = getCAs, status = success
+Apr 14, 2020 11:14:15 PM tim15.pki.service.LoggerService print
+INFO: action = getExtensions, status = success
+Apr 14, 2020 11:14:15 PM tim15.pki.service.LoggerService print
+INFO: action = getUIDs, status = success

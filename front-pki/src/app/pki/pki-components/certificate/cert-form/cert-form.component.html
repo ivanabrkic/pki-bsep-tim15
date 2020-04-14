@@ -14,27 +14,28 @@
             <mat-step>
               <ng-template matStepLabel><span style="color: white;">Type of certificate</span></ng-template>
               <mat-label></mat-label>
-              <mat-radio-group style="display: flex;
+              <mat-radio-group [(ngModel)]="certificateType" style="display: flex;
             flex-direction: column;
             margin: 15px 0;" aria-label="Select an option">
-                <mat-radio-button style="margin: 5px;" value="1">Self-signed</mat-radio-button>
-                <mat-radio-button style="margin: 5px;" value="2">CA</mat-radio-button>
-                <mat-radio-button style="margin: 5px;" value="3">End-entity</mat-radio-button>
+                <mat-radio-button style="margin: 5px;" value="Self-signed">Self-signed
+                </mat-radio-button>
+                <mat-radio-button style="margin: 5px;" value="Intermediate">Intermediate</mat-radio-button>
+                <mat-radio-button style="margin: 5px;" value="End-entity">End-entity</mat-radio-button>
               </mat-radio-group>
               <div>
-                <button class=" btn btn-fill btn-danger" mat-button matStepperNext>Next</button>
+                <button (click)="openIssuerInfo()" class=" btn btn-fill btn-danger" mat-button>Next</button>
               </div>
             </mat-step>
             <mat-step>
               <ng-template matStepLabel><span style="color: white;">Issuer Info</span></ng-template>
               <div class="row">
                 <div class=" col-md-6 pr-md-1">
-                  <mat-form-field>
+                  <mat-form-field *ngIf="validCAs != undefined && selectedCA != undefined">
                     <div class="form-group">
                       <label>Choose CA</label>
-                      <mat-select [(value)]="selectedCA.issuedTo">
-                        <mat-option *ngFor="let ca of existingCAs" [value]="ca.issuedTo">
-                          {{ca}}
+                      <mat-select #s (selectionChange)="onChange(s.value)" [(value)]="selectedCA">
+                        <mat-option *ngFor="let ca of validCAs" [value]="ca">
+                          {{ca.issuedTo}} - {{ca.serialNumber}}
                         </mat-option>
                       </mat-select>
                     </div>
@@ -50,113 +51,317 @@
               <div>
                 <button class=" btn btn-fill btn-danger" mat-button matStepperPrevious>Back</button>
                 <span style="width: 10px; color: transparent;">M</span>
-                <button class=" btn btn-fill btn-danger" mat-button matStepperNext>Next</button>
+                <button class=" btn btn-fill btn-danger" mat-button
+                  matStepperNext>Next</button>
               </div>
             </mat-step>
             <mat-step>
               <ng-template matStepLabel><span style="color: white;">Subject Info</span></ng-template>
-              <form>
+              <form (ngSubmit)="openExtensions()" [formGroup]="subjectForm" >
                 <div class=" row">
                   <div class=" col-md-5 pr-md-1">
                     <div class="form-group">
                       <label> Common name </label>
-                      <input class="form-control" placeholder="Common name" type="text" />
+                      <input [ngClass]="{ 'is-invalid': submitted && f.commonName.errors }" formControlName="commonName"
+                        #commonName class="form-control mat-form-control" placeholder="Common name" type="text" />
+                      <mat-error *ngIf="submitted && f.commonName.errors">
+                        <div *ngIf="f.commonName.errors.required">Common name is mandatory</div>
+                      </mat-error>
                     </div>
                   </div>
                   <div class=" col-md-3 px-md-1">
                     <div class="form-group">
                       <label> Organization </label>
-                      <input class="form-control" placeholder="Organization" type="text" />
+                      <input [ngClass]="{ 'is-invalid': submitted && f.organization.errors }"
+                        formControlName="organization" #organization class="form-control mat-form-control"
+                        placeholder="Organization" type="text" />
+                      <mat-error *ngIf="submitted && f.organization.errors">
+                        <div *ngIf="f.organization.errors.required">Organization is mandatory</div>
+                      </mat-error>
                     </div>
                   </div>
                   <div class=" col-md-4 pl-md-1">
                     <div class="form-group">
                       <label> Organizational unit </label>
-                      <input class="form-control" placeholder="Organizational unit" type="text" />
+                      <input [ngClass]="{ 'is-invalid': submitted && f.organizationalUnit.errors }"
+                        formControlName="organizationalUnit" #organizationalUnit class="form-control mat-form-control"
+                        placeholder="Organizational unit" type="text" />
+                      <mat-error *ngIf="submitted && f.organizationalUnit.errors">
+                        <div *ngIf="f.organizationalUnit.errors.required">Organizational unit is mandatory</div>
+                      </mat-error>
                     </div>
                   </div>
                 </div>
                 <div class=" row">
-                  <div class=" col-md-4 px-md-1">
+                  <div class=" col-md-6 px-md-1">
                     <div class="form-group">
                       <label> Locality or City </label>
-                      <input class="form-control" placeholder="Locality or City" type="text" />
+                      <input [ngClass]="{ 'is-invalid': submitted && f.localityCity.errors }"
+                        formControlName="localityCity" #localityCity class="form-control mat-form-control"
+                        placeholder="Locality or City" type="text" />
+                      <mat-error *ngIf="submitted && f.localityCity.errors">
+                        <div *ngIf="f.localityCity.errors.required">Locality or city is mandatory</div>
+                      </mat-error>
                     </div>
                   </div>
-                  <div class=" col-md-4 px-md-1">
+                  <div class=" col-md-6 px-md-1">
                     <div class="form-group">
                       <label> State or Province </label>
-                      <input class="form-control" placeholder="State or Province" type="text" />
-                    </div>
-                  </div>
-                  <div class=" col-md-4 px-md-1">
-                    <div class="form-group">
-                      <label> Country Name </label>
-                      <input class="form-control" placeholder="Country Name" type="text" />
-                    </div>
-                  </div>
-                </div>
-                <div class=" row">
-                  <div class=" col-md-6 px-md-1">
-                    <div class="form-group">
-                      <label> Company Street Address (Optional)</label>
-                      <input class="form-control" placeholder="Company Street Address" type="text" />
-                    </div>
-                  </div>
-                  <div class=" col-md-6 px-md-1">
-                    <div class="form-group">
-                      <label> Postal Code (Optional)
-                      </label>
-                      <input class="form-control" placeholder="Postal Code" type="text" />
+                      <input [ngClass]="{ 'is-invalid': submitted && f.stateProvince.errors }"
+                        formControlName="stateProvince" #stateProvince class="form-control mat-form-control"
+                        placeholder="State or Province" type="text" />
+                      <mat-error *ngIf="submitted && f.stateProvince.errors">
+                        <div *ngIf="f.stateProvince.errors.required">State or province is mandatory</div>
+                      </mat-error>
                     </div>
                   </div>
                 </div>
                 <div class=" row">
-                  <div class=" col-md-6 pl-md-1">
-                    <div class="form-group">
-                      <label> Business Category (Optional)</label>
-                      <input class="form-control" placeholder="Business Category" type="number" />
-                    </div>
-                  </div>
-                  <div class=" col-md-6 pr-md-1">
-                    <div class="form-group">
-                      <label> Serial Number (Business Registration Number) (Optional)</label>
-                      <input class="form-control" placeholder="Serial Number (Business Registration Number)"
-                        type="text" />
-                    </div>
+                  <div class=" col-md-12 px-md-1">
+                    <mat-form-field style="margin-top: 0px; margin-bottom: 0px; width: 100%;"
+                      *ngIf="filteredCountries != undefined">
+                      <div class="form-group">
+                        <label> Country Code </label>
+                        <input [style.border-color]="countryEmpty || countryInvalid ? '#ff8d72' : '#2b3553'" class="mat-style" matInput aria-label="Country code" [matAutocomplete]="auto"
+                          [formControl]="countryCtrl">
+                        <mat-error *ngIf="submitted">
+                          <div *ngIf="countryEmpty">Country code is mandatory</div>
+                          <div *ngIf="countryInvalid">Please select a valid country code</div>
+                        </mat-error>
+                        <mat-autocomplete #auto="matAutocomplete">
+                          <mat-option *ngFor="let country of filteredCountries | async" [value]="country.Code">
+                            <span>{{country.Name}}</span> |
+                            <small>{{country.Code}}</small>
+                          </mat-option>
+                        </mat-autocomplete>
+                      </div>
+                    </mat-form-field>
                   </div>
                 </div>
                 <div class=" row">
                   <div class=" col-md-6 px-md-1">
-                    <div class="form-group">
-                      <label>Jurisdiction State (Optional)
-                      </label>
-                      <input class=" form-control" placeholder="Jurisdiction State" type="text" />
-                    </div>
+                    <label>Subject type</label>
+                    <mat-radio-group [ngModelOptions]="{standalone : true}" [(ngModel)]="userType" style="display: flex;
+                  flex-direction: column;
+                  margin: 15px 0;" aria-label="Select an option">
+                      <mat-radio-button style="margin: 5px;" value="SERVICE">Server
+                      </mat-radio-button>
+                      <mat-radio-button style="margin: 5px;" value="SUBSYSTEM">Subsystem</mat-radio-button>
+                      <mat-radio-button style="margin: 5px;" value="USER">User</mat-radio-button>
+                    </mat-radio-group>
                   </div>
-                  <div class=" col-md-6 pl-md-1">
-                    <div class=" form-group">
-                      <label> Jurisdiction Locality (Optional)</label>
-                      <input class=" form-control" placeholder="Jurisdiction Locality" type="text" />
-                    </div>
-                  </div>
+                </div>
+                <div class="row">
+                  <mat-accordion style="width: 100%;">
+                    <mat-expansion-panel>
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          Additional fields
+                        </mat-panel-title>
+                        <mat-panel-description>
+                        </mat-panel-description>
+                      </mat-expansion-panel-header>
+                      <!-- DATA -->
+                      <div class=" row">
+                        <div class=" col-md-6 px-md-1">
+                          <label> User identifier (UID) </label>
+                          <mat-radio-group #u (selectionChange)="onChangeUID(u.value)" [ngModelOptions]="{standalone : true}" [(ngModel)]="uidInfo" style="display: flex;
+                        flex-direction: column;
+                        margin: 15px 0;" aria-label="Select an option">
+                            <mat-radio-button style="margin: 5px;" value="newUID">Generate new UID
+                            </mat-radio-button>
+                            <mat-radio-button style="margin: 5px;" value="existingUID">Use existing UID</mat-radio-button>
+                            <mat-radio-button style="margin: 5px;" value="noUID">Create certificate without UID</mat-radio-button>
+                          </mat-radio-group>                        </div>
+                        <div class=" col-md-6 pr-md-1">
+                          <mat-form-field *ngIf="systemUsers != undefined && selectedUser != undefined">
+                            <div class="form-group">
+                              <label>Choose existing unique identifier</label>
+                              <mat-select [(value)]="selectedUser.uid">
+                                <mat-option *ngFor="let systemUser of systemUsers" [value]="systemUser.uid">
+                                  {{systemUser.uid}}
+                                </mat-option>
+                              </mat-select>
+                            </div>
+                          </mat-form-field>
+                        </div>
+                      </div>
+                      <div class=" row">
+                        <div class=" col-md-6 px-md-1">
+                          <div class="form-group">
+                            <label>Street Address </label>
+                            <input formControlName="streetAddress" #streetAddress class="form-control mat-form-control" maxlength="64" placeholder="Street Address" type="text" />
+                          </div>
+                        </div>
+                        <div class=" col-md-6 px-md-1">
+                          <div class="form-group">
+                            <label> Postal Code
+                            </label>
+                            <input  maxlength="40" formControlName="postalCode" #postalCode class="form-control mat-form-control" placeholder="Postal Code" type="text" />
+                          </div>
+                        </div>
+                      </div>
+                      <div class=" row">
+                        <div class=" col-md-6 pl-md-1">
+                          <div class="form-group">
+                            <label> Business Category </label>
+                            <input maxlength="128" formControlName="businessCategory" #businessCategory class="form-control mat-form-control" placeholder="Business Category" type="text" />
+                          </div>
+                        </div>
+                        <div class=" col-md-6 pr-md-1">
+                          <div class="form-group">
+                            <label> Serial Number (Business Registration Number) </label>
+                            <input maxlength="64" formControlName="serialNumber" #serialNumber class="form-control mat-form-control" placeholder="Serial Number (Business Registration Number)"
+                              type="text" />
+                          </div>
+                        </div>
+                      </div>
+                      <div class=" row">
+                        <div class=" col-md-4 px-md-1">
+                          <div class="form-group">
+                            <label>Title
+                            </label>
+                            <input formControlName="title" #title class="form-control mat-form-control" placeholder="Title" type="text" />
+                          </div>
+                        </div>
+                        <div class=" col-md-4 pl-md-1">
+                          <div class=" form-group">
+                            <label> Name</label>
+                            <input formControlName="name" #name class="form-control mat-form-control" placeholder="Name" type="text" />
+                          </div>
+                        </div>
+                        <div class=" col-md-4 pl-md-1">
+                          <div class=" form-group">
+                            <label> Surname</label>
+                            <input formControlName="surname" #surname class="form-control mat-form-control" placeholder="Surname" type="text" />
+                          </div>
+                        </div>
+                      </div>
+                      <div class=" row">
+                        <div class=" col-md-4 px-md-1">
+                          <div class="form-group">
+                            <label>Given name
+                            </label>
+                            <input formControlName="givenName" #givenName class="form-control mat-form-control" placeholder="Given name" type="text" />
+                          </div>
+                        </div>
+                        <div class=" col-md-4 pl-md-1">
+                          <div class=" form-group">
+                            <label> Initials</label>
+                            <input formControlName="initials" #initials class="form-control mat-form-control" placeholder="Initials" type="text" />
+                          </div>
+                        </div>
+                        <div class=" col-md-4 pl-md-1">
+                          <div class=" form-group">
+                            <label> Email</label>
+                            <input formControlName="email" #email class="form-control mat-form-control" placeholder="Email" type="email" />
+                          </div>
+                        </div>
+                      </div>
+                      <div class=" row">
+                        <div class=" col-md-4 px-md-1">
+                          <div class="form-group">
+                            <label>Date of birth
+                            </label>
+                            <input disabled [max]="maxBirthDate" formControlName="dateOfBirth" #dateOfBirth class="form-control mat-form-control" placeholder="Date of birth" type="text"
+                              [matDatepicker]="birthDatePicker" />
+                          </div>
+                        </div>
+                        <div style="margin-top: 20px;" class=" col-md-1 pl-md-1">
+                          <mat-datepicker-toggle style="outline-width: 0;" matSuffix [for]="birthDatePicker">
+                          </mat-datepicker-toggle>
+                          <mat-datepicker disabled="false" #birthDatePicker></mat-datepicker>
+                        </div>
+                        <div class=" col-md-4 px-md-1">
+                          <div class="form-group">
+                            <label>Place of birth
+                            </label>
+                            <input formControlName="placeOfBirth" #placeOfBirth class="form-control mat-form-control" placeholder="Place of birth" type="text" />
+                          </div>
+                        </div>
+                        <div class=" col-md-3 pl-md-1">
+                          <label>Gender</label>
+                          <mat-radio-group style="display: flex;
+                        flex-direction: row;
+                        margin: 15px 0;" aria-label="Gender" formControlName="gender">
+                            <mat-radio-button style="margin: 5px;" value="M">M</mat-radio-button>
+                            <mat-radio-button style="margin: 5px;" value="F">F</mat-radio-button>
+                          </mat-radio-group>
+                        </div>
+                      </div>
+                      <div class=" row">
+                        <div class=" col-md-12 px-md-1">
+                          <mat-form-field style="margin-top: 0px; margin-bottom: 0px; width: 100%;"
+                            *ngIf="filteredCountriesCitizenship != undefined">
+                            <div class="form-group">
+                              <label> Country of Citizenship </label>
+                              <input maxlength="2" class="mat-style" matInput aria-label="CountryCode" [matAutocomplete]="auto"
+                                [formControl]="countryCtrlCitizenship">
+                              <mat-autocomplete #auto="matAutocomplete">
+                                <mat-option *ngFor="let country of filteredCountriesCitizenship | async"
+                                  [value]="country.Code">
+                                  <span>{{country.Name}}</span> |
+                                  <small>{{country.Code}}</small>
+                                </mat-option>
+                              </mat-autocomplete>
+                            </div>
+                          </mat-form-field>
+                        </div>
+                      </div>
+                      <div class=" row">
+                        <div class=" col-md-12 px-md-1">
+                          <mat-form-field style="margin-top: 0px; margin-bottom: 0px; width: 100%;"
+                            *ngIf="filteredCountriesResidence != undefined">
+                            <div class="form-group">
+                              <label> Country of Residence </label>
+                              <input maxlength="2" class="mat-style" matInput aria-label="CountryCode" [matAutocomplete]="auto"
+                                [formControl]="countryCtrlResidence">
+                              <mat-autocomplete #auto="matAutocomplete">
+                                <mat-option *ngFor="let country of filteredCountriesResidence | async"
+                                  [value]="country.Code">
+                                  <span>{{country.Name}}</span> |
+                                  <small>{{country.Code}}</small>
+                                </mat-option>
+                              </mat-autocomplete>
+                            </div>
+                          </mat-form-field>
+                        </div>
+                      </div>
+                      <div class=" row">
+                        <div class=" col-md-6 px-md-1">
+                          <div class="form-group">
+                            <label>Telephone number
+                            </label>
+                            <input formControlName="telephoneNumber" #telephoneNumber class="form-control mat-form-control" placeholder="Telephone number" type="text" />
+                          </div>
+                        </div>
+                        <div class=" col-md-6 pl-md-1">
+                          <div class=" form-group">
+                            <label> Generation</label>
+                            <input formControlName="generation" #generation class="form-control mat-form-control" placeholder="Generation" type="text" />
+                          </div>
+                        </div>
+                      </div>
+                      <!-- END DATA -->
+                    </mat-expansion-panel>
+                  </mat-accordion>
+                </div>
+                <br>
+                <div>
+                  <button (click) = "backIssuerInfo()" class=" btn btn-fill btn-danger" mat-button>Back</button>
+                  <span style="width: 10px; color: transparent;">M</span>
+                  <button type="submit" class=" btn btn-fill btn-danger" mat-button>Next</button>
                 </div>
               </form>
-              <br>
-              <div>
-                <button class=" btn btn-fill btn-danger" mat-button matStepperPrevious>Back</button>
-                <span style="width: 10px; color: transparent;">M</span>
-                <button class=" btn btn-fill btn-danger" mat-button matStepperNext>Next (Generate Key Pair)</button>
-              </div>
             </mat-step>
             <mat-step>
               <ng-template matStepLabel><span style="color: white;">Extensions</span></ng-template>
               <div class="row">
                 <div class=" col-md-6 pr-md-1">
-                  <mat-form-field>
+                  <mat-form-field *ngIf="extensions != undefined && selectedExtension != undefined">
                     <div class="form-group">
                       <label>Choose extension</label>
-                      <mat-select style="width: 130%;" [(value)]="selectedExtension.name">
+                      <mat-select style="width: 100%;" [(value)]="selectedExtension.name">
                         <mat-option *ngFor="let extension of extensions" [value]="extension.name">
                           {{extension.name}}
                         </mat-option>
@@ -233,7 +438,8 @@
               <div>
                 <button class=" btn btn-fill btn-danger" mat-button matStepperPrevious>Back</button>
                 <span style="width: 10px; color: transparent;">M</span>
-                <button class=" btn btn-fill btn-danger" mat-button matStepperNext>Next</button>
+                <button (click)="openValidityDate()" class=" btn btn-fill btn-danger" mat-button
+                  matStepperNext>Next</button>
               </div>
             </mat-step>
             <mat-step>
@@ -244,20 +450,20 @@
                     <div class="row">
                       <div class=" col-md-3 pl-md-1">
                         <label> Valid from </label>
-                        <input class="form-control" [matDatepicker]="picker">
+                        <input disabled [(ngModel)]="selectedValidFromDate" [min]="minValidFromDate" class="form-control" [matDatepicker]="validFromPicker">
                       </div>
                       <div style="margin-top: 20px;" class=" col-md-3 pl-md-1">
-                        <mat-datepicker-toggle style="outline-width: 0;" matSuffix [for]="picker">
+                        <mat-datepicker-toggle style="outline-width: 0;" matSuffix [for]="validFromPicker">
                         </mat-datepicker-toggle>
-                        <mat-datepicker #picker></mat-datepicker>
+                        <mat-datepicker disabled="false" #validFromPicker></mat-datepicker>
                       </div>
                       <div class=" col-md-3 pl-md-1">
                         <label> Valid to </label>
-                        <input class="form-control" [matDatepicker]="picker2">
+                        <input disabled [(ngModel)]="selectedValidToDate" [min]="minValidToDate" class="form-control" [matDatepicker]="validToPicker">
                       </div>
                       <div style="margin-top: 20px;" class=" col-md-3 pl-md-1">
-                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-                        <mat-datepicker #picker2></mat-datepicker>
+                        <mat-datepicker-toggle matSuffix [for]="validToPicker"></mat-datepicker-toggle>
+                        <mat-datepicker disabled="false" #validToPicker></mat-datepicker>
                       </div>
                     </div>
                   </div>
@@ -267,7 +473,7 @@
               <div>
                 <button class=" btn btn-fill btn-danger" mat-button matStepperPrevious>Back</button>
                 <span style="width: 10px; color: transparent;">M</span>
-                <button class=" btn btn-fill btn-danger" mat-button matStepperNext>Next</button>
+                <button (click)="openDone()" class=" btn btn-fill btn-danger" mat-button>Next</button>
               </div>
             </mat-step>
             <mat-step>
@@ -276,9 +482,10 @@
               <div>
                 <button class=" btn btn-fill btn-danger" mat-button matStepperPrevious>Back</button>
                 <span style="width: 10px; color: transparent;">M</span>
-                <button class=" btn btn-fill btn-danger" mat-button (click)="stepper.reset()">Reset</button>
+                <button (click) = "resetStepper()" class=" btn btn-fill btn-danger" mat-button (click)="stepper.reset()">Reset</button>
                 <span style="width: 10px; color: transparent;">M</span>
-                <button class=" btn btn-fill btn-danger" mat-button>Create certificate</button>
+                <button (click)="openCreateCertificate()" class=" btn btn-fill btn-danger" mat-button>Create
+                  certificate</button>
               </div>
             </mat-step>
           </mat-horizontal-stepper>

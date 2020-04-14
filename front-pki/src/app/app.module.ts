@@ -28,7 +28,10 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatListModule} from '@angular/material/list';
 
 import {MatTableModule} from '@angular/material/table';
-
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 
 @NgModule({
@@ -52,7 +55,11 @@ import {MatTableModule} from '@angular/material/table';
     MatInputModule,
     MatSelectModule,
     MatListModule,
-    MatTableModule
+    MatTableModule,
+    MatAutocompleteModule,
+    MatExpansionModule,
+    MatCheckboxModule,
+    MatSnackBarModule
   ],
   declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, CertFormComponent, CertTableComponent],
   providers: [],

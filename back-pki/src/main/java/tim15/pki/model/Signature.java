@@ -1,5 +1,8 @@
 package tim15.pki.model;
-public class Signature {
+
+import java.io.Serializable;
+
+public class Signature implements Serializable {
 
     private String algorithmID;
 

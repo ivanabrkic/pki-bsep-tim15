@@ -6,18 +6,18 @@ export class X500NameCustom{
     localityCity:string;
     stateProvince:string;
     countryCode:string; 
+
     streetAddress:string;
     postalCode:string;
     businessCategory:string;
-
-    UID:string;
+    uid:string;
     serialNumber:string;
     title:string;
     name:string;
     surname:string;
     givenName:string;
     initials:string;
-    dateOfBirth:String;
+    dateOfBirth:Date;
     placeOfBirth:string;
     gender:string;
     countryOfCitizenship:string;

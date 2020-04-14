@@ -7,12 +7,11 @@ export class CertificateGenDTO{
     serialNumber:String;
     isCA:boolean;
     parentSerialNumber:String;
-    issuedTo:String;
-    issuedBy:String;
-    startDate:String;
-    endDate:String;
+    startDate:Date;
+    endDate:Date;
     extensions:ExtensionDTO[];
     x500NameCustom:X500NameCustom;
+    entityType:String;
 
     CertificateGenDTO(){}
 

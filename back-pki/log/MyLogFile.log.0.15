@@ -1,0 +1,16 @@
+Apr 14, 2020 11:24:44 PM tim15.pki.service.LoggerService print
+INFO: Certificate successfully created.
+Apr 14, 2020 11:24:44 PM tim15.pki.service.LoggerService print
+INFO: Certificate successfully saved.
+Apr 14, 2020 11:24:44 PM tim15.pki.service.LoggerService print
+INFO: Certificate successfully saved in database.
+Apr 14, 2020 11:24:45 PM tim15.pki.service.LoggerService print
+INFO: action = getCAs, status = success
+Apr 14, 2020 11:24:45 PM tim15.pki.service.LoggerService print
+INFO: action = getExtensions, status = success
+Apr 14, 2020 11:24:45 PM tim15.pki.service.LoggerService print
+INFO: action = getUIDs, status = success
+Apr 14, 2020 11:26:11 PM tim15.pki.service.LoggerService print
+INFO: action = create certificate, status = success
+Apr 14, 2020 11:26:11 PM tim15.pki.service.LoggerService print
+INFO: Generated key pair

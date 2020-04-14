@@ -1,14 +1,17 @@
 package tim15.pki.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import tim15.pki.model.builders.CertificateBuilder;
 import tim15.pki.model.enums.CertificateStatus;
+import tim15.pki.model.enums.EntityType;
 import tim15.pki.model.enums.RevokeReason;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 @Entity
-public class Certificate {
+public class Certificate implements Serializable {
 
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
@@ -29,14 +32,17 @@ public class Certificate {
     @Column(name="revoke_reason")
     private RevokeReason revokeReason;
 
-    @OneToMany
-    @JoinColumn(name = "certificate_parent", referencedColumnName = "serial_number")
+    @JsonIgnore
+    @ManyToMany
+    @JoinColumn(name = "certificate_parent")
     private Set<Certificate> certificateParents;
 
-    @OneToMany
-    @JoinColumn(name = "certificate_child", referencedColumnName = "serial_number")
+    @JsonIgnore
+    @ManyToMany
+    @JoinColumn(name = "certificate_child", referencedColumnName = "certificate_parent")
     private Set<Certificate> certificateChildren;
 
+    @JsonIgnore
     private transient ValidityPeriod validityPeriod;
 
     @Column(name = "issued_to", nullable = false)
@@ -45,10 +51,13 @@ public class Certificate {
     @Column(name = "issued_by", nullable = false)
     private String issuedBy;
 
+    @Column(name = "entity_type", nullable = false)
+    private EntityType entityType;
+
     public Certificate() {
     }
 
-    public Certificate(Long id, String serialNumber, boolean isActive, boolean isCA, CertificateStatus certificateStatus, RevokeReason revokeReason, String issuedTo, String issuedBy) {
+    public Certificate(Long id, String serialNumber, boolean isActive, boolean isCA, CertificateStatus certificateStatus, RevokeReason revokeReason, String issuedTo, String issuedBy, EntityType entityType) {
         this.id = id;
         this.serialNumber = serialNumber;
         this.isActive = isActive;
@@ -57,9 +66,16 @@ public class Certificate {
         this.revokeReason = revokeReason;
         this.issuedTo = issuedTo;
         this.issuedBy = issuedBy;
+        this.entityType = entityType;
     }
 
+    public EntityType getEntityType() {
+        return entityType;
+    }
 
+    public void setEntityType(EntityType entityType) {
+        this.entityType = entityType;
+    }
 
     public static CertificateBuilder builder(){
         return new CertificateBuilder();
@@ -162,7 +178,12 @@ public class Certificate {
                 ", isCA=" + isCA +
                 ", certificateStatus=" + certificateStatus +
                 ", revokeReason=" + revokeReason +
+                ", certificateParents=" + certificateParents +
+                ", certificateChildren=" + certificateChildren +
                 ", validityPeriod=" + validityPeriod +
+                ", issuedTo='" + issuedTo + '\'' +
+                ", issuedBy='" + issuedBy + '\'' +
+                ", entityType=" + entityType +
                 '}';
     }
 }

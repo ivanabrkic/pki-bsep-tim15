@@ -4,6 +4,7 @@ import tim15.pki.dto.CertificateGenDTO;
 import tim15.pki.dto.ExtensionDTO;
 import tim15.pki.dto.X500NameCustom;
 
+import java.util.Date;
 import java.util.Set;
 
 public class CertificateGenDTOBuilder {
@@ -11,15 +12,19 @@ public class CertificateGenDTOBuilder {
     private String serialNumber;
     private boolean isCA;
     private String parentSerialNumber;
-    private String issuedTo;
-    private String issuedBy;
-    private String startDate;
-    private String endDate;
+    private Date startDate;
+    private Date endDate;
     private Set<ExtensionDTO> extensions;
     private X500NameCustom x500NameCustom;
+    private String entityType;
 
     public CertificateGenDTOBuilder setId(Long id) {
         this.id = id;
+        return this;
+    }
+
+    public CertificateGenDTOBuilder setEntityType(String entityType) {
+        this.entityType = entityType;
         return this;
     }
 
@@ -38,22 +43,12 @@ public class CertificateGenDTOBuilder {
         return this;
     }
 
-    public CertificateGenDTOBuilder setIssuedTo(String issuedTo) {
-        this.issuedTo = issuedTo;
-        return this;
-    }
-
-    public CertificateGenDTOBuilder setIssuedBy(String issuedBy) {
-        this.issuedBy = issuedBy;
-        return this;
-    }
-
-    public CertificateGenDTOBuilder setStartDate(String startDate) {
+    public CertificateGenDTOBuilder setStartDate(Date startDate) {
         this.startDate = startDate;
         return this;
     }
 
-    public CertificateGenDTOBuilder setEndDate(String endDate) {
+    public CertificateGenDTOBuilder setEndDate(Date endDate) {
         this.endDate = endDate;
         return this;
     }
@@ -69,6 +64,6 @@ public class CertificateGenDTOBuilder {
     }
 
     public CertificateGenDTO createCertificateGenDTO() {
-        return new CertificateGenDTO(id, serialNumber, isCA, parentSerialNumber, issuedTo, issuedBy, startDate, endDate, extensions, x500NameCustom);
+        return new CertificateGenDTO(id, serialNumber, isCA, parentSerialNumber, startDate, endDate, extensions, x500NameCustom, entityType);
     }
 }

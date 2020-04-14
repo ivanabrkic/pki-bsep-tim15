@@ -12,7 +12,7 @@ public class CertificateRevokeService {
      LoggerService loggerService;
 
      public void revokeCertificate(String serialNumber, RevokeReason revokeReason) {
-         Certificate certificate = certificateRepository.findOneBySerialNumber(serialNumber);
+         Certificate certificate = certificateRepository.findBySerialNumber(serialNumber);
 
          if(certificate.getCertificateStatus() != CertificateStatus.REVOKED) {
              certificate.setRevokeReason(revokeReason);

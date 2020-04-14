@@ -2,7 +2,10 @@ package tim15.pki.dto;
 
 import tim15.pki.dto.builders.X500NameCustomBuilder;
 
-public class X500NameCustom {
+import java.io.Serializable;
+import java.util.Date;
+
+public class X500NameCustom implements Serializable {
 
     private String commonName;
     private String organization;
@@ -14,14 +17,14 @@ public class X500NameCustom {
     private String postalCode;
     private String businessCategory;
 
-    private String UID;
+    private String uid;
     private String serialNumber;
     private String title;
     private String name;
     private String surname;
     private String givenName;
     private String initials;
-    private String dateOfBirth;
+    private Date dateOfBirth;
     private String placeOfBirth;
     private String gender;
     private String countryOfCitizenship;
@@ -33,7 +36,7 @@ public class X500NameCustom {
     public X500NameCustom() {
     }
 
-    public X500NameCustom(String commonName, String organization, String organizationalUnit, String localityCity, String stateProvince, String countryCode, String streetAddress, String postalCode, String businessCategory, String UID, String serialNumber, String title, String name, String surname, String givenName, String initials, String dateOfBirth, String placeOfBirth, String gender, String countryOfCitizenship, String countryOfResidence, String email, String telephoneNumber, String generation) {
+    public X500NameCustom(String commonName, String organization, String organizationalUnit, String localityCity, String stateProvince, String countryCode, String streetAddress, String postalCode, String businessCategory, String uid, String serialNumber, String title, String name, String surname, String givenName, String initials, Date dateOfBirth, String placeOfBirth, String gender, String countryOfCitizenship, String countryOfResidence, String email, String telephoneNumber, String generation) {
         this.commonName = commonName;
         this.organization = organization;
         this.organizationalUnit = organizationalUnit;
@@ -43,7 +46,7 @@ public class X500NameCustom {
         this.streetAddress = streetAddress;
         this.postalCode = postalCode;
         this.businessCategory = businessCategory;
-        this.UID = UID;
+        this.uid = uid;
         this.serialNumber = serialNumber;
         this.title = title;
         this.name = name;
@@ -136,12 +139,12 @@ public class X500NameCustom {
         this.streetAddress = streetAddress;
     }
 
-    public String getUID() {
-        return UID;
+    public String getUid() {
+        return uid;
     }
 
-    public void setUID(String UID) {
-        this.UID = UID;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getSerialNumber() {
@@ -192,11 +195,11 @@ public class X500NameCustom {
         this.initials = initials;
     }
 
-    public String getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
+    public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -268,7 +271,7 @@ public class X500NameCustom {
                 ", streetAddress='" + streetAddress + '\'' +
                 ", postalCode='" + postalCode + '\'' +
                 ", businessCategory='" + businessCategory + '\'' +
-                ", UID='" + UID + '\'' +
+                ", UID='" + uid + '\'' +
                 ", serialNumber='" + serialNumber + '\'' +
                 ", title='" + title + '\'' +
                 ", name='" + name + '\'' +

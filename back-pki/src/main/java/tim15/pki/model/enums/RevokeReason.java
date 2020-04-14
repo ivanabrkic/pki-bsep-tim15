@@ -1,6 +1,7 @@
 package tim15.pki.model.enums;
 
 public enum RevokeReason {
+    NOT_REVOKED,
     EXPIRED,
     KEY_COMPROMISE,
     CA_COMPROMISE,
@@ -15,6 +16,8 @@ public enum RevokeReason {
 
     public static RevokeReason toEnum(String status) {
         switch (status.toUpperCase()) {
+            case "NOT REVOKED":
+                return NOT_REVOKED;
             case "EXPIRED":
                 return EXPIRED;
             case "KEY COMPROMISE":
