@@ -6,14 +6,9 @@ import tim15.pki.model.enums.CertificateStatus;
 import tim15.pki.model.enums.RevokeReason;
 import tim15.pki.repository.CertificateRepository;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.cert.CertificateException;
 import java.util.Collection;
 
 public class CertificateRevokeService {
