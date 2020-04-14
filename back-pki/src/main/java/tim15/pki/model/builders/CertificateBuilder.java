@@ -2,6 +2,7 @@ package tim15.pki.model.builders;
 
 import tim15.pki.model.Certificate;
 import tim15.pki.model.enums.CertificateStatus;
+import tim15.pki.model.enums.EntityType;
 import tim15.pki.model.enums.RevokeReason;
 
 public class CertificateBuilder {
@@ -13,6 +14,12 @@ public class CertificateBuilder {
     private RevokeReason revokeReason;
     private String issuedTo;
     private String issuedBy;
+    private EntityType entityType;
+
+    public CertificateBuilder setEntityType(EntityType entityType) {
+        this.entityType = entityType;
+        return this;
+    }
 
     public CertificateBuilder setId(Long id) {
         this.id = id;
@@ -55,6 +62,6 @@ public class CertificateBuilder {
     }
 
     public Certificate createCertificate() {
-        return new Certificate(id, serialNumber, isActive, isCA, certificateStatus, revokeReason, issuedTo, issuedBy);
+        return new Certificate(id, serialNumber, isActive, isCA, certificateStatus, revokeReason, issuedTo, issuedBy, entityType);
     }
 }

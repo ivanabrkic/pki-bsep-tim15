@@ -35,3 +35,40 @@
  ::ng-deep .mat-horizontal-stepper-header{
   pointer-events: none !important;
 }
+
+::ng-deep .mat-input-underline {
+  display: none;
+}
+
+::ng-deep .mat-form-field-underline {
+  display: none;
+}
+
+.mat-style{
+  border-color: #2b3553;
+  border-radius: 0.4285rem;
+  font-size: 0.7500000025rem;
+  -webkit-transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  padding: 10px 18px 10px 18px;
+  display: block;
+  width: 100%;
+  height: calc(2.249999625rem + 2px);
+  padding: 0.5rem 0.7rem;
+  font-size: 0.875rem;
+  line-height: 1.428571;
+  color: rgba(255, 255, 255, 0.8);
+  background-color: transparent;
+  background-clip: padding-box;
+  border: 1px solid #2b3553;
+  border-radius: 0.25rem;
+  box-shadow: none;
+  -webkit-transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  margin-bottom: 20px;
+}
+
+.mat-style:focus{
+  border: 1px solid #fd5d93;
+  caret-color: rgba(255, 255, 255, 0.8);
+}

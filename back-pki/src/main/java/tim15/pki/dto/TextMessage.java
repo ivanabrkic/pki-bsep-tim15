@@ -1,6 +1,8 @@
 package tim15.pki.dto;
 
-public class TextMessage {
+import java.io.Serializable;
+
+public class TextMessage implements Serializable {
 
     private String text;
 

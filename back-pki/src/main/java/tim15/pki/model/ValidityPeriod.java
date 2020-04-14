@@ -1,10 +1,11 @@
 package tim15.pki.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-public class ValidityPeriod {
+public class ValidityPeriod implements Serializable {
 
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)

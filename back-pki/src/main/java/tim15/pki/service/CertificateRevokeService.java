@@ -1,28 +1,23 @@
 package tim15.pki.service;
 
-import tim15.pki.dto.CertificateGenDTO;
 import tim15.pki.dto.TextMessage;
 import tim15.pki.model.Certificate;
 import tim15.pki.model.enums.CertificateStatus;
 import tim15.pki.model.enums.RevokeReason;
 import tim15.pki.repository.CertificateRepository;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.cert.CertificateException;
 import java.util.Collection;
 
 public class CertificateRevokeService {
      CertificateRepository certificateRepository;
      LoggerService loggerService;
 
+
      public TextMessage revokeCertificate(String serialNumber, RevokeReason revokeReason) {
-         Certificate certificate = certificateRepository.findOneBySerialNumber(serialNumber);
+         Certificate certificate = certificateRepository.findBySerialNumber(serialNumber);
 
          if(certificate.getCertificateStatus() != CertificateStatus.REVOKED) {
              certificate.setRevokeReason(revokeReason);
