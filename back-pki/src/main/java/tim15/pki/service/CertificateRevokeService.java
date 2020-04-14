@@ -1,6 +1,5 @@
 package tim15.pki.service;
 
-import tim15.pki.dto.CertificateGenDTO;
 import tim15.pki.dto.TextMessage;
 import tim15.pki.model.Certificate;
 import tim15.pki.model.enums.CertificateStatus;
