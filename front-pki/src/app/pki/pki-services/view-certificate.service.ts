@@ -38,7 +38,14 @@ return this.httpClient.get(this.requestUrl + '/certificateDetails', optionsAndPa
 }
 
 public revoke(serialNumber: string) {
- // TODO: call revoke controller from backend
+  let params = new HttpParams();
+  params = params.append('serialNumber', serialNumber);
+  this.requestUrl = 'server/certificate_revoke/';
+  const optionsAndParams = {
+    headers: { 'Content-Type': 'application/json' },
+    params: params
+};
+return this.httpClient.get(this.requestUrl + '/revoke', optionsAndParams);
 }
 
 public download(serialNumber: string) {
