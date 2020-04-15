@@ -192,23 +192,73 @@ public class CertificateViewService {
         cdd.setSubjectStateProvince(subjectName.getRDNs(BCStrictStyle.ST)[0].getFirst().getValue().toString());
         cdd.setSubjectCountryCode(subjectName.getRDNs(BCStrictStyle.C)[0].getFirst().getValue().toString());
 
-        cdd.setSubjectUID(checkString(subjectName.getRDNs(BCStrictStyle.UID)[0].getFirst().getValue().toString()));
-        cdd.setSubjectTitle(checkString(subjectName.getRDNs(BCStrictStyle.T)[0].getFirst().getValue().toString()));
-        cdd.setSubjectName(checkString(subjectName.getRDNs(BCStrictStyle.NAME)[0].getFirst().getValue().toString()));
-        cdd.setSubjectSurname(checkString(subjectName.getRDNs(BCStrictStyle.SURNAME)[0].getFirst().getValue().toString()));
-        cdd.setSubjectGivenName(checkString(subjectName.getRDNs(BCStrictStyle.GIVENNAME)[0].getFirst().getValue().toString()));
-        cdd.setSubjectInitials(checkString(subjectName.getRDNs(BCStrictStyle.INITIALS)[0].getFirst().getValue().toString()));
-        cdd.setSubjectDateOfBirth(checkString(subjectName.getRDNs(BCStrictStyle.DATE_OF_BIRTH)[0].getFirst().getValue().toString()));
-        cdd.setSubjectPlaceOfBirth(checkString(subjectName.getRDNs(BCStrictStyle.PLACE_OF_BIRTH)[0].getFirst().getValue().toString()));
-        cdd.setSubjectGender(checkString(subjectName.getRDNs(BCStrictStyle.GENDER)[0].getFirst().getValue().toString()));
-        cdd.setSubjectCountryOfCitizenship(checkString(subjectName.getRDNs(BCStrictStyle.COUNTRY_OF_CITIZENSHIP)[0].getFirst().getValue().toString()));
-        cdd.setSubjectCountryOfResidence(checkString(subjectName.getRDNs(BCStrictStyle.COUNTRY_OF_RESIDENCE)[0].getFirst().getValue().toString()));
-        cdd.setSubjectEmail(checkString(subjectName.getRDNs(BCStrictStyle.E)[0].getFirst().getValue().toString()));
-        cdd.setSubjectTelephoneNumber(checkString(subjectName.getRDNs(BCStrictStyle.TELEPHONE_NUMBER)[0].getFirst().getValue().toString()));
-        cdd.setSubjectStreet(checkString(subjectName.getRDNs(BCStrictStyle.STREET)[0].getFirst().getValue().toString()));
-        cdd.setSubjectPostalCode(checkString(subjectName.getRDNs(BCStrictStyle.POSTAL_CODE)[0].getFirst().getValue().toString()));
-        cdd.setSubjectBusinessCategory(checkString(subjectName.getRDNs(BCStrictStyle.BUSINESS_CATEGORY)[0].getFirst().getValue().toString()));
-        cdd.setSubjectGeneration(checkString(subjectName.getRDNs(BCStrictStyle.GENERATION)[0].getFirst().getValue().toString()));
+        if (subjectName.getRDNs(BCStrictStyle.UID).length > 0){
+            cdd.setSubjectUID(checkString(subjectName.getRDNs(BCStrictStyle.UID)[0].getFirst().getValue().toString()));
+        }
+
+        if (subjectName.getRDNs(BCStrictStyle.T).length > 0) {
+            cdd.setSubjectTitle(checkString(subjectName.getRDNs(BCStrictStyle.T)[0].getFirst().getValue().toString()));
+        }
+
+        if (subjectName.getRDNs(BCStrictStyle.NAME).length > 0) {
+            cdd.setSubjectName(checkString(subjectName.getRDNs(BCStrictStyle.NAME)[0].getFirst().getValue().toString()));
+        }
+
+        if (subjectName.getRDNs(BCStrictStyle.SURNAME).length > 0) {
+            cdd.setSubjectSurname(checkString(subjectName.getRDNs(BCStrictStyle.SURNAME)[0].getFirst().getValue().toString()));
+        }
+
+        if (subjectName.getRDNs(BCStrictStyle.GIVENNAME).length > 0) {
+            cdd.setSubjectGivenName(checkString(subjectName.getRDNs(BCStrictStyle.GIVENNAME)[0].getFirst().getValue().toString()));
+        }
+
+        if (subjectName.getRDNs(BCStrictStyle.INITIALS).length > 0) {
+            cdd.setSubjectInitials(checkString(subjectName.getRDNs(BCStrictStyle.INITIALS)[0].getFirst().getValue().toString()));
+        }
+
+        if (subjectName.getRDNs(BCStrictStyle.DATE_OF_BIRTH).length > 0){
+            cdd.setSubjectDateOfBirth(checkString(subjectName.getRDNs(BCStrictStyle.DATE_OF_BIRTH)[0].getFirst().getValue().toString()));
+        }
+
+        if (subjectName.getRDNs(BCStrictStyle.PLACE_OF_BIRTH).length > 0) {
+            cdd.setSubjectPlaceOfBirth(checkString(subjectName.getRDNs(BCStrictStyle.PLACE_OF_BIRTH)[0].getFirst().getValue().toString()));
+        }
+
+        if (subjectName.getRDNs(BCStrictStyle.GENDER).length > 0) {
+            cdd.setSubjectGender(checkString(subjectName.getRDNs(BCStrictStyle.GENDER)[0].getFirst().getValue().toString()));
+        }
+
+        if (subjectName.getRDNs(BCStrictStyle.COUNTRY_OF_CITIZENSHIP).length > 0) {
+            cdd.setSubjectCountryOfCitizenship(checkString(subjectName.getRDNs(BCStrictStyle.COUNTRY_OF_CITIZENSHIP)[0].getFirst().getValue().toString()));
+        }
+
+        if (subjectName.getRDNs(BCStrictStyle.COUNTRY_OF_RESIDENCE).length > 0) {
+            cdd.setSubjectCountryOfResidence(checkString(subjectName.getRDNs(BCStrictStyle.COUNTRY_OF_RESIDENCE)[0].getFirst().getValue().toString()));
+        }
+
+        if (subjectName.getRDNs(BCStrictStyle.E).length > 0) {
+            cdd.setSubjectEmail(checkString(subjectName.getRDNs(BCStrictStyle.E)[0].getFirst().getValue().toString()));
+        }
+
+        if (subjectName.getRDNs(BCStrictStyle.TELEPHONE_NUMBER).length > 0) {
+            cdd.setSubjectTelephoneNumber(checkString(subjectName.getRDNs(BCStrictStyle.TELEPHONE_NUMBER)[0].getFirst().getValue().toString()));
+        }
+
+        if (subjectName.getRDNs(BCStrictStyle.STREET).length > 0) {
+            cdd.setSubjectStreet(checkString(subjectName.getRDNs(BCStrictStyle.STREET)[0].getFirst().getValue().toString()));
+        }
+
+        if (subjectName.getRDNs(BCStrictStyle.POSTAL_CODE).length > 0) {
+            cdd.setSubjectPostalCode(checkString(subjectName.getRDNs(BCStrictStyle.POSTAL_CODE)[0].getFirst().getValue().toString()));
+        }
+
+        if (subjectName.getRDNs(BCStrictStyle.BUSINESS_CATEGORY).length > 0) {
+            cdd.setSubjectBusinessCategory(checkString(subjectName.getRDNs(BCStrictStyle.BUSINESS_CATEGORY)[0].getFirst().getValue().toString()));
+        }
+
+        if (subjectName.getRDNs(BCStrictStyle.GENERATION).length > 0) {
+            cdd.setSubjectGeneration(checkString(subjectName.getRDNs(BCStrictStyle.GENERATION)[0].getFirst().getValue().toString()));
+        }
 
         return cdd;
     }
