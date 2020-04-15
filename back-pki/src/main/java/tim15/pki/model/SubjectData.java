@@ -2,9 +2,10 @@ package tim15.pki.model;
 
 import org.bouncycastle.asn1.x500.X500Name;
 
+import java.io.Serializable;
 import java.security.PublicKey;
 
-public class SubjectData {
+public class SubjectData implements Serializable {
 
     private PublicKey publicKey;
 

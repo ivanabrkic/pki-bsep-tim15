@@ -1,9 +1,10 @@
 package tim15.pki.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-public class Extension {
+public class Extension implements Serializable {
 
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)

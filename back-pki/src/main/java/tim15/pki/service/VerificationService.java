@@ -49,7 +49,7 @@ public class VerificationService {
     }
 
     private boolean verifyActivity(X509Certificate certificate) {
-        boolean isActive = certificateRepository.findOneBySerialNumber(certificate.getSerialNumber().toString()).getIsActive();
+        boolean isActive = certificateRepository.findBySerialNumber(certificate.getSerialNumber().toString()).getIsActive();
 
         boolean isValidDate = checkDate(certificate);
         return isActive && isValidDate;

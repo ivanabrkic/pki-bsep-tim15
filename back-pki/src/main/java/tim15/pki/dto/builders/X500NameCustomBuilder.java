@@ -2,7 +2,10 @@ package tim15.pki.dto.builders;
 
 import tim15.pki.dto.X500NameCustom;
 
+import java.util.Date;
+
 public class X500NameCustomBuilder {
+
     private String commonName;
     private String organization;
     private String organizationalUnit;
@@ -19,7 +22,7 @@ public class X500NameCustomBuilder {
     private String surname;
     private String givenName;
     private String initials;
-    private String dateOfBirth;
+    private Date dateOfBirth;
     private String placeOfBirth;
     private String gender;
     private String countryOfCitizenship;
@@ -73,7 +76,7 @@ public class X500NameCustomBuilder {
         return this;
     }
 
-    public X500NameCustomBuilder setUID(String uid) {
+    public X500NameCustomBuilder setUid(String uid) {
         this.uid = uid;
         return this;
     }
@@ -108,7 +111,7 @@ public class X500NameCustomBuilder {
         return this;
     }
 
-    public X500NameCustomBuilder setDateOfBirth(String dateOfBirth) {
+    public X500NameCustomBuilder setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
         return this;
     }

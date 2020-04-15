@@ -9,6 +9,7 @@ import tim15.pki.dto.CertificateGenDTO;
 import tim15.pki.dto.TextMessage;
 import tim15.pki.model.Certificate;
 import tim15.pki.model.Extension;
+import tim15.pki.model.SystemEntity;
 import tim15.pki.service.CertificateGenService;
 import tim15.pki.service.LoggerService;
 
@@ -43,12 +44,6 @@ public class CertificateGenController {
      */
     @GetMapping(value = "/getCAs", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Certificate>> getCAs() throws Exception{
-        /*
-        loggerService.print("action = getCAs, status = success");
-        List<String> cas = certificateGenService.getAllCAs();
-        return new ResponseEntity<>(cas, HttpStatus.OK);
-        OVAKO SAM NASAO, pa sam samo primenio list string u list certificates
-         */
         loggerService.print("action = getCAs, status = success");
         List<Certificate> cas = certificateGenService.getAllCAs();
         return new ResponseEntity<>(cas, HttpStatus.OK);
@@ -64,6 +59,18 @@ public class CertificateGenController {
         loggerService.print("action = getExtensions, status = success");
         List<Extension> extensions = certificateGenService.getAllExtensions();
         return new ResponseEntity<>(extensions, HttpStatus.OK);
+    }
+
+    /**
+     * GET /server/getUIDs
+     *
+     * @return all extensions
+     */
+    @GetMapping(value = "/getUIDs", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<SystemEntity>> getUIDs() throws Exception{
+        loggerService.print("action = getUIDs, status = success");
+        List<SystemEntity> uids = certificateGenService.getAllUIDs();
+        return new ResponseEntity<>(uids, HttpStatus.OK);
     }
 
 }

@@ -2,9 +2,11 @@ package tim15.pki.dto;
 
 import tim15.pki.dto.builders.CertificateGenDTOBuilder;
 
+import java.io.Serializable;
+import java.util.Date;
 import java.util.Set;
 
-public class CertificateGenDTO {
+public class CertificateGenDTO implements Serializable {
 
     private Long id;
 
@@ -14,34 +16,40 @@ public class CertificateGenDTO {
 
     private String parentSerialNumber;
 
-    private String issuedTo;
-    private String issuedBy;
-
-    private String startDate;
-    private String endDate;
+    private Date startDate;
+    private Date endDate;
 
     private Set<ExtensionDTO> extensions;
 
     private X500NameCustom x500NameCustom;
 
+    private String entityType;
+
     public CertificateGenDTO() {
     }
 
-    public CertificateGenDTO(Long id, String serialNumber, boolean isCA, String parentSerialNumber, String issuedTo, String issuedBy, String startDate, String endDate, Set<ExtensionDTO> extensions, X500NameCustom x500NameCustom) {
+    public CertificateGenDTO(Long id, String serialNumber, boolean isCA, String parentSerialNumber, Date startDate, Date endDate, Set<ExtensionDTO> extensions, X500NameCustom x500NameCustom, String entityType) {
         this.id = id;
         this.serialNumber = serialNumber;
         this.isCA = isCA;
         this.parentSerialNumber = parentSerialNumber;
-        this.issuedTo = issuedTo;
-        this.issuedBy = issuedBy;
         this.startDate = startDate;
         this.endDate = endDate;
         this.extensions = extensions;
         this.x500NameCustom = x500NameCustom;
+        this.entityType = entityType;
     }
 
     public static CertificateGenDTOBuilder builder(){
         return new CertificateGenDTOBuilder();
+    }
+
+    public String getEntityType() {
+        return entityType;
+    }
+
+    public void setEntityType(String entityType) {
+        this.entityType = entityType;
     }
 
     public Long getId() {
@@ -76,35 +84,19 @@ public class CertificateGenDTO {
         this.parentSerialNumber = parentSerialNumber;
     }
 
-    public String getIssuedTo() {
-        return issuedTo;
-    }
-
-    public void setIssuedTo(String issuedTo) {
-        this.issuedTo = issuedTo;
-    }
-
-    public String getIssuedBy() {
-        return issuedBy;
-    }
-
-    public void setIssuedBy(String issuedBy) {
-        this.issuedBy = issuedBy;
-    }
-
-    public String getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
-    public String getEndDate() {
+    public Date getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(String endDate) {
+    public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
 
@@ -131,11 +123,8 @@ public class CertificateGenDTO {
                 ", serialNumber='" + serialNumber + '\'' +
                 ", isCA=" + isCA +
                 ", parentSerialNumber='" + parentSerialNumber + '\'' +
-                ", issuedTo='" + issuedTo + '\'' +
-                ", issuedBy='" + issuedBy + '\'' +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
-                ", extensions=" + extensions +
                 ", x500NameCustom=" + x500NameCustom +
                 '}';
     }

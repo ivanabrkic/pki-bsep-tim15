@@ -92,7 +92,7 @@ public class CertificateReaderService {
             //Iscitava se privatni kljuc vezan za javni kljuc koji se nalazi na sertifikatu sa datim aliasom
             PrivateKey privKey = (PrivateKey) keyStore.getKey(alias, keypass);
 
-            X500Name issuerName = new JcaX509CertificateHolder((X509Certificate) cert).getSubject();
+            X500Name issuerName = new JcaX509CertificateHolder((X509Certificate) cert).getIssuer();
             return new IssuerData(issuerName, privKey);
         } catch (KeyStoreException e) {
             e.printStackTrace();
