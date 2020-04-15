@@ -160,7 +160,7 @@ public class CertificateViewService {
 
     public CertificateDetailsDTO getDetails(String serialNumber) throws CertificateEncodingException {
         CertificateDetailsDTO cdd = new CertificateDetailsDTO();
-        Certificate certificateDatabase = certificateRepository.getOneBySerialNumber(serialNumber);
+        Certificate certificateDatabase = certificateRepository.findOneBySerialNumber(serialNumber);
 
         DateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
 
