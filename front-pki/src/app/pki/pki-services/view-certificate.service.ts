@@ -18,7 +18,7 @@ export class ViewCertificateService {
     let params = new HttpParams();
     params = params.append('role', keyStoreLevel);
     params = params.append('keyStorePassword', keyStorePassword);
-    this.requestUrl = '/server/api/certificates';
+    this.requestUrl = '/server/api/certificate';
     const optionsAndParams = {
       headers: { 'Content-Type': 'application/json' },
       params: params
@@ -29,16 +29,27 @@ export class ViewCertificateService {
 public getDetails(serialNumber: string) {
   let params = new HttpParams();
   params = params.append('serialNumber', serialNumber);
-  this.requestUrl = 'server/api/certificates';
+  this.requestUrl = 'server/api/certificate';
   const optionsAndParams = {
     headers: { 'Content-Type': 'application/json' },
     params: params
 };
-return this.httpClient.get(this.requestUrl + 'certificateDetails', optionsAndParams);
+return this.httpClient.get(this.requestUrl + '/certificateDetails', optionsAndParams);
 }
 
 public revoke(serialNumber: string) {
  // TODO: call revoke controller from backend
+}
+
+public download(serialNumber: string) {
+  let params = new HttpParams();
+  params = params.append('serialNumber', serialNumber);
+  this.requestUrl = 'server/api/certificate';
+  const optionsAndParams = {
+    headers: { 'Content-Type': 'application/json' },
+    params: params
+};
+return this.httpClient.get(this.requestUrl + '/download', optionsAndParams);
 }
 
 
