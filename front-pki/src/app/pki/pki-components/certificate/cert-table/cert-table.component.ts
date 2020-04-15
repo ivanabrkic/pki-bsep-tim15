@@ -5,6 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { ViewCertificateService } from 'src/app/pki/pki-services/view-certificate.service';
 import { CertificateViewDTO } from 'src/app/pki/pki-model-dto/backend-dtos/certificateViewDTO';
+import { CertificateDetailsDTO } from 'src/app/pki/pki-model-dto/backend-dtos/certificateDetailsDTO';
 
 @Component({
   selector: 'app-cert-table',
@@ -16,6 +17,7 @@ export class CertTableComponent implements OnInit {
   keyStoreForm: FormGroup;
   displayedColumns: string[] = ['serialNumber', 'subjectName', 'issuerName', 'validFrom', 'validTo', 'buttons'];
   certificatesDataSource: MatTableDataSource<CertificateViewDTO>;
+  certificateDetails : CertificateDetailsDTO;
   
   constructor(public dialog: MatDialog,
     private formBuilder: FormBuilder,private viewCertificateService: ViewCertificateService) {
@@ -37,6 +39,14 @@ export class CertTableComponent implements OnInit {
         }
       }
     );
+  }
+
+  viewDetails(serialNumber: string) {
+    this.viewCertificateService.getDetails(serialNumber).subscribe(
+      (data: CertificateDetailsDTO) => {
+        this.certificateDetails = data;
+      }
+    )
   }
 
 }
