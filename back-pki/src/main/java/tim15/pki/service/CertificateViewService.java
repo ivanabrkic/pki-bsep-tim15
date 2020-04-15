@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import tim15.pki.dto.CertificateDetailsDTO;
 import tim15.pki.dto.CertificateViewDTO;
 import tim15.pki.model.Certificate;
-import tim15.pki.model.IssuerData;
 import tim15.pki.model.ValidityPeriod;
 import tim15.pki.repository.CertificateRepository;
 
@@ -158,8 +157,6 @@ public class CertificateViewService {
 
     public CertificateDetailsDTO getDetails(String serialNumber) throws CertificateEncodingException {
         CertificateDetailsDTO cdd = new CertificateDetailsDTO();
-
-
         Certificate certificateDatabase = certificateRepository.findBySerialNumber(serialNumber);
         String ca = certificateDatabase.getIsCA() ? "ca" : "end-entity";
         X509Certificate fromKeyStore = getCertificate(ca, "bsep", serialNumber);
