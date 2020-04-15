@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tim15.pki.dto.CertificateGenDTO;
 import tim15.pki.dto.TextMessage;
+import tim15.pki.model.Certificate;
 import tim15.pki.model.Extension;
 import tim15.pki.service.CertificateGenService;
 import tim15.pki.service.LoggerService;
@@ -41,9 +42,15 @@ public class CertificateGenController {
      * @return all CA certificates
      */
     @GetMapping(value = "/getCAs", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<String>> getCAs() throws Exception{
+    public ResponseEntity<List<Certificate>> getCAs() throws Exception{
+        /*
         loggerService.print("action = getCAs, status = success");
         List<String> cas = certificateGenService.getAllCAs();
+        return new ResponseEntity<>(cas, HttpStatus.OK);
+        OVAKO SAM NASAO, pa sam samo primenio list string u list certificates
+         */
+        loggerService.print("action = getCAs, status = success");
+        List<Certificate> cas = certificateGenService.getAllCAs();
         return new ResponseEntity<>(cas, HttpStatus.OK);
     }
 
