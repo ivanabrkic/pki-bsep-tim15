@@ -6,6 +6,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { ViewCertificateService } from 'src/app/pki/pki-services/view-certificate.service';
 import { CertificateViewDTO } from 'src/app/pki/pki-model-dto/backend-dtos/certificateViewDTO';
 import { CertificateDetailsDTO } from 'src/app/pki/pki-model-dto/backend-dtos/certificateDetailsDTO';
+import { CertificateDetailsComponent } from '../certificate-details/certificate-details/certificate-details.component';
+
 
 @Component({
   selector: 'app-cert-table',
@@ -19,8 +21,9 @@ export class CertTableComponent implements OnInit {
   certificatesDataSource: MatTableDataSource<CertificateViewDTO>;
   certificateDetails : CertificateDetailsDTO;
   
-  constructor(public dialog: MatDialog,
-    private formBuilder: FormBuilder,private viewCertificateService: ViewCertificateService) {
+  constructor(private formBuilder: FormBuilder,
+    private viewCertificateService: ViewCertificateService, 
+    public dialog: MatDialog,) {
    }
 
   ngOnInit(): void {
@@ -45,8 +48,16 @@ export class CertTableComponent implements OnInit {
     this.viewCertificateService.getDetails(serialNumber).subscribe(
       (data: CertificateDetailsDTO) => {
         this.certificateDetails = data;
+        this.dialog.open(CertificateDetailsComponent, {data : this.certificateDetails,
+          maxHeight: '90vh'})
       }
     )
   }
+
+  /*
+  viewDetails(cert: CertificateItem) {
+    this.dialog.open(CertificateDetailsComponent, { data: cert });
+  }
+  */
 
 }
