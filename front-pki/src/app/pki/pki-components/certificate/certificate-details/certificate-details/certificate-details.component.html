@@ -1,0 +1,171 @@
+<h1 mat-dialog-title>Certificate Details</h1>
+
+<mat-dialog-content class="dialog-class">
+    <table class="table mb-2">
+        <tbody>
+            <tr>
+                <th class="first">Serial number</th>
+                <td>{{cert.serialNumber}}</td>
+            </tr>
+            <tr>
+                <th class="first">Validity period</th>
+                <td>{{cert.validFrom}} —
+                    {{cert.validTo}}</td>
+            </tr>
+            <tr>
+                <th class="first">Certificate Authority (CA)</th>
+                <td>{{cert.isCa}}</td>
+            </tr>
+            <tr>
+                <th class="first">Signature Algorithm Name</th>
+                <td>{{cert.sigAlgName}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <mat-tab-group dynamicHeight class="mb-2">
+        <mat-tab label="Issuer">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th class="first">Common name</th>
+                        <td>{{cert.issuerCN}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Organization</th>
+                        <td>{{cert.issuerOrganization}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Organizational Unit</th>
+                        <td>{{cert.issuerOrganizationalUnit}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Locality or City</th>
+                        <td>{{cert.issuerLocalityCity}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">State or Province</th>
+                        <td>{{cert.issuerStateProvince}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Country Code</th>
+                        <td>{{cert.issuerCountryCode}}</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </mat-tab>
+
+
+
+        <mat-tab label="Subject">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th class="first">Common name</th>
+                        <td>{{cert.subjectCN}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Organization</th>
+                        <td>{{cert.subjectOrganization}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Organizational Unit</th>
+                        <td>{{cert.subjectOrganizationalUnit}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Locality or City</th>
+                        <td>{{cert.subjectLocalityCity}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">State or Province</th>
+                        <td>{{cert.subjectStateProvince}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Country code</th>
+                        <td>{{cert.subjectCountryCode}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </mat-tab>
+
+
+
+        <mat-tab label="Subject more details">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th class="first">UID</th>
+                        <td>{{cert.subjectUID}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Title</th>
+                        <td>{{cert.subjectTitle}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Name</th>
+                        <td>{{cert.subjectName}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Surname</th>
+                        <td>{{cert.subjectSurname}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Given name</th>
+                        <td>{{cert.subjectGivenName}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Initials</th>
+                        <td>{{cert.subjectInitials}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Date of birth</th>
+                        <td>{{cert.subjectDateOfBirth}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Place of birth</th>
+                        <td>{{cert.subjectPlaceOfBirth}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Gender</th>
+                        <td>{{cert.subjectGender}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Country of citizenship</th>
+                        <td>{{cert.subjectCountryOfCitizenship}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Country of residence</th>
+                        <td>{{cert.subjectCountryOfResidence}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Email</th>
+                        <td>{{cert.subjectEmail}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Telephone number</th>
+                        <td>{{cert.subjectTelephoneNumber}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Street</th>
+                        <td>{{cert.subjectStreet}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Postal code</th>
+                        <td>{{cert.subjectPostalCode}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Business category</th>
+                        <td>{{cert.subjectBusinessCategory}}</td>
+                    </tr>
+                    <tr>
+                        <th class="first">Generation</th>
+                        <td>{{cert.subjectGeneration}}</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </mat-tab>
+
+    </mat-tab-group>
+</mat-dialog-content>

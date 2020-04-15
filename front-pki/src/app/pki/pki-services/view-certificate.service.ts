@@ -34,7 +34,7 @@ public getDetails(serialNumber: string) {
     headers: { 'Content-Type': 'application/json' },
     params: params
 };
-return this.httpClient.get(this.requestUrl + 'certificateDetails', optionsAndParams);
+return this.httpClient.get(this.requestUrl + '/certificateDetails', optionsAndParams);
 }
 
 public revoke(serialNumber: string) {
