@@ -47,14 +47,14 @@ export const ROUTES: RouteInfo[] = [
     path: "/certificates",
     title: "Certificates",
     rtlTitle: "ملف تعريفي للمستخدم",
-    icon: "icon-single-02",
+    icon: "icon-bullet-list-67",
     class: ""
   },
   {
     path: "/create",
     title: "Create certificate",
     rtlTitle: "ملف تعريفي للمستخدم",
-    icon: "icon-single-02",
+    icon: "icon-pencil",
     class: ""
   },
 
