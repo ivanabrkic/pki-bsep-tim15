@@ -32,6 +32,8 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { CertificateDetailsComponent } from './pki/pki-components/certificate/certificate-details/certificate-details/certificate-details.component';
+import { MatTabsModule } from '@angular/material/tabs';
 
 
 @NgModule({
@@ -59,9 +61,10 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     MatAutocompleteModule,
     MatExpansionModule,
     MatCheckboxModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatTabsModule
   ],
-  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, CertFormComponent, CertTableComponent],
+  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, CertFormComponent, CertTableComponent, CertificateDetailsComponent],
   providers: [],
   bootstrap: [AppComponent]
 })

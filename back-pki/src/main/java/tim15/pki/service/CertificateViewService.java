@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import tim15.pki.dto.CertificateDetailsDTO;
 import tim15.pki.dto.CertificateViewDTO;
 import tim15.pki.model.Certificate;
-import tim15.pki.model.IssuerData;
 import tim15.pki.model.ValidityPeriod;
 import tim15.pki.repository.CertificateRepository;
 
@@ -96,7 +95,7 @@ public class CertificateViewService {
     public CertificateViewDTO createCertificateDTO(X509Certificate cert) {
         CertificateViewDTO certDTO = new CertificateViewDTO();
 
-        String serialNumber = cert.getSerialNumber().toString(16);
+        String serialNumber = String.valueOf(cert.getSerialNumber());
 
         Certificate databaseCertificate = certificateRepository.findBySerialNumber(serialNumber);
 
@@ -160,14 +159,16 @@ public class CertificateViewService {
 
     public CertificateDetailsDTO getDetails(String serialNumber) throws CertificateEncodingException {
         CertificateDetailsDTO cdd = new CertificateDetailsDTO();
-        Certificate certificateDatabase = certificateRepository.findOneBySerialNumber(serialNumber);
+        Certificate certificateDatabase = certificateRepository.findBySerialNumber(serialNumber);
+        String ca = certificateDatabase.getIsCA() ? "ca" : "end-entity";
+        X509Certificate fromKeyStore = getCertificate(ca, "bsep", serialNumber);
 
         DateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
 
-        String date1 = dateFormat.format(certificateDatabase.getValidityPeriod().getStartDate());
-        String date2 = dateFormat.format(certificateDatabase.getValidityPeriod().getEndDate());
-        String ca = certificateDatabase.getIsCA() ? "ca" : "end-entity";
-        X509Certificate fromKeyStore = getCertificate(ca, "bsep", serialNumber);
+        String date1 = dateFormat.format(fromKeyStore.getNotBefore());
+        String date2 = dateFormat.format(fromKeyStore.getNotAfter());
+
+
         X500Name issuerName = new JcaX509CertificateHolder((X509Certificate) fromKeyStore).getIssuer();
         X500Name subjectName = new JcaX509CertificateHolder((X509Certificate) fromKeyStore).getSubject();
 

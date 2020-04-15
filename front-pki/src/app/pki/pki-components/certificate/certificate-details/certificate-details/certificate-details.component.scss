@@ -1,0 +1,36 @@
+.dialog-class {
+    width: 580px;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table td,th {    
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+}
+
+.form-full-width {
+    width: 100%;
+}
+
+.first {
+    width: 42%
+}
+
+.mat-list-base .mat-list-item {
+    height: 30px;
+}
+
+th {
+    font-weight: 500;
+}
+
+.cdk-global-overlay-wrapper {
+    display: flex;
+    position: absolute;
+    z-index: 1000;
+    overflow: auto;
+    pointer-events: auto;  
+  }
