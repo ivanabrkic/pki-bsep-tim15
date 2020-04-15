@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tim15.pki.dto.CertificateDetailsDTO;
 import tim15.pki.dto.CertificateViewDTO;
 import tim15.pki.model.Certificate;
 import tim15.pki.service.CertificateReaderService;
@@ -31,5 +32,13 @@ public class CertificateViewController {
 
         return new ResponseEntity<>(certificateViewService.convertCertificatesToDTOList(certificateViewService.getCertificates(role, keyStorePassword)), HttpStatus.OK);
     }
+
+    @GetMapping(value = "/certificateDetails")
+    public ResponseEntity<CertificateDetailsDTO> getCertificateDetails(@RequestParam(value = "serialNumber", required = true) String serialNumber) throws Exception {
+
+        return new ResponseEntity<>(certificateViewService.getDetails(serialNumber), HttpStatus.OK);
+    }
+
+
 
 }
