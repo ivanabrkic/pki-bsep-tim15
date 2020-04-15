@@ -41,5 +41,16 @@ public revoke(serialNumber: string) {
  // TODO: call revoke controller from backend
 }
 
+public download(serialNumber: string) {
+  let params = new HttpParams();
+  params = params.append('serialNumber', serialNumber);
+  this.requestUrl = 'server/api/certificate';
+  const optionsAndParams = {
+    headers: { 'Content-Type': 'application/json' },
+    params: params
+};
+return this.httpClient.get(this.requestUrl + '/download', optionsAndParams);
+}
+
 
 }

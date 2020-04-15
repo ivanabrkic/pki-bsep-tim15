@@ -7,6 +7,7 @@ import { ViewCertificateService } from 'src/app/pki/pki-services/view-certificat
 import { CertificateViewDTO } from 'src/app/pki/pki-model-dto/backend-dtos/certificateViewDTO';
 import { CertificateDetailsDTO } from 'src/app/pki/pki-model-dto/backend-dtos/certificateDetailsDTO';
 import { CertificateDetailsComponent } from '../certificate-details/certificate-details/certificate-details.component';
+import { TextMessage } from 'src/app/pki/pki-model-dto/backend-dtos/text-message';
 
 
 @Component({
@@ -20,6 +21,7 @@ export class CertTableComponent implements OnInit {
   displayedColumns: string[] = ['serialNumber', 'subjectName', 'issuerName', 'validFrom', 'validTo', 'buttons'];
   certificatesDataSource: MatTableDataSource<CertificateViewDTO>;
   certificateDetails : CertificateDetailsDTO;
+  tm: TextMessage;
   
   constructor(private formBuilder: FormBuilder,
     private viewCertificateService: ViewCertificateService, 
@@ -54,10 +56,22 @@ export class CertTableComponent implements OnInit {
     )
   }
 
-  /*
-  viewDetails(cert: CertificateItem) {
-    this.dialog.open(CertificateDetailsComponent, { data: cert });
-  }
-  */
+ download(SerialNumber: string) {
+   this.viewCertificateService.download(SerialNumber).subscribe(
+     (data: TextMessage) => {
+        this.tm = data;
+        let link = document.createElement('a');
+        link.setAttribute('type', 'hidden');
+        link.href = this.tm.text.toString();
+        
+        let array = this.tm.text.toString().split("/");
+        link.download = array[array.length-1];
+        console.log(array[array.length - 1]);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+     }
+   )
+ }
 
 }
