@@ -159,7 +159,6 @@ public class CertificateViewService {
 
     public CertificateDetailsDTO getDetails(String serialNumber) throws CertificateEncodingException {
         CertificateDetailsDTO cdd = new CertificateDetailsDTO();
-
         Certificate certificateDatabase = certificateRepository.findBySerialNumber(serialNumber);
         String ca = certificateDatabase.getIsCA() ? "ca" : "end-entity";
         X509Certificate fromKeyStore = getCertificate(ca, "bsep", serialNumber);

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import tim15.pki.dto.CertificateGenDTO;
 import tim15.pki.dto.CertificateRevokeDTO;
 import tim15.pki.dto.TextMessage;
@@ -30,9 +31,9 @@ public class CertificateRevokeController {
      * @return string which indicates status of operation revoking certificate
      */
     @PostMapping(value = "/revoke", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TextMessage> revokeCertificate(@RequestBody CertificateRevokeDTO certificate) throws Exception {
+    public ResponseEntity<TextMessage> revokeCertificate(@RequestParam(value = "serialNumber", required = true) String serialNumber) throws Exception {
         loggerService.print("Request: \"Revoke certificate\" received");
-        TextMessage textMessage = certificateRevokeService.revokeCertificate(certificate.getSerialNumber(), RevokeReason.CA_COMPROMISE);
+        TextMessage textMessage = certificateRevokeService.revokeCertificate(serialNumber, RevokeReason.CA_COMPROMISE);
         return new ResponseEntity<TextMessage>(textMessage, HttpStatus.OK);
     }
 }

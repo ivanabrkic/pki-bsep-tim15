@@ -6,9 +6,14 @@ import tim15.pki.model.enums.CertificateStatus;
 import tim15.pki.model.enums.RevokeReason;
 import tim15.pki.repository.CertificateRepository;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.cert.CertificateException;
 import java.util.Collection;
 
 public class CertificateRevokeService {
@@ -26,7 +31,7 @@ public class CertificateRevokeService {
 
              Collection<Certificate> issuedCertificates = certificate.getCertificateChildren();
              for (Certificate issuedCertificate : issuedCertificates) {
-                 this.revokeFromKeyStore(issuedCertificate.getSerialNumber());
+                 this.revokeFromKeyStore(issuedCertificate.getSerialNumber(), certificate.getIsCA());
                  switch (issuedCertificate.getRevokeReason()) {
                      case EXPIRED:
                          revokeCertificate(issuedCertificate.getSerialNumber(), RevokeReason.CERTIFICATE_HOLD);
@@ -41,7 +46,7 @@ public class CertificateRevokeService {
              }
 
              certificateRepository.save(certificate);
-             this.revokeFromKeyStore(certificate.getSerialNumber());
+             this.revokeFromKeyStore(certificate.getSerialNumber(), certificate.getIsCA());
              loggerService.print("Certificate " + serialNumber + " successfully revoked.");
              return new TextMessage("Certificate " + serialNumber + " successfully revoked.");
          }
@@ -51,15 +56,29 @@ public class CertificateRevokeService {
          }
         }
 
-        private void revokeFromKeyStore(String serialNumber) {
+        private void revokeFromKeyStore(String serialNumber, Boolean isCA) {
             String alias = null;
+            char [] password = {'b','s','e','p'};
             try {
                 KeyStore keyStore = KeyStore.getInstance("JKS", "SUN");
+                if(isCA) {
+                    keyStore.load(new FileInputStream("./keystore/keystoreCA.jks"), password);
+                } else {
+                    keyStore.load(new FileInputStream("./keystore/keystoreCA.jks"), password);
+                }
                 keyStore.deleteEntry(serialNumber);
             } catch (KeyStoreException e) {
                 e.printStackTrace();
             } catch (NoSuchProviderException e) {
                 loggerService.print(e.getMessage());
+            } catch (CertificateException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-    }
+        }
 }

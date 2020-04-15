@@ -239,7 +239,7 @@ public class CertificateGenService {
     }
 
     private void saveKeyStore(List<Object> certificateKeySerialIsCA, char[] password, CertificateGenDTO certificateGenDTO, String issuerCommonName){
-        try {
+                try {
 //            loggerService.print("..................................................................................");
 //            loggerService.print("Checking saveKeyStore() data");
 //            loggerService.print(certificateKeySerialIsCA.get(0).toString());
