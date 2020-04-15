@@ -1,5 +1,6 @@
 package tim15.pki.service;
 
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStrictStyle;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
@@ -11,10 +12,7 @@ import tim15.pki.model.Certificate;
 import tim15.pki.model.ValidityPeriod;
 import tim15.pki.repository.CertificateRepository;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -267,5 +265,22 @@ public class CertificateViewService {
             stringToCheck = "";
         }
         return stringToCheck;
+    }
+
+    public String download(String serialNumber) throws IOException, CertificateEncodingException {
+        Certificate certificateDatabase = certificateRepository.findBySerialNumber(serialNumber);
+        String ca = certificateDatabase.getIsCA() ? "ca" : "end-entity";
+        java.security.cert.Certificate fromKeyStore = (java.security.cert.Certificate) getCertificate(ca, "bsep", serialNumber);
+
+        String Path = "..//front-pki/src/assets/certificates/";
+        String file = Path + ca + "_" + serialNumber + ".cer";
+        String fileFrontend = "assets/certificates/" + ca + "_" + serialNumber + ".cer";
+        FileOutputStream os = new FileOutputStream(file);
+        os.write("-----BEGIN CERTIFICATE-----\n".getBytes("US-ASCII"));
+        os.write(Base64.encodeBase64(fromKeyStore.getEncoded(), true));
+        os.write("-----END CERTIFICATE-----\n".getBytes("US-ASCII"));
+        os.close();
+
+        return fileFrontend;
     }
 }
