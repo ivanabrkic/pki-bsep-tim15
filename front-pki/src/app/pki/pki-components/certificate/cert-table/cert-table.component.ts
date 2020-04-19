@@ -8,6 +8,7 @@ import { CertificateViewDTO } from 'src/app/pki/pki-model-dto/backend-dtos/certi
 import { CertificateDetailsDTO } from 'src/app/pki/pki-model-dto/backend-dtos/certificateDetailsDTO';
 import { CertificateDetailsComponent } from '../certificate-details/certificate-details/certificate-details.component';
 import { TextMessage } from 'src/app/pki/pki-model-dto/backend-dtos/text-message';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Component({
@@ -25,7 +26,8 @@ export class CertTableComponent implements OnInit {
   
   constructor(private formBuilder: FormBuilder,
     private viewCertificateService: ViewCertificateService, 
-    public dialog: MatDialog,) {
+    public dialog: MatDialog,
+    private _snackBar: MatSnackBar) {
    }
 
   ngOnInit(): void {
@@ -70,6 +72,16 @@ export class CertTableComponent implements OnInit {
         document.body.appendChild(link);
         link.click();
         link.remove();
+     }
+   )
+ }
+
+ revoke(SerialNumber: string) {
+   this.viewCertificateService.revoke(SerialNumber).subscribe(
+     (data: TextMessage) => {
+      this._snackBar.open(data.text.toString(), "", {
+        duration: 2000,
+      });
      }
    )
  }
