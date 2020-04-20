@@ -21,7 +21,7 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
     void removeBySerialNumber(String serialNumber);
 
-    List<Certificate> findByIsCAAndIsActiveAndCertificateStatus(boolean ca, boolean active, CertificateStatus status);
+    List<Certificate> findByIsCAAndCertificateStatus(boolean ca, CertificateStatus status);
 
     @Query("select c from Certificate c where c.revokeReason is not null")
     List<Certificate> findRevokedCertificates();

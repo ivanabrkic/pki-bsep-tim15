@@ -1,5 +1,6 @@
 package tim15.pki.service;
 
+import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tim15.pki.repository.CertificateRepository;
@@ -8,6 +9,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SignatureException;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
@@ -18,15 +20,30 @@ public class VerificationService {
     @Autowired
     private CertificateRepository certificateRepository;
 
-    private boolean checkDate(X509Certificate certificate) {
-        Date startDate = certificate.getNotBefore();
-        Date endDate = certificate.getNotAfter();
-        Date today = new Date();
+    public boolean expired(X509Certificate certificate) {
 
-        return today.after(startDate) && today.before(endDate);
+        LocalDate endDate = new LocalDate(certificate.getNotAfter());
+        LocalDate today = new LocalDate(new Date());
+
+        return today.compareTo(endDate) > 0;
     }
 
-    private boolean verifySignature(X509Certificate certificateToVerify, X509Certificate parentCertificate) {
+    public boolean notActive(X509Certificate certificate) {
+        LocalDate startDate = new LocalDate(certificate.getNotBefore());
+        LocalDate today = new LocalDate(new Date());
+
+        return today.compareTo(startDate) < 0;
+    }
+
+    public boolean checkDate(X509Certificate certificate) {
+        LocalDate startDate = new LocalDate(certificate.getNotBefore());
+        LocalDate endDate = new LocalDate(certificate.getNotAfter());
+        LocalDate today = new LocalDate(new Date());
+
+        return today.compareTo(startDate) >= 0 && today.compareTo(endDate) <= 0;
+    }
+
+    public boolean verifySignature(Certificate certificateToVerify, Certificate parentCertificate) {
         try {
             certificateToVerify.verify(parentCertificate.getPublicKey());
             return true;
@@ -48,22 +65,22 @@ public class VerificationService {
         }
     }
 
-    private boolean verifyActivity(X509Certificate certificate) {
+    public boolean verifyActivity(X509Certificate certificate) {
         boolean isActive = certificateRepository.findBySerialNumber(certificate.getSerialNumber().toString()).getIsActive();
 
-        boolean isValidDate = checkDate(certificate);
-        return isActive && isValidDate;
+        return isActive;
     }
 
-    private boolean verifyChain(X509Certificate[] certificateList) {
+    public boolean verifyChain(Certificate[] certificateList) {
             boolean valid = true;
 
             for (int i = 0; i < certificateList.length - 1; i++) {
-                X509Certificate cer = certificateList[i];
-                if (!verifyActivity(cer) || !verifySignature(cer, certificateList[i + 1])) {
+                Certificate cer = certificateList[i];
+                if (!verifySignature(cer, certificateList[i + 1])) {
                     valid = false;
                 }
             }
         return valid;
     }
+
 }

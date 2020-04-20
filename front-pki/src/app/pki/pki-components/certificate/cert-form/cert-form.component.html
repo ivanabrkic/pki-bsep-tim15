@@ -29,7 +29,7 @@
             <mat-step>
               <ng-template matStepLabel><span style="color: white;">Issuer Info</span></ng-template>
               <div class="row">
-                <div class=" col-md-6 pr-md-1">
+                <div class=" col-md-3 pr-md-1">
                   <mat-form-field *ngIf="validCAs != undefined && selectedCA != undefined">
                     <div class="form-group">
                       <label>Choose CA</label>
@@ -41,11 +41,11 @@
                     </div>
                   </mat-form-field>
                 </div>
+                <div class=" col-md-6 pr-md-1">
+                  <button mat-button style="margin-top: 40px" class="btn btn-fill btn-danger" (click)="viewDetails(selectedCA.serialNumber)">Details</button>
+                </div>
               </div>
               <div class=" row">
-                <div class=" col-md-12 pr-md-1">
-                  DETAILS ...
-                </div>
               </div>
               <br>
               <div>
@@ -146,7 +146,7 @@
                   margin: 15px 0;" aria-label="Select an option">
                       <mat-radio-button style="margin: 5px;" value="SERVICE">Service
                       </mat-radio-button>
-                      <mat-radio-button style="margin: 5px;" value="SUBSYSTEM">Subsystem</mat-radio-button>
+                      <mat-radio-button style="margin: 5px;" value="ORGANIZATION">Company/organization</mat-radio-button>
                       <mat-radio-button style="margin: 5px;" value="USER">User</mat-radio-button>
                     </mat-radio-group>
                   </div>
@@ -162,7 +162,7 @@
                         </mat-panel-description>
                       </mat-expansion-panel-header>
                       <!-- DATA -->
-                      <div class=" row">
+                      <div *ngIf="userType != 'SERVICE'" class=" row">
                         <div class=" col-md-6 px-md-1">
                           <label> User identifier (UID) </label>
                           <mat-radio-group #u (selectionChange)="onChangeUID(u.value)" [ngModelOptions]="{standalone : true}" [(ngModel)]="uidInfo" style="display: flex;
@@ -186,7 +186,7 @@
                           </mat-form-field>
                         </div>
                       </div>
-                      <div class=" row">
+                      <div *ngIf="userType != 'SERVICE'" class=" row">
                         <div class=" col-md-6 px-md-1">
                           <div class="form-group">
                             <label>Street Address </label>
@@ -201,7 +201,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class=" row">
+                      <div *ngIf="userType != 'USER'" class=" row">
                         <div class=" col-md-6 pl-md-1">
                           <div class="form-group">
                             <label> Business Category </label>
@@ -216,7 +216,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class=" row">
+                      <div *ngIf="userType == 'USER'" class=" row">
                         <div class=" col-md-4 px-md-1">
                           <div class="form-group">
                             <label>Title
@@ -237,7 +237,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class=" row">
+                      <div *ngIf="userType == 'USER'" class=" row">
                         <div class=" col-md-4 px-md-1">
                           <div class="form-group">
                             <label>Given name
@@ -258,7 +258,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class=" row">
+                      <div *ngIf="userType == 'USER'" class=" row">
                         <div class=" col-md-4 px-md-1">
                           <div class="form-group">
                             <label>Date of birth
@@ -289,7 +289,7 @@
                           </mat-radio-group>
                         </div>
                       </div>
-                      <div class=" row">
+                      <div *ngIf="userType == 'USER'" class=" row">
                         <div class=" col-md-12 px-md-1">
                           <mat-form-field style="margin-top: 0px; margin-bottom: 0px; width: 100%;"
                             *ngIf="filteredCountriesCitizenship != undefined">
@@ -308,7 +308,7 @@
                           </mat-form-field>
                         </div>
                       </div>
-                      <div class=" row">
+                      <div *ngIf="userType == 'USER'" class=" row">
                         <div class=" col-md-12 px-md-1">
                           <mat-form-field style="margin-top: 0px; margin-bottom: 0px; width: 100%;"
                             *ngIf="filteredCountriesResidence != undefined">
@@ -327,7 +327,7 @@
                           </mat-form-field>
                         </div>
                       </div>
-                      <div class=" row">
+                      <div *ngIf="userType == 'USER'" class=" row">
                         <div class=" col-md-6 px-md-1">
                           <div class="form-group">
                             <label>Telephone number
@@ -350,97 +350,9 @@
                 <div>
                   <button (click) = "backIssuerInfo()" class=" btn btn-fill btn-danger" mat-button>Back</button>
                   <span style="width: 10px; color: transparent;">M</span>
-                  <button type="submit" class=" btn btn-fill btn-danger" mat-button>Next</button>
+                  <button (click)="openValidityDate()" type="submit" class=" btn btn-fill btn-danger" mat-button>Next</button>
                 </div>
               </form>
-            </mat-step>
-            <mat-step>
-              <ng-template matStepLabel><span style="color: white;">Extensions</span></ng-template>
-              <div class="row">
-                <div class=" col-md-6 pr-md-1">
-                  <mat-form-field *ngIf="extensions != undefined && selectedExtension != undefined">
-                    <div class="form-group">
-                      <label>Choose extension</label>
-                      <mat-select style="width: 100%;" [(value)]="selectedExtension.name">
-                        <mat-option *ngFor="let extension of extensions" [value]="extension.name">
-                          {{extension.name}}
-                        </mat-option>
-                      </mat-select>
-                    </div>
-                  </mat-form-field>
-                </div>
-              </div>
-              <div class="row">
-                <div class=" col-md-6 pl-md-1">
-                  <div class=" form-group">
-                    <label> Is critical </label>
-                    <div class=" form-check">
-                      <label class=" form-check-label">
-                        <input class=" form-check-input" type="checkbox" value="" />
-                        <span class=" form-check-sign">
-                          <span class=" check"> </span>
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div style="margin-top: 30px;" class="row">
-                <div class=" col-md-12 pl-md-1">
-                  <div class=" form-group">
-                    <label> Value </label>
-                    <textarea class=" form-control" placeholder="" type="text">
-                      </textarea>
-                  </div>
-                </div>
-              </div>
-              <div style="margin-top: 30px;" class="row">
-                <div class=" col-md-6 pl-md-1">
-                  <button style="margin-top: 25px;" class=" btn btn-fill btn-danger" mat-button>Add extension</button>
-                </div>
-              </div>
-              <div style="margin-top: 30px;" class="row">
-
-                <table style="width: 100%;" mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
-                  <!--- Note that these columns can be defined in any order.
-                      The actual rendered columns are set as a property on the row definition" -->
-
-                  <!-- Position Column -->
-                  <ng-container matColumnDef="oid">
-                    <th mat-header-cell *matHeaderCellDef> OID </th>
-                    <td mat-cell *matCellDef="let element"> {{element.oid}} </td>
-                  </ng-container>
-
-                  <!-- Name Column -->
-                  <ng-container matColumnDef="name">
-                    <th mat-header-cell *matHeaderCellDef> Name </th>
-                    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-                  </ng-container>
-
-                  <!-- Weight Column -->
-                  <ng-container matColumnDef="value">
-                    <th mat-header-cell *matHeaderCellDef> Value </th>
-                    <td mat-cell *matCellDef="let element"> {{element.value}} </td>
-                  </ng-container>
-
-                  <!-- Symbol Column -->
-                  <ng-container matColumnDef="isCritical">
-                    <th mat-header-cell *matHeaderCellDef> Is critical </th>
-                    <td mat-cell *matCellDef="let element"> {{element.isCritical}} </td>
-                  </ng-container>
-
-                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                </table>
-              </div>
-              <br>
-              <div>
-                <button class=" btn btn-fill btn-danger" mat-button matStepperPrevious>Back</button>
-                <span style="width: 10px; color: transparent;">M</span>
-                <button (click)="openValidityDate()" class=" btn btn-fill btn-danger" mat-button
-                  matStepperNext>Next</button>
-              </div>
             </mat-step>
             <mat-step>
               <ng-template matStepLabel><span style="color: white;">Validity Date</span></ng-template>
