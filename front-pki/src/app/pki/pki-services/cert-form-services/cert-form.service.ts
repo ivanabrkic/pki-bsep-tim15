@@ -12,11 +12,10 @@ const httpOptions = {headers: new HttpHeaders({'Content-Type' : 'application/jso
   providedIn: 'root'
 })
 export class CertFormService {
-
   constructor(private http: HttpClient) { }
 
   public createCertificate(certificate: CertificateGenDTO) {
-    return this.http.post<TextMessage>('/server/certificate_gen/create' , JSON.stringify(certificate), httpOptions);
+    return  this.http.post<TextMessage>('/server/certificate_gen/create' , JSON.stringify(certificate), httpOptions);
   }
 
   public getAllCAs() {
