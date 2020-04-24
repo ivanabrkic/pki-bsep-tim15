@@ -10,6 +10,7 @@ import tim15.pki.dto.CertificateDetailsDTO;
 import tim15.pki.dto.CertificateViewDTO;
 import tim15.pki.model.Certificate;
 import tim15.pki.model.ValidityPeriod;
+import tim15.pki.model.enums.RevokeReason;
 import tim15.pki.repository.CertificateRepository;
 
 import java.io.*;
@@ -99,6 +100,52 @@ public class CertificateViewService {
 
         certDTO.setIssuerName(databaseCertificate.getIssuedBy());
         certDTO.setSubjectName(databaseCertificate.getIssuedTo());
+        /* moze ovako
+        switch (databaseCertificate.getRevokeReason()) {
+            case CA_COMPROMISE:
+                certDTO.setRevokeReason("CA COMPROMISED");
+                break;
+            case CERTIFICATE_HOLD:
+                certDTO.setRevokeReason("ON HOLD");
+                break;
+            case EXPIRED:
+                certDTO.setRevokeReason("EXPIRED");
+                break;
+            case KEY_COMPROMISE:
+                certDTO.setRevokeReason("KEY COMPROMISED");
+                break;
+            case NOT_REVOKED:
+                certDTO.setRevokeReason("ACTIVE");
+                break;
+            case UNKNOWN:
+                certDTO.setRevokeReason("REVOKED");
+                break;
+            case AA_COMPROMISE:
+                certDTO.setRevokeReason("AA COMPROMISED");
+                break;
+            case AFFILIATION_CHANGED:
+                certDTO.setRevokeReason("AFFILATION CHANGED");
+                break;
+            case CESSATION_OF_OPERATION:
+                certDTO.setRevokeReason("CESSATION OF OPERATION");
+                break;
+            case PRIVILEGE_WITHDRAWN:
+                certDTO.setRevokeReason("PRIVILEGE WITHDRAWN");
+                break;
+            case SUPERSEDED:
+                certDTO.setRevokeReason("SUPRESEDED");
+                break;
+            default:
+                certDTO.setRevokeReason("VALJAVALJDA");
+        }*/
+
+        switch (databaseCertificate.getRevokeReason()) {
+            case NOT_REVOKED:
+                certDTO.setRevokeReason("ACTIVE");
+                break;
+            default:
+                certDTO.setRevokeReason("REVOKED");
+        }
 
         ValidityPeriod vp = new ValidityPeriod(cert.getNotBefore(),cert.getNotAfter());
 
@@ -158,6 +205,7 @@ public class CertificateViewService {
     public CertificateDetailsDTO getDetails(String serialNumber) throws CertificateEncodingException {
         CertificateDetailsDTO cdd = new CertificateDetailsDTO();
         Certificate certificateDatabase = certificateRepository.findBySerialNumber(serialNumber);
+
         String ca = certificateDatabase.getIsCA() ? "ca" : "end-entity";
         X509Certificate fromKeyStore = getCertificate(ca, "bsep", serialNumber);
 

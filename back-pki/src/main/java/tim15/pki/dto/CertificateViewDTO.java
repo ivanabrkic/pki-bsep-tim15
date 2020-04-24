@@ -18,15 +18,18 @@ public class CertificateViewDTO {
 
     private String serialNumber;
 
+    private String revokeReason;
+
     public CertificateViewDTO() {
     }
 
-    public CertificateViewDTO(String subjectName, String issuerName, String validFrom, String validTo, String serialNumber) {
+    public CertificateViewDTO(String subjectName, String issuerName, String validFrom, String validTo, String serialNumber, String revokeReason) {
         this.subjectName = subjectName;
         this.issuerName = issuerName;
         this.validFrom = validFrom;
         this.validTo = validTo;
         this.serialNumber = serialNumber;
+        this.revokeReason = revokeReason;
     }
 
     public String getSubjectName() {
@@ -67,5 +70,13 @@ public class CertificateViewDTO {
 
     public void setValidTo(String validTo) {
         this.validTo = validTo;
+    }
+
+    public String getRevokeReason() {
+        return revokeReason;
+    }
+
+    public void setRevokeReason(String revokeReason) {
+        this.revokeReason = revokeReason;
     }
 }
