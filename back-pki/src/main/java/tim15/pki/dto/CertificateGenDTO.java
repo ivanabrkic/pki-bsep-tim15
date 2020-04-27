@@ -4,7 +4,6 @@ import tim15.pki.dto.builders.CertificateGenDTOBuilder;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
 
 public class CertificateGenDTO implements Serializable {
 
@@ -19,8 +18,6 @@ public class CertificateGenDTO implements Serializable {
     private Date startDate;
     private Date endDate;
 
-    private Set<ExtensionDTO> extensions;
-
     private X500NameCustom x500NameCustom;
 
     private String entityType;
@@ -28,14 +25,13 @@ public class CertificateGenDTO implements Serializable {
     public CertificateGenDTO() {
     }
 
-    public CertificateGenDTO(Long id, String serialNumber, boolean isCA, String parentSerialNumber, Date startDate, Date endDate, Set<ExtensionDTO> extensions, X500NameCustom x500NameCustom, String entityType) {
+    public CertificateGenDTO(Long id, String serialNumber, boolean isCA, String parentSerialNumber, Date startDate, Date endDate, X500NameCustom x500NameCustom, String entityType) {
         this.id = id;
         this.serialNumber = serialNumber;
         this.isCA = isCA;
         this.parentSerialNumber = parentSerialNumber;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.extensions = extensions;
         this.x500NameCustom = x500NameCustom;
         this.entityType = entityType;
     }
@@ -98,14 +94,6 @@ public class CertificateGenDTO implements Serializable {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
-    }
-
-    public Set<ExtensionDTO> getExtensions() {
-        return extensions;
-    }
-
-    public void setExtensions(Set<ExtensionDTO> extensions) {
-        this.extensions = extensions;
     }
 
     public X500NameCustom getX500NameCustom() {

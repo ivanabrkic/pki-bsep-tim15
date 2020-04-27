@@ -19,14 +19,15 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class CertTableComponent implements OnInit {
 
   keyStoreForm: FormGroup;
-  displayedColumns: string[] = ['serialNumber', 'subjectName', 'issuerName', 'validFrom', 'validTo', 'buttons'];
+  displayedColumns: string[] = ['serialNumber', 'subjectName', 'issuerName', 'validFrom', 'validTo', 'status','buttons'];
   certificatesDataSource: MatTableDataSource<CertificateViewDTO>;
   certificateDetails : CertificateDetailsDTO;
   tm: TextMessage;
   arrayBuffer: ArrayBuffer;
   
+
   constructor(private formBuilder: FormBuilder,
-    private viewCertificateService: ViewCertificateService, 
+    private viewCertificateService: ViewCertificateService,
     public dialog: MatDialog,
     private _snackBar: MatSnackBar) {
    }
