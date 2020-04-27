@@ -23,6 +23,7 @@ export class CertTableComponent implements OnInit {
   certificatesDataSource: MatTableDataSource<CertificateViewDTO>;
   certificateDetails : CertificateDetailsDTO;
   tm: TextMessage;
+  arrayBuffer: ArrayBuffer;
   
   constructor(private formBuilder: FormBuilder,
     private viewCertificateService: ViewCertificateService, 
@@ -42,7 +43,9 @@ export class CertTableComponent implements OnInit {
       (data: CertificateViewDTO[]) => {
         this.certificatesDataSource = new MatTableDataSource(data)
         if (data.length == 0) {
-          alert('Error, no certificates found!');
+          this._snackBar.open("Error, no certificates found!", "", {
+            duration: 2000,
+          });
         }
       }
     );
@@ -60,18 +63,30 @@ export class CertTableComponent implements OnInit {
 
  download(SerialNumber: string) {
    this.viewCertificateService.download(SerialNumber).subscribe(
-     (data: TextMessage) => {
-        this.tm = data;
-        let link = document.createElement('a');
-        link.setAttribute('type', 'hidden');
-        link.href = this.tm.text.toString();
+    (data: TextMessage) => {
+      this._snackBar.open("Download will start soon!", "", {
+        duration: 2000,
+      });
+      this.tm = data;
+        //let link = document.createElement('a');
+        //link.setAttribute('type', 'hidden');
+        //link.href = this.tm.text.toString();
+
+        //console.log(this.tm.text.toString());
+        //let array = this.tm.text.toString().split("/");
         
-        let array = this.tm.text.toString().split("/");
-        link.download = array[array.length-1];
-        console.log(array[array.length - 1]);
-        document.body.appendChild(link);
+        //link.download = (array[array.length-1]).toString();
+        //console.log(array[array.length - 1]);
+        //document.body.appendChild(link);
+        //link.click();
+        //link.remove();
+        const myBlob = new Blob([this.function_base64ToArrayBuffer(this.tm.arrayBuffer)], { type: 'application/octet-stream' });
+        const blobUrl = window.URL.createObjectURL(myBlob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = 'certificate.cer';
         link.click();
-        link.remove();
+
      }
    )
  }
@@ -85,5 +100,15 @@ export class CertTableComponent implements OnInit {
      }
    )
  }
+
+ function_base64ToArrayBuffer(base64:string) {
+  var binary_string = window.atob(base64);
+  var len = binary_string.length;
+  var bytes = new Uint8Array(len);
+  for (var i = 0; i < len; i++) {
+      bytes[i] = binary_string.charCodeAt(i);
+  }
+  return bytes.buffer;
+}
 
 }
