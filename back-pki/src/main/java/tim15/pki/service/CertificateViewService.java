@@ -24,6 +24,7 @@ import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -315,20 +316,28 @@ public class CertificateViewService {
         return stringToCheck;
     }
 
-    public String download(String serialNumber) throws IOException, CertificateEncodingException {
+    public byte[] download(String serialNumber) throws IOException, CertificateEncodingException, InterruptedException {
+        System.out.println("Sending donwload link...");
         Certificate certificateDatabase = certificateRepository.findBySerialNumber(serialNumber);
         String ca = certificateDatabase.getIsCA() ? "ca" : "end-entity";
         java.security.cert.Certificate fromKeyStore = (java.security.cert.Certificate) getCertificate(ca, "bsep", serialNumber);
 
-        String Path = "..//front-pki/src/assets/certificates/";
+        //String Path = "..//front-pki/src/assets/certificates/";
+        String Path = "./src/main/resources/static/";
         String file = Path + ca + "_" + serialNumber + ".cer";
-        String fileFrontend = "assets/certificates/" + ca + "_" + serialNumber + ".cer";
-        FileOutputStream os = new FileOutputStream(file);
+        String fileFrontend = "localhost:8080/" + ca + "_" + serialNumber + ".cer";
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+
         os.write("-----BEGIN CERTIFICATE-----\n".getBytes("US-ASCII"));
         os.write(Base64.encodeBase64(fromKeyStore.getEncoded(), true));
         os.write("-----END CERTIFICATE-----\n".getBytes("US-ASCII"));
+
+        byte output[] = os.toByteArray();
+
+        System.out.println(output);
         os.close();
 
-        return fileFrontend;
+        return output;
     }
 }
