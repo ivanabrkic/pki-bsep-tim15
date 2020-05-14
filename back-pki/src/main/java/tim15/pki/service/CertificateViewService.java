@@ -10,7 +10,6 @@ import tim15.pki.dto.CertificateDetailsDTO;
 import tim15.pki.dto.CertificateViewDTO;
 import tim15.pki.model.Certificate;
 import tim15.pki.model.ValidityPeriod;
-import tim15.pki.model.enums.RevokeReason;
 import tim15.pki.repository.CertificateRepository;
 
 import java.io.*;
@@ -24,7 +23,6 @@ import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -101,44 +99,6 @@ public class CertificateViewService {
 
         certDTO.setIssuerName(databaseCertificate.getIssuedBy());
         certDTO.setSubjectName(databaseCertificate.getIssuedTo());
-        /* moze ovako
-        switch (databaseCertificate.getRevokeReason()) {
-            case CA_COMPROMISE:
-                certDTO.setRevokeReason("CA COMPROMISED");
-                break;
-            case CERTIFICATE_HOLD:
-                certDTO.setRevokeReason("ON HOLD");
-                break;
-            case EXPIRED:
-                certDTO.setRevokeReason("EXPIRED");
-                break;
-            case KEY_COMPROMISE:
-                certDTO.setRevokeReason("KEY COMPROMISED");
-                break;
-            case NOT_REVOKED:
-                certDTO.setRevokeReason("ACTIVE");
-                break;
-            case UNKNOWN:
-                certDTO.setRevokeReason("REVOKED");
-                break;
-            case AA_COMPROMISE:
-                certDTO.setRevokeReason("AA COMPROMISED");
-                break;
-            case AFFILIATION_CHANGED:
-                certDTO.setRevokeReason("AFFILATION CHANGED");
-                break;
-            case CESSATION_OF_OPERATION:
-                certDTO.setRevokeReason("CESSATION OF OPERATION");
-                break;
-            case PRIVILEGE_WITHDRAWN:
-                certDTO.setRevokeReason("PRIVILEGE WITHDRAWN");
-                break;
-            case SUPERSEDED:
-                certDTO.setRevokeReason("SUPRESEDED");
-                break;
-            default:
-                certDTO.setRevokeReason("VALJAVALJDA");
-        }*/
 
         switch (databaseCertificate.getRevokeReason()) {
             case NOT_REVOKED:
@@ -214,7 +174,6 @@ public class CertificateViewService {
 
         String date1 = dateFormat.format(fromKeyStore.getNotBefore());
         String date2 = dateFormat.format(fromKeyStore.getNotAfter());
-
 
         X500Name issuerName = new JcaX509CertificateHolder((X509Certificate) fromKeyStore).getIssuer();
         X500Name subjectName = new JcaX509CertificateHolder((X509Certificate) fromKeyStore).getSubject();

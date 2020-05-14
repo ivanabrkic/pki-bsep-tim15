@@ -1,6 +1,5 @@
 package tim15.pki.service;
 
-import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tim15.pki.dto.TextMessage;
@@ -19,7 +18,6 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.DoubleToIntFunction;
 
 @Service
 public class CertificateRevokeService {
@@ -34,9 +32,7 @@ public class CertificateRevokeService {
 
 
      public TextMessage revokeCertificate(String serialNumber, RevokeReason revokeReason) {
-         System.out.println("USAO U REVOKE CERTIFICATE");
          Certificate certificate = certificateRepository.findBySerialNumber(serialNumber);
-         System.out.println("PRONASAO SERTIFIKAT SERIJSKI BROJ " + certificate.getSerialNumber());
          if(certificate.getCertificateStatus() != CertificateStatus.REVOKED) {
              certificate.setRevokeReason(revokeReason);
              certificate.setIsActive(false);
@@ -44,11 +40,12 @@ public class CertificateRevokeService {
 
              Collection<Certificate> issuedCertificates = certificate.getCertificateChildren();
              for (Certificate issuedCertificate : issuedCertificates) {
-                 switch (issuedCertificate.getRevokeReason()) {
+                 switch (revokeReason) {
                      case EXPIRED:
-                         revokeCertificate(issuedCertificate.getSerialNumber(), RevokeReason.CERTIFICATE_HOLD);
+                         revokeCertificate(issuedCertificate.getSerialNumber(), RevokeReason.EXPIRED);
                          break;
                      case KEY_COMPROMISE:
+                     case CA_COMPROMISE:
                          revokeCertificate(issuedCertificate.getSerialNumber(), RevokeReason.CA_COMPROMISE);
                          break;
                      default:
@@ -59,14 +56,13 @@ public class CertificateRevokeService {
 
              certificateRepository.save(certificate);
 
-
              ObjectOutputStream outputStream = null;
              File file = null;
 
              try {
                 file = new File("./revokedCerts/revokedCerts.rev");
                 X509Certificate certificate1 = null;
-                 List<X509Certificate> certificateList = new ArrayList<>();
+                List<X509Certificate> certificateList = new ArrayList<>();
 
                 if(certificate.getIsCA()) {
                     certificate1 = certificateViewService.getCertificate("ca", "bsep", certificate.getSerialNumber());
@@ -80,7 +76,7 @@ public class CertificateRevokeService {
                     objectInputStream.close();
                 }
 
-                 certificateList.add(certificate1);
+                certificateList.add(certificate1);
 
                 ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(file));
                 objectOutputStream.writeObject(certificateList);

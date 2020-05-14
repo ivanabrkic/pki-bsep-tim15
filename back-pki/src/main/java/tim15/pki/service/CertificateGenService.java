@@ -67,48 +67,19 @@ public class CertificateGenService {
     @Autowired
     private CertificateReaderService certificateReaderService;
 
+    @Autowired
+    private AutomatedRevokeService automatedRevokeService;
+
     public List<tim15.pki.model.Certificate> getAllCAs() throws ParseException {
         List<tim15.pki.model.Certificate> certificates = certificateRepository.findByIsCAAndCertificateStatus(true, CertificateStatus.VALID);
 
-        // POZIVANJE SERVISA ZA PROVERU VALIDNOSTI
-        List<tim15.pki.model.Certificate> newList = new ArrayList<>();
-
         for(tim15.pki.model.Certificate c : certificates){
-            // CHECK VALIDITY - ako nije validan REVOKE!
             Certificate cert = certificateReaderService.readCertificate("./keystore/keystoreCA.jks", "bsep", c.getSerialNumber());
             Certificate[] chain = certificateReaderService.readChain("./keystore/keystoreCA.jks", "bsep", c.getSerialNumber());
-            loggerService.print("Checking certificate validity!");
-            if (!verificationService.checkDate((X509Certificate) cert)){
-                if(verificationService.expired((X509Certificate) cert)){
-                    c.setRevokeReason(RevokeReason.EXPIRED);
-                    // REVOKE SERVICE MORA DA SE POZOVE DA SE IZBRISE IZ KEYSTORA
-                }
-                else{
-                    // ovo ne bi trebalo da se desi zato sto se pri kreiranju setuje aktivnost na false ako je datum
-                    // u buducnosti
-                    c.setIsActive(false);
-                }
-                certificateRepository.save(c);
-                loggerService.print("Invalid parent certificate in funtion generateCertificate() - Expired");
-            }
-            else if (!verificationService.verifyChain(chain)){
-                /// POZVATI REVOKE SERVICE DA SE IZBRISE IZ KEYSTORA
-                c.setRevokeReason(RevokeReason.CA_COMPROMISE);
-                certificateRepository.save(c);
-                loggerService.print("Invalid parent certificate in funtion generateCertificate() - CA compromised");
-            }
-            else{
-                loggerService.print("Certificate valid!");
-                // UKOLIKO JE VALIDAN POSTOJI MOGUCNOST DA JE POSTAO I AKTIVAN
-                if (!c.getIsActive()){
-                    c.setIsActive(true);
-                    certificateRepository.save(c);
-                }
-                c.setValidityPeriod(validityPeriodRepository.findByCertificate(c));
-                newList.add(c);
-            }
+            automatedRevokeService.catchRevokeReason(cert, chain, c);
         }
-        return newList;
+
+        return  certificateRepository.findByIsCAAndCertificateStatus(true, CertificateStatus.VALID);
     }
 
     public List<SystemEntity> getAllUIDs() {return  systemEntityRepository.findAll();}
@@ -116,12 +87,6 @@ public class CertificateGenService {
     public TextMessage generateCertificate(CertificateGenDTO certificateGenDTO) {
 
         try {
-//            loggerService.print("..................................................................................");
-//            loggerService.print("Checking generateCertificate() data");
-//            loggerService.print(certificateGenDTO.toString());
-//            loggerService.print("Done checking");
-//            loggerService.print("..................................................................................");
-
             char [] password = {'b','s','e','p'};
             List<Object> subjectKey =  createSubjectData(certificateGenDTO.getX500NameCustom());
 
@@ -148,10 +113,8 @@ public class CertificateGenService {
                 Certificate[] chain = certificateReaderService.readChain("./keystore/keystoreCA.jks", "bsep", certificateGenDTO.getParentSerialNumber());
                 loggerService.print("Checking parent validity!");
 
-                if (!(verificationService.checkDate((X509Certificate) cert) &&
-                    verificationService.verifyChain(chain) &&
-                    verificationService.verifyActivity((X509Certificate) cert))
-                ){
+                if (automatedRevokeService.catchRevokeReason(cert, chain, certificateRepository.findBySerialNumber(certificateGenDTO.getParentSerialNumber())) != RevokeReason.NOT_REVOKED)
+                {
                     loggerService.print("Invalid parent certificate in function generateCertificate()");
                     return new TextMessage("Invalid parent certificate!");
                 }
@@ -232,25 +195,13 @@ public class CertificateGenService {
     // NULL - situacija - saljem intermediate sa izabranim roditeljem
     private void saveDatabase(List<Object> certificateKeySerialIsCA, String serialNumber, ValidityPeriod validityPeriod, String subjectName, String issuerName, EntityType entityType, boolean notActive){
         try {
-//            loggerService.print("..................................................................................");
-//            loggerService.print("Checking saveDatabase() data");
-//            loggerService.print(certificateKeySerialIsCA.get(3).toString());
-//            loggerService.print(certificateKeySerialIsCA.get(2).toString());
-//            loggerService.print(serialNumber);
-//            loggerService.print(validityPeriod.toString());
-//            loggerService.print(subjectName);
-//            loggerService.print(issuerName);
-//            loggerService.print(entityType.toString());
-//            loggerService.print("Done checking");
-//            loggerService.print("..................................................................................");
-
             tim15.pki.model.Certificate certificate = tim15.pki.model.Certificate.builder().setIsActive(!notActive)
                     .setIsCA((Boolean) certificateKeySerialIsCA.get(3))
                     .setIssuedTo(subjectName)
                     .setIssuedBy(issuerName)
                     .setCertificateStatus(CertificateStatus.VALID)
                     .setSerialNumber(serialNumber)
-                    .setRevokeReason(RevokeReason.NOT_REVOKED) /// MOZDA BUDE PRAVILO PROBLEM ZBOG NULL POLJA
+                    .setRevokeReason(RevokeReason.NOT_REVOKED)
                     .setEntityType(entityType)
                     .createCertificate();
 
@@ -277,24 +228,16 @@ public class CertificateGenService {
     }
 
     private void saveKeyStore(List<Object> certificateKeySerialIsCA, char[] password, CertificateGenDTO certificateGenDTO, String issuerCommonName){
-                try {
-//            loggerService.print("..................................................................................");
-//            loggerService.print("Checking saveKeyStore() data");
-//            loggerService.print(certificateKeySerialIsCA.get(0).toString());
-//            loggerService.print(certificateKeySerialIsCA.get(1).toString());
-//            loggerService.print(certificateKeySerialIsCA.get(2).toString());
-//            loggerService.print(certificateKeySerialIsCA.get(3).toString());
-//            loggerService.print("Done checking");
-//            loggerService.print("..................................................................................");
-
-            // proveri jos jednom validnost datuma pre cuvanja u keystore
+            try {
 
             X509Certificate x500Certificate = (X509Certificate) certificateKeySerialIsCA.get(0);
             PrivateKey privateKey = (PrivateKey) certificateKeySerialIsCA.get(1);
             String parentSerialNumber = (String) certificateKeySerialIsCA.get(2);
             boolean isCA = (Boolean) certificateKeySerialIsCA.get(3);
 
+            // proveri jos jednom validnost datuma pre cuvanja u keystore
             if (verificationService.expired(x500Certificate)){
+                loggerService.print("Invalid certificate validity date!");
                 return;
             }
 
@@ -349,11 +292,9 @@ public class CertificateGenService {
             else{
                 keyStore.store(new FileOutputStream("./keystore/keystoreEE.jks"), password);
             }
-            loggerService.print("Certificate successfully saved.");
+            loggerService.print("Certificate successfully saved in keystore.");
 
             boolean notActive = verificationService.notActive(x500Certificate);
-
-            // KADA SACUVAS U KEYSTORE SACUVAJ I U BAZU
             ValidityPeriod validityPeriod = new ValidityPeriod(certificateGenDTO.getStartDate(), certificateGenDTO.getEndDate());
             saveDatabase(certificateKeySerialIsCA, x500Certificate.getSerialNumber().toString(), validityPeriod, certificateGenDTO.getX500NameCustom().getCommonName(), issuerCommonName, EntityType.toEnum(certificateGenDTO.getEntityType()), notActive);
 
@@ -379,11 +320,6 @@ public class CertificateGenService {
     private List<Object> createSubjectData(X500NameCustom x500NameCustom){
 
         try {
-//            loggerService.print("..................................................................................");
-//            loggerService.print("Checking saveKeyStore() data");
-//            loggerService.print(x500NameCustom.toString());
-//            loggerService.print("Done checking");
-//            loggerService.print("..................................................................................");
             // GENERISANJE PAROVA KLJUCEVA ZA SUBJEKTA
             KeyPair keyPairSubject = generateKeyPair();
 
@@ -428,7 +364,6 @@ public class CertificateGenService {
             }
 
             // ADDITIONAL ATTRIBUTES
-
             // RANDOM UID
             if (x500NameCustom.getUid() != null){
                 if (x500NameCustom.getUid().equals("newUID")){
@@ -451,10 +386,7 @@ public class CertificateGenService {
                     builder.addRDN(BCStyle.UID, (ASN1Encodable) systemEntityRepository.findByUid(x500NameCustom.getUid()));
                 }
             }
-//            // Generisanje random vrednosti serijskog broja - long
-//            while (certificateRepository.getOneBySerialNumber(String.valueOf(rand.nextLong())) != null){
-//                rand = new Random();
-//            } // OVO JE SERIJSKI BROJ ZA BIZNIS ... NIJE OD SERTIFIKATA????
+
             if (x500NameCustom.getSerialNumber() != null) {
                 if (!x500NameCustom.getSerialNumber().equals("")) {
                     builder.addRDN(BCStyle.SERIALNUMBER, x500NameCustom.getSerialNumber());
@@ -480,13 +412,11 @@ public class CertificateGenService {
                 }
             }
 
-
             if (x500NameCustom.getGivenName() != null) {
                 if (!x500NameCustom.getGivenName().equals("")) {
                     builder.addRDN(BCStyle.GIVENNAME, x500NameCustom.getGivenName());
                 }
             }
-
 
             if (x500NameCustom.getInitials() != null) {
                 if (!x500NameCustom.getInitials().equals("")) {
@@ -496,13 +426,10 @@ public class CertificateGenService {
 
             if (x500NameCustom.getDateOfBirth() != null){
                 if (!x500NameCustom.getDateOfBirth().equals("")) {
-                    loggerService.print(".............................DOB1..............................");
                     SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMDD000000Z");
                     builder.addRDN(BCStyle.DATE_OF_BIRTH, sdf.format(x500NameCustom.getDateOfBirth()));
                 }
             }
-
-            loggerService.print(".............................DOB2..............................");
 
             if (x500NameCustom.getPlaceOfBirth() != null) {
                 if (!x500NameCustom.getPlaceOfBirth().equals("")) {
