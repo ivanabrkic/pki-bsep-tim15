@@ -50,8 +50,8 @@ public class AutomatedRevokeService {
         loggerService.print("Certificate valid!");
         if (!c.getIsActive()){
             c.setIsActive(true);
+            certificateRepository.save(c);
         }
-        certificateRepository.save(c);
 
         return RevokeReason.NOT_REVOKED;
     }

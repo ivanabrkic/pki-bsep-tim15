@@ -97,13 +97,12 @@ public class CertificateViewService {
             Enumeration<String> aliases = ks.aliases();
             while (aliases.hasMoreElements()) {
                 X509Certificate currentCertificate = (X509Certificate)ks.getCertificate(aliases.nextElement());
-                java.security.cert.Certificate[] certChain = ks.getCertificateChain(aliases.nextElement());
+                java.security.cert.Certificate[] certChain = ks.getCertificateChain(currentCertificate.getSerialNumber().toString());
                 Certificate c = certificateRepository.findBySerialNumber(currentCertificate.getSerialNumber().toString());
 
-                if (automatedRevokeService.catchRevokeReason(currentCertificate, certChain, c) != RevokeReason.NOT_REVOKED){
+                if (automatedRevokeService.catchRevokeReason(currentCertificate, certChain, c) == RevokeReason.NOT_REVOKED){
                     certificates.add(currentCertificate);
                 }
-
             }
 
             return certificates;
