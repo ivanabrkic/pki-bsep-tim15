@@ -37,6 +37,9 @@ public class CertificateViewService {
 
     @Autowired
     private CertificateReaderService certificateReaderService;
+
+    @Autowired
+    private VerificationService verificationService;
     /*
     * Getting one specific keyStore,
     * params are key store path and password for keystore
@@ -78,8 +81,26 @@ public class CertificateViewService {
 
             Enumeration<String> aliases = ks.aliases();
             while (aliases.hasMoreElements()) {
-                certificates.add((X509Certificate) ks.getCertificate(aliases.nextElement()));
+                X509Certificate currentCertificate = (X509Certificate)ks.getCertificate(aliases.nextElement());
+                java.security.cert.Certificate[] certChain = ks.getCertificateChain(aliases.nextElement());
+                if(verificationService.checkDate(currentCertificate) && verificationService.verifyActivity(currentCertificate)) {
+                    if (certChain.length > 1) {
+                        if (verificationService.verifyChain(certChain)) {
+                            certificates.add(currentCertificate);
+                        }
+                    } else {
+                        certificates.add(currentCertificate);
+                    }
+                } else {
+                    if (verificationService.verifyActivity(currentCertificate)) {
+                        Certificate cert = certificateRepository.findBySerialNumber(String.valueOf(currentCertificate.getSerialNumber()));
+                        cert.setIsActive(false);
+                        certificateRepository.save(cert);
+                    }
+                    continue;
+                }
             }
+
             return certificates;
         } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException e) {
             return null;
