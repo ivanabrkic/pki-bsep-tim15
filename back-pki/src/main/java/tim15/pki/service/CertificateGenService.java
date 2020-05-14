@@ -72,14 +72,16 @@ public class CertificateGenService {
 
     public List<tim15.pki.model.Certificate> getAllCAs() throws ParseException {
         List<tim15.pki.model.Certificate> certificates = certificateRepository.findByIsCAAndCertificateStatus(true, CertificateStatus.VALID);
+        if (certificates.size() != 0) {
+            for (tim15.pki.model.Certificate c : certificates) {
+                Certificate cert = certificateReaderService.readCertificate("./keystore/keystoreCA.jks", "bsep", c.getSerialNumber());
+                Certificate[] chain = certificateReaderService.readChain("./keystore/keystoreCA.jks", "bsep", c.getSerialNumber());
+                automatedRevokeService.catchRevokeReason(cert, chain, c);
+            }
 
-        for(tim15.pki.model.Certificate c : certificates){
-            Certificate cert = certificateReaderService.readCertificate("./keystore/keystoreCA.jks", "bsep", c.getSerialNumber());
-            Certificate[] chain = certificateReaderService.readChain("./keystore/keystoreCA.jks", "bsep", c.getSerialNumber());
-            automatedRevokeService.catchRevokeReason(cert, chain, c);
+            return  certificateRepository.findByIsCAAndCertificateStatus(true, CertificateStatus.VALID);
         }
-
-        return  certificateRepository.findByIsCAAndCertificateStatus(true, CertificateStatus.VALID);
+        return new ArrayList<>();
     }
 
     public List<SystemEntity> getAllUIDs() {return  systemEntityRepository.findAll();}

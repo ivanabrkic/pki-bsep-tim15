@@ -10,9 +10,13 @@ import tim15.pki.dto.CertificateDetailsDTO;
 import tim15.pki.dto.CertificateViewDTO;
 import tim15.pki.model.Certificate;
 import tim15.pki.model.ValidityPeriod;
+import tim15.pki.model.enums.RevokeReason;
 import tim15.pki.repository.CertificateRepository;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -36,7 +40,7 @@ public class CertificateViewService {
     private CertificateRepository certificateRepository;
 
     @Autowired
-    private CertificateReaderService certificateReaderService;
+    private AutomatedRevokeService automatedRevokeService;
 
     @Autowired
     private VerificationService verificationService;
@@ -57,6 +61,12 @@ public class CertificateViewService {
             System.out.println("nije dobio dobar parametar sa fronta!");
         }
         KeyStore ks = KeyStore.getInstance("JKS", "SUN");
+
+        Path path = Paths.get(keyStoreFileName);
+        if(!Files.exists(path)) {
+            return null;
+        }
+
         try {
             BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFileName));
             ks.load(in, keyStorePassArray);
@@ -76,29 +86,24 @@ public class CertificateViewService {
 
         List<X509Certificate> certificates = new ArrayList<>();
         String keyStorePath = role;
+
         try {
             KeyStore ks = getKeyStore(keyStorePath, keyStorePassword);
+
+            if (ks == null){
+                return certificates;
+            }
 
             Enumeration<String> aliases = ks.aliases();
             while (aliases.hasMoreElements()) {
                 X509Certificate currentCertificate = (X509Certificate)ks.getCertificate(aliases.nextElement());
                 java.security.cert.Certificate[] certChain = ks.getCertificateChain(aliases.nextElement());
-                if(verificationService.checkDate(currentCertificate) && verificationService.verifyActivity(currentCertificate)) {
-                    if (certChain.length > 1) {
-                        if (verificationService.verifyChain(certChain)) {
-                            certificates.add(currentCertificate);
-                        }
-                    } else {
-                        certificates.add(currentCertificate);
-                    }
-                } else {
-                    if (verificationService.verifyActivity(currentCertificate)) {
-                        Certificate cert = certificateRepository.findBySerialNumber(String.valueOf(currentCertificate.getSerialNumber()));
-                        cert.setIsActive(false);
-                        certificateRepository.save(cert);
-                    }
-                    continue;
+                Certificate c = certificateRepository.findBySerialNumber(currentCertificate.getSerialNumber().toString());
+
+                if (automatedRevokeService.catchRevokeReason(currentCertificate, certChain, c) != RevokeReason.NOT_REVOKED){
+                    certificates.add(currentCertificate);
                 }
+
             }
 
             return certificates;
