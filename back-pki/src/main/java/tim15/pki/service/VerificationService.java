@@ -72,14 +72,26 @@ public class VerificationService {
     }
 
     public boolean verifyChain(Certificate[] certificateList) {
-            boolean valid = true;
+        boolean valid = true;
 
-            for (int i = 0; i < certificateList.length - 1; i++) {
-                Certificate cer = certificateList[i];
-                if (!verifySignature(cer, certificateList[i + 1])) {
-                    valid = false;
-                }
+        for (int i = 0; i < certificateList.length - 1; i++) {
+            Certificate cer = certificateList[i];
+            if (!verifySignature(cer, certificateList[i + 1])) {
+                valid = false;
             }
+        }
+        return valid;
+    }
+
+    public boolean verifyExpirationChain(Certificate[] certificateList) {
+        boolean valid = true;
+
+        for (int i = 0; i < certificateList.length - 1; i++) {
+            Certificate cer = certificateList[i];
+            if (expired((X509Certificate) certificateList[i])) {
+                valid = false;
+            }
+        }
         return valid;
     }
 

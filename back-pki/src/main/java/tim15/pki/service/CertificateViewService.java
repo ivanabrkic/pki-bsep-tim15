@@ -14,6 +14,9 @@ import tim15.pki.model.enums.RevokeReason;
 import tim15.pki.repository.CertificateRepository;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -24,7 +27,6 @@ import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -38,7 +40,7 @@ public class CertificateViewService {
     private CertificateRepository certificateRepository;
 
     @Autowired
-    private CertificateReaderService certificateReaderService;
+    private AutomatedRevokeService automatedRevokeService;
 
     @Autowired
     private VerificationService verificationService;
@@ -59,6 +61,12 @@ public class CertificateViewService {
             System.out.println("nije dobio dobar parametar sa fronta!");
         }
         KeyStore ks = KeyStore.getInstance("JKS", "SUN");
+
+        Path path = Paths.get(keyStoreFileName);
+        if(!Files.exists(path)) {
+            return null;
+        }
+
         try {
             BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFileName));
             ks.load(in, keyStorePassArray);
@@ -78,28 +86,22 @@ public class CertificateViewService {
 
         List<X509Certificate> certificates = new ArrayList<>();
         String keyStorePath = role;
+
         try {
             KeyStore ks = getKeyStore(keyStorePath, keyStorePassword);
+
+            if (ks == null){
+                return certificates;
+            }
 
             Enumeration<String> aliases = ks.aliases();
             while (aliases.hasMoreElements()) {
                 X509Certificate currentCertificate = (X509Certificate)ks.getCertificate(aliases.nextElement());
-                java.security.cert.Certificate[] certChain = ks.getCertificateChain(aliases.nextElement());
-                if(verificationService.checkDate(currentCertificate) && verificationService.verifyActivity(currentCertificate)) {
-                    if (certChain.length > 1) {
-                        if (verificationService.verifyChain(certChain)) {
-                            certificates.add(currentCertificate);
-                        }
-                    } else {
-                        certificates.add(currentCertificate);
-                    }
-                } else {
-                    if (verificationService.verifyActivity(currentCertificate)) {
-                        Certificate cert = certificateRepository.findBySerialNumber(String.valueOf(currentCertificate.getSerialNumber()));
-                        cert.setIsActive(false);
-                        certificateRepository.save(cert);
-                    }
-                    continue;
+                java.security.cert.Certificate[] certChain = ks.getCertificateChain(currentCertificate.getSerialNumber().toString());
+                Certificate c = certificateRepository.findBySerialNumber(currentCertificate.getSerialNumber().toString());
+
+                if (automatedRevokeService.catchRevokeReason(currentCertificate, certChain, c) == RevokeReason.NOT_REVOKED){
+                    certificates.add(currentCertificate);
                 }
             }
 
@@ -122,44 +124,6 @@ public class CertificateViewService {
 
         certDTO.setIssuerName(databaseCertificate.getIssuedBy());
         certDTO.setSubjectName(databaseCertificate.getIssuedTo());
-        /* moze ovako
-        switch (databaseCertificate.getRevokeReason()) {
-            case CA_COMPROMISE:
-                certDTO.setRevokeReason("CA COMPROMISED");
-                break;
-            case CERTIFICATE_HOLD:
-                certDTO.setRevokeReason("ON HOLD");
-                break;
-            case EXPIRED:
-                certDTO.setRevokeReason("EXPIRED");
-                break;
-            case KEY_COMPROMISE:
-                certDTO.setRevokeReason("KEY COMPROMISED");
-                break;
-            case NOT_REVOKED:
-                certDTO.setRevokeReason("ACTIVE");
-                break;
-            case UNKNOWN:
-                certDTO.setRevokeReason("REVOKED");
-                break;
-            case AA_COMPROMISE:
-                certDTO.setRevokeReason("AA COMPROMISED");
-                break;
-            case AFFILIATION_CHANGED:
-                certDTO.setRevokeReason("AFFILATION CHANGED");
-                break;
-            case CESSATION_OF_OPERATION:
-                certDTO.setRevokeReason("CESSATION OF OPERATION");
-                break;
-            case PRIVILEGE_WITHDRAWN:
-                certDTO.setRevokeReason("PRIVILEGE WITHDRAWN");
-                break;
-            case SUPERSEDED:
-                certDTO.setRevokeReason("SUPRESEDED");
-                break;
-            default:
-                certDTO.setRevokeReason("VALJAVALJDA");
-        }*/
 
         switch (databaseCertificate.getRevokeReason()) {
             case NOT_REVOKED:
@@ -235,7 +199,6 @@ public class CertificateViewService {
 
         String date1 = dateFormat.format(fromKeyStore.getNotBefore());
         String date2 = dateFormat.format(fromKeyStore.getNotAfter());
-
 
         X500Name issuerName = new JcaX509CertificateHolder((X509Certificate) fromKeyStore).getIssuer();
         X500Name subjectName = new JcaX509CertificateHolder((X509Certificate) fromKeyStore).getSubject();
