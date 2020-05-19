@@ -26,6 +26,10 @@ public class CertificateViewController {
     @Autowired
     private CertificateViewService certificateViewService;
 
+    @GetMapping(value = "/test")
+    public ResponseEntity<String> getTest() {
+        return new ResponseEntity<>("Success", HttpStatus.OK);
+    }
 
     @GetMapping(value = "/all")
     public ResponseEntity<List<CertificateViewDTO>> getCertificates(@RequestParam(value = "role", required = true) String role,
