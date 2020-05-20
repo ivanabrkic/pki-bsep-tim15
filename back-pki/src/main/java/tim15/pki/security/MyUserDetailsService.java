@@ -14,7 +14,14 @@ public class MyUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         if(username.equals("admin")) {
-            return new User("admin", "admin", new ArrayList<>());
+            ArrayList roles = new ArrayList<String>();
+            roles.add("ROLE_ADMIN");
+            roles.add("ROLE_USER");
+            return new User("admin", "admin", roles);
+        } else if(username.equals("user")) {
+            ArrayList roles = new ArrayList<String>();
+            roles.add("ROLE_USER");
+            return new User("user", "user", roles);
         } else {
             throw new UsernameNotFoundException("Username " + username + " not found");
         }

@@ -33,6 +33,12 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests().antMatchers("/login").permitAll()
+                .and()
+                .authorizeRequests().antMatchers("/api/certificate").hasAnyRole("ADMIN", "USER")
+                .and()
+                .authorizeRequests().antMatchers("/download/certificate").hasAnyRole("ADMIN", "USER")
+                .and()
+                .authorizeRequests().antMatchers("/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
