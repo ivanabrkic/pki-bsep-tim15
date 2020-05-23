@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan
 @Configuration
 @EnableAutoConfiguration
-class WebsocketSourceConfiguration {
+public class WebsocketSourceConfiguration {
 
     @Bean
     public ServletWebServerFactory servletContainer() {

@@ -74,7 +74,6 @@ export class CertFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.generateData();
   }
 
   viewDetails(serialNumber: string) {
