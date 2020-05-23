@@ -83,7 +83,7 @@ public class CertificateReaderService {
     public IssuerData readIssuerFromStore(String keyStoreFile, String alias, char[] password, char[] keypass) {
         try {
             //Datoteka se ucitava
-            KeyStore keyStore = KeyStore.getInstance("JKS", "SUN");
+            KeyStore keyStore = KeyStore.getInstance("PKCS12");
 
             BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFile));
             keyStore.load(in, password);
@@ -106,8 +106,6 @@ public class CertificateReaderService {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (NoSuchProviderException e) {
-            e.printStackTrace();
         }
         return null;
     }
@@ -115,7 +113,7 @@ public class CertificateReaderService {
     public Certificate readCertificate(String keyStoreFile, String keyStorePass, String alias) {
         try {
             //kreiramo instancu KeyStore
-            KeyStore ks = KeyStore.getInstance("JKS", "SUN");
+            KeyStore ks = KeyStore.getInstance("PKCS12");
             //ucitavamo podatke
             BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFile));
             ks.load(in, keyStorePass.toCharArray());
@@ -125,8 +123,6 @@ public class CertificateReaderService {
                 return cert;
             }
         } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (NoSuchProviderException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -143,7 +139,7 @@ public class CertificateReaderService {
     public Certificate[] readChain(String keyStoreFile, String keyStorePass, String alias) {
         try {
             //kreiramo instancu KeyStore
-            KeyStore ks = KeyStore.getInstance("JKS", "SUN");
+            KeyStore ks = KeyStore.getInstance("PKCS12");
             //ucitavamo podatke
             BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFile));
             ks.load(in, keyStorePass.toCharArray());
@@ -153,8 +149,6 @@ public class CertificateReaderService {
                 return cert;
             }
         } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (NoSuchProviderException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -171,7 +165,7 @@ public class CertificateReaderService {
     public PrivateKey readPrivateKey(String keyStoreFile, String keyStorePass, String alias, String pass) {
         try {
             //kreiramo instancu KeyStore
-            KeyStore ks = KeyStore.getInstance("JKS", "SUN");
+            KeyStore ks = KeyStore.getInstance("PKCS12");
             //ucitavamo podatke
             BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFile));
             ks.load(in, keyStorePass.toCharArray());
@@ -181,8 +175,6 @@ public class CertificateReaderService {
                 return pk;
             }
         } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (NoSuchProviderException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
