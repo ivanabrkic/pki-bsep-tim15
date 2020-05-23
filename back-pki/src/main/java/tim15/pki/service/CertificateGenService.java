@@ -115,6 +115,54 @@ public class CertificateGenService {
         generateCertificate(certGen);
     }
 
+    public void generateTestDataCertificates(){
+        CertificateGenDTO certGen = new CertificateGenDTO();
+
+        certGen.setEntityType("SERVICE");
+        certGen.setIsCA(true);
+        certGen.setStartDate(new Date());
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, 5);
+        Date nextYear = cal.getTime();
+        certGen.setEndDate(nextYear);
+
+        certGen.setParentSerialNumber("");
+
+        certGen.setX500NameCustom(tim15.pki.dto.X500NameCustom.builder()
+                .setCommonName("cert-root-1")
+                .setOrganization("Public Key Infrastructure")
+                .setOrganizationalUnit("Public Key Infrastructure")
+                .setStateProvince("Vojvodina")
+                .setLocalityCity("Novi Sad")
+                .setCountryCode("RS")
+                .createX500NameCustom());
+
+        generateCertificate(certGen);
+
+        certGen.setX500NameCustom(tim15.pki.dto.X500NameCustom.builder()
+                .setCommonName("cert-root-2")
+                .setOrganization("Public Key Infrastructure")
+                .setOrganizationalUnit("Public Key Infrastructure")
+                .setStateProvince("Vojvodina")
+                .setLocalityCity("Novi Sad")
+                .setCountryCode("RS")
+                .createX500NameCustom());
+
+        generateCertificate(certGen);
+
+        certGen.setX500NameCustom(tim15.pki.dto.X500NameCustom.builder()
+                .setCommonName("cert-root-3")
+                .setOrganization("Public Key Infrastructure")
+                .setOrganizationalUnit("Public Key Infrastructure")
+                .setStateProvince("Vojvodina")
+                .setLocalityCity("Novi Sad")
+                .setCountryCode("RS")
+                .createX500NameCustom());
+
+        generateCertificate(certGen);
+    }
+
     public TextMessage generateCertificate(CertificateGenDTO certificateGenDTO) {
 
         try {
