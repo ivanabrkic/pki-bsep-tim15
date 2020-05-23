@@ -1,16 +1,59 @@
 <div class=" content">
-    <div class=" row">
-      <div class=" col-md-8">
-        <div class=" card">
-          <div class=" card-header">
-            <div class=" row">
-              <div class=" col-sm-6 text-left">
-                <h2 class=" card-title">Create certificate</h2>
-              </div>
+    <div class="container-fluid">
+        <div class=" row">
+            <div class=" col-md-12">
+                <div class=" card">
+                    <div class=" card-header">
+                        <div class=" row">
+                            <div class=" col-sm-6 text-left">
+                                <h2 class=" card-title">Certificate list</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="white-space: nowrap;" class=" card-body">
+                        <form [formGroup]="keyStoreForm">
+                            <div class="row">
+                                <mat-form-field class="col-3">
+                                    <mat-label>Select certificate role</mat-label>
+                                    <mat-select formControlName="certRole">
+                                        <mat-option value="ca">CA</mat-option>
+                                        <mat-option value="end-entity">End-entity</mat-option>
+                                    </mat-select>
+                                    <mat-error
+                                        *ngIf="keyStoreForm.get('certRole').errors && keyStoreForm.get('certRole').errors['required']">
+                                        Please select certificate role.
+                                    </mat-error>
+                                </mat-form-field>
+                                <mat-form-field class="col-3">
+                                    <input matInput type="password" placeholder="Key store password"
+                                        formControlName="keyStorePassword">
+                                    <mat-error
+                                        *ngIf="keyStoreForm.get('keyStorePassword').errors && keyStoreForm.get('keyStorePassword').errors['required']">
+                                        Please enter key store password.
+                                    </mat-error>
+                                </mat-form-field>
+                                <div class="col-3">
+                                    <button mat-raised-button color="primary" [disabled]="!keyStoreForm.valid"
+                                        (click)="getCertificates()">Show certificates</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class=" card-body">
-            <form [formGroup]="keyStoreForm">
+        </div>
+        <div class=" row">
+            <div class=" col-md-12">
+                <div class=" card">
+                    <div class=" card-header">
+                        <div class=" row">
+                            <div class=" col-sm-6 text-left">
+                                <h2 class=" card-title"></h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="white-space: nowrap;" class=" card-body">
+                        <!-- <form [formGroup]="keyStoreForm">
                 <div class="row">
                     <mat-form-field class="col-3">
                         <mat-label>Select certificate role</mat-label>
@@ -35,61 +78,65 @@
                             (click)="getCertificates()">Show certificates</button>
                     </div>
                 </div>
-            </form>
+            </form> -->
 
-            <table mat-table [dataSource]="certificatesDataSource" class="mat-elevation-z8 table mt-3">
-                <ng-container matColumnDef="serialNumber">
-                    <th mat-header-cell *matHeaderCellDef>Serial No.</th>
-                    <td mat-cell *matCellDef="let element">
-                        {{element.serialNumber}}
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="subjectName">
-                    <th mat-header-cell *matHeaderCellDef>Subject CN</th>
-                    <td mat-cell *matCellDef="let element">
-                        {{element.subjectName}}
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="issuerName">
-                    <th mat-header-cell *matHeaderCellDef>Issuer CN</th>
-                    <td mat-cell *matCellDef="let element">
-                        {{element.issuerName}}
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="validFrom">
-                    <th mat-header-cell *matHeaderCellDef>Valid From</th>
-                    <td mat-cell *matCellDef="let element">
-                        {{element.validFrom}}
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="validTo">
-                    <th mat-header-cell *matHeaderCellDef>Valid To</th>
-                    <td mat-cell *matCellDef="let element">
-                        {{element.validTo}}
-                    </td>
-                </ng-container>
-              <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef>Status</th>
-                <td mat-cell *matCellDef="let element">
-                  {{element.revokeReason}}
-                </td>
-              </ng-container>
-                <ng-container matColumnDef="buttons">
-                    <th mat-header-cell *matHeaderCellDef class="buttons-width">&nbsp;</th>
-                    <td mat-cell *matCellDef="let element">
-                        <button mat-raised-button color="primary" (click)="viewDetails(element.serialNumber)">Details</button>
-                        <button mat-raised-button class="download-btn ml-2 mr-2"
-                            (click)="download(element.serialNumber)">Download</button>
-                        <button mat-raised-button color="warn" (click)="revoke(element.serialNumber)">Revoke</button>
-                    </td>
-                </ng-container>
+                        <table mat-table [dataSource]="certificatesDataSource" class="mat-elevation-z12 table mt-3">
+                            <ng-container matColumnDef="serialNumber">
+                                <th mat-header-cell *matHeaderCellDef>Serial No.</th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{element.serialNumber}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="subjectName">
+                                <th mat-header-cell *matHeaderCellDef>Subject CN</th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{element.subjectName}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="issuerName">
+                                <th mat-header-cell *matHeaderCellDef>Issuer CN</th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{element.issuerName}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="validFrom">
+                                <th mat-header-cell *matHeaderCellDef>Valid From</th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{element.validFrom}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="validTo">
+                                <th mat-header-cell *matHeaderCellDef>Valid To</th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{element.validTo}}
+                                </td>
+                            </ng-container>
 
-                <tr mat-header-row *matHeaderRowDef="displayedColumns sticky: true">
-                </tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
-          </div>
+                            <ng-container matColumnDef="status">
+                                <th mat-header-cell *matHeaderCellDef>Status</th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{element.revokeReason}}
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="buttons">
+                                <th mat-header-cell *matHeaderCellDef class="buttons-width">&nbsp;</th>
+                                <td mat-cell *matCellDef="let element">
+                                    <button mat-raised-button color="primary"
+                                        (click)="viewDetails(element.serialNumber)">Details</button>
+                                    <button mat-raised-button class="download-btn"
+                                        (click)="download(element.serialNumber)">Download</button>
+                                    <button mat-raised-button color="warn" (click)="revoke(element)">Revoke</button>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns sticky: true">
+                            </tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
+</div>
