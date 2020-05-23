@@ -54,13 +54,13 @@ public class CertificateViewService {
         char[] keyStorePassArray = keyStorePassword.toCharArray();
         String keyStoreFileName = "";
         if (keyStorePath.equals("ca")) {
-             keyStoreFileName = "./keystore/keystoreCA.jks";
+             keyStoreFileName = "./keystore/keystoreCA.p12";
         } else if (keyStorePath.equals("end-entity")) {
-             keyStoreFileName = "./keystore/keystoreEE.jks";
+             keyStoreFileName = "./keystore/keystoreEE.p12";
         } else {
             System.out.println("nije dobio dobar parametar sa fronta!");
         }
-        KeyStore ks = KeyStore.getInstance("JKS", "SUN");
+        KeyStore ks = KeyStore.getInstance("PKCS12");
 
         Path path = Paths.get(keyStoreFileName);
         if(!Files.exists(path)) {

@@ -41,7 +41,6 @@ public revoke(serialNumber: string) {
   let params = new HttpParams();
   params = params.append('serialNumber', serialNumber);
   this.requestUrl = 'server/certificate_revoke';
-  alert(params);
   const optionsAndParams = {
     headers: {  'Content-Type': 'application/json' },
     params: params

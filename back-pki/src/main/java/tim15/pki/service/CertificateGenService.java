@@ -31,20 +31,22 @@ import tim15.pki.repository.CertificateRepository;
 import tim15.pki.repository.SystemEntityRepository;
 import tim15.pki.repository.ValidityPeriodRepository;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.*;
 import java.security.cert.Certificate;
-import java.security.cert.*;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class CertificateGenService {
@@ -71,11 +73,12 @@ public class CertificateGenService {
     private AutomatedRevokeService automatedRevokeService;
 
     public List<tim15.pki.model.Certificate> getAllCAs() throws ParseException {
+
         List<tim15.pki.model.Certificate> certificates = certificateRepository.findByIsCAAndCertificateStatus(true, CertificateStatus.VALID);
         if (certificates.size() != 0) {
             for (tim15.pki.model.Certificate c : certificates) {
-                Certificate cert = certificateReaderService.readCertificate("./keystore/keystoreCA.jks", "bsep", c.getSerialNumber());
-                Certificate[] chain = certificateReaderService.readChain("./keystore/keystoreCA.jks", "bsep", c.getSerialNumber());
+                Certificate cert = certificateReaderService.readCertificate("./keystore/keystoreCA.p12", "bsep", c.getSerialNumber());
+                Certificate[] chain = certificateReaderService.readChain("./keystore/keystoreCA.p12", "bsep", c.getSerialNumber());
                 automatedRevokeService.catchRevokeReason(cert, chain, c);
             }
 
@@ -85,6 +88,80 @@ public class CertificateGenService {
     }
 
     public List<SystemEntity> getAllUIDs() {return  systemEntityRepository.findAll();}
+
+    public void generateServerRootCertificate(){
+        CertificateGenDTO certGen = new CertificateGenDTO();
+
+        certGen.setEntityType("SERVICE");
+        certGen.setIsCA(true);
+        certGen.setStartDate(new Date());
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, 5);
+        Date nextYear = cal.getTime();
+        certGen.setEndDate(nextYear);
+
+        certGen.setParentSerialNumber("");
+
+        certGen.setX500NameCustom(tim15.pki.dto.X500NameCustom.builder()
+                .setCommonName("front-pki")
+                .setOrganization("Public Key Infrastructure")
+                .setOrganizationalUnit("Public Key Infrastructure")
+                .setStateProvince("Vojvodina")
+                .setLocalityCity("Novi Sad")
+                .setCountryCode("RS")
+                .createX500NameCustom());
+
+        generateCertificate(certGen);
+    }
+
+    public void generateTestDataCertificates(){
+        CertificateGenDTO certGen = new CertificateGenDTO();
+
+        certGen.setEntityType("SERVICE");
+        certGen.setIsCA(true);
+        certGen.setStartDate(new Date());
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, 5);
+        Date nextYear = cal.getTime();
+        certGen.setEndDate(nextYear);
+
+        certGen.setParentSerialNumber("");
+
+        certGen.setX500NameCustom(tim15.pki.dto.X500NameCustom.builder()
+                .setCommonName("cert-root-1")
+                .setOrganization("Public Key Infrastructure")
+                .setOrganizationalUnit("Public Key Infrastructure")
+                .setStateProvince("Vojvodina")
+                .setLocalityCity("Novi Sad")
+                .setCountryCode("RS")
+                .createX500NameCustom());
+
+        generateCertificate(certGen);
+
+        certGen.setX500NameCustom(tim15.pki.dto.X500NameCustom.builder()
+                .setCommonName("cert-root-2")
+                .setOrganization("Public Key Infrastructure")
+                .setOrganizationalUnit("Public Key Infrastructure")
+                .setStateProvince("Vojvodina")
+                .setLocalityCity("Novi Sad")
+                .setCountryCode("RS")
+                .createX500NameCustom());
+
+        generateCertificate(certGen);
+
+        certGen.setX500NameCustom(tim15.pki.dto.X500NameCustom.builder()
+                .setCommonName("cert-root-3")
+                .setOrganization("Public Key Infrastructure")
+                .setOrganizationalUnit("Public Key Infrastructure")
+                .setStateProvince("Vojvodina")
+                .setLocalityCity("Novi Sad")
+                .setCountryCode("RS")
+                .createX500NameCustom());
+
+        generateCertificate(certGen);
+    }
 
     public TextMessage generateCertificate(CertificateGenDTO certificateGenDTO) {
 
@@ -111,8 +188,8 @@ public class CertificateGenService {
             }
             else{
                 // CHECK PARENT VALIDTY
-                Certificate cert = certificateReaderService.readCertificate("./keystore/keystoreCA.jks", "bsep", certificateGenDTO.getParentSerialNumber());
-                Certificate[] chain = certificateReaderService.readChain("./keystore/keystoreCA.jks", "bsep", certificateGenDTO.getParentSerialNumber());
+                Certificate cert = certificateReaderService.readCertificate("./keystore/keystoreCA.p12", "bsep", certificateGenDTO.getParentSerialNumber());
+                Certificate[] chain = certificateReaderService.readChain("./keystore/keystoreCA.p12", "bsep", certificateGenDTO.getParentSerialNumber());
                 loggerService.print("Checking parent validity!");
 
                 if (automatedRevokeService.catchRevokeReason(cert, chain, certificateRepository.findBySerialNumber(certificateGenDTO.getParentSerialNumber())) != RevokeReason.NOT_REVOKED)
@@ -122,9 +199,9 @@ public class CertificateGenService {
                 }
                 loggerService.print("Parent valid!");
                 //
-                parentName = certificateReaderService.readIssuerFromStore("./keystore/keystoreCA.jks", certificateGenDTO.getParentSerialNumber(), password, password).getName();
-                contentSigner = builder.build(certificateReaderService.readPrivateKey("./keystore/keystoreCA.jks", "bsep", certificateGenDTO.getParentSerialNumber(), "bsep"));
-                issuerPublicKey = certificateReaderService.readCertificate("./keystore/keystoreCA.jks", "bsep", certificateGenDTO.getParentSerialNumber()).getPublicKey();
+                parentName = certificateReaderService.readIssuerFromStore("./keystore/keystoreCA.p12", certificateGenDTO.getParentSerialNumber(), password, password).getName();
+                contentSigner = builder.build(certificateReaderService.readPrivateKey("./keystore/keystoreCA.p12", "bsep", certificateGenDTO.getParentSerialNumber(), "bsep"));
+                issuerPublicKey = certificateReaderService.readCertificate("./keystore/keystoreCA.p12", "bsep", certificateGenDTO.getParentSerialNumber()).getPublicKey();
                 issuerCommonName = parentName.getRDNs(BCStyle.CN)[0].getFirst().getValue().toString();
             }
 
@@ -135,8 +212,10 @@ public class CertificateGenService {
                 serialNumber = rand.nextLong();
             }
 
+            System.out.println(Math.abs(serialNumber));
+
             X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(parentName,
-                    new BigInteger(String.valueOf(Math.abs(rand.nextLong()))),
+                    new BigInteger(String.valueOf(Math.abs(serialNumber))),
                     certificateGenDTO.getStartDate(),
                     certificateGenDTO.getEndDate(),
                     subjectData.getName(),
@@ -243,13 +322,13 @@ public class CertificateGenService {
                 return;
             }
 
-            KeyStore keyStore = KeyStore.getInstance("JKS", "SUN");
+            KeyStore keyStore = KeyStore.getInstance("PKCS12");
 
             java.security.cert.Certificate[] newChain;
 
-            Path path = Paths.get("./keystore/keystoreCA.jks");
+            Path path = Paths.get("./keystore/keystoreCA.p12");
             if(Files.exists(path)) {
-                keyStore.load(new FileInputStream("./keystore/keystoreCA.jks"), password);
+                keyStore.load(new FileInputStream("./keystore/keystoreCA.p12"), password);
                 // Preuzmi chain roditelja
                 if (!parentSerialNumber.equals("")) {
                     java.security.cert.Certificate[] chain = keyStore.getCertificateChain(parentSerialNumber);
@@ -278,9 +357,9 @@ public class CertificateGenService {
             }
 
             if (!isCA){
-                path = Paths.get("./keystore/keystoreEE.jks");
+                path = Paths.get("./keystore/keystoreEE.p12");
                 if(Files.exists(path)) {
-                    keyStore.load(new FileInputStream("./keystore/keystoreEE.jks"), password);
+                    keyStore.load(new FileInputStream("./keystore/keystoreEE.p12"), password);
                 } else {
                     keyStore.load(null, password);
                 }
@@ -289,10 +368,10 @@ public class CertificateGenService {
             keyStore.setKeyEntry(x500Certificate.getSerialNumber().toString(), privateKey, password, newChain);
 
             if (isCA){
-                keyStore.store(new FileOutputStream("./keystore/keystoreCA.jks"), password);
+                keyStore.store(new FileOutputStream("./keystore/keystoreCA.p12"), password);
             }
             else{
-                keyStore.store(new FileOutputStream("./keystore/keystoreEE.jks"), password);
+                keyStore.store(new FileOutputStream("./keystore/keystoreEE.p12"), password);
             }
             loggerService.print("Certificate successfully saved in keystore.");
 
@@ -302,8 +381,6 @@ public class CertificateGenService {
 
         } catch (KeyStoreException e) {
             loggerService.print("KeyStoreException in function saveKeyStore():" + e.getMessage());
-        } catch (NoSuchProviderException e) {
-            loggerService.print("NoSuchProviderException in function saveKeyStore():" + e.getMessage());
         } catch (NoSuchAlgorithmException e) {
             loggerService.print("NoSuchAlgorithmException in function saveKeyStore():" + e.getMessage());
         } catch (CertificateException e) {

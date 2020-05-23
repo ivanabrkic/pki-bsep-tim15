@@ -12,7 +12,6 @@ import java.io.*;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -114,19 +113,17 @@ public class CertificateRevokeService {
             String alias = null;
             char [] password = {'b','s','e','p'};
             try {
-                KeyStore keyStore = KeyStore.getInstance("JKS", "SUN");
+                KeyStore keyStore = KeyStore.getInstance("PKCS12");
                 if(isCA) {
-                    keyStore.load(new FileInputStream("./keystore/keystoreCA.jks"), password);
+                    keyStore.load(new FileInputStream("./keystore/keystoreCA.p12"), password);
                 } else {
-                    keyStore.load(new FileInputStream("./keystore/keystoreEE.jks"), password);
+                    keyStore.load(new FileInputStream("./keystore/keystoreEE.p12"), password);
                 }
                 System.out.println("Keystore size before deleting: " + keyStore.size());
                 keyStore.deleteEntry(serialNumber);
                 System.out.println("Keystore size after deleting: " + keyStore.size());
             } catch (KeyStoreException e) {
                 e.printStackTrace();
-            } catch (NoSuchProviderException e) {
-                loggerService.print(e.getMessage());
             } catch (CertificateException e) {
                 e.printStackTrace();
             } catch (NoSuchAlgorithmException e) {
