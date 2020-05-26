@@ -45,7 +45,7 @@ public class CertificateViewController {
     @GetMapping(value = "/download")
     public ResponseEntity<TextMessage> download(@RequestParam(value = "serialNumber", required = true) String serialNumber) throws Exception {
         TextMessage tm = new TextMessage();
-        tm.setText(certificateViewService.download(serialNumber));
+        tm.setArrayBuffer(certificateViewService.download(serialNumber));
         return new ResponseEntity<>(tm, HttpStatus.OK);
     }
 

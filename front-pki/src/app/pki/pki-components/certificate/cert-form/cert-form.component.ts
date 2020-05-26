@@ -10,6 +10,10 @@ import { Certificate } from 'src/app/pki/pki-model-dto/backend-model/certificate
 import { CertificateGenDTO } from 'src/app/pki/pki-model-dto/backend-dtos/certificate-gen-DTO';
 import { X500NameCustom } from 'src/app/pki/pki-model-dto/backend-dtos/x500name-custom';
 import { SystemEntity } from 'src/app/pki/pki-model-dto/backend-model/system-entity';
+import { ViewCertificateService } from 'src/app/pki/pki-services/view-certificate.service';
+import { CertificateDetailsDTO } from 'src/app/pki/pki-model-dto/backend-dtos/certificateDetailsDTO';
+import { CertificateDetailsComponent } from '../certificate-details/certificate-details/certificate-details.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-cert-form',
@@ -19,15 +23,8 @@ import { SystemEntity } from 'src/app/pki/pki-model-dto/backend-model/system-ent
 export class CertFormComponent implements OnInit {
 
   public validCAs: Array<Certificate> = [];
-  public extensions: Array<Extension> = [];
 
   public selectedCA: Certificate;
-  public selectedExtension: Extension;
-
-  public displayedColumns: string[] = ['oid', 'name', 'value', 'isCritical'];
-
-  public dataSource = null;
-  public data = null;
 
   public countryCodes = [];
   public countryCodesCitizenship = [];
@@ -53,7 +50,7 @@ export class CertFormComponent implements OnInit {
   public countryInvalid = false;
   public countryEmpty = false;
 
-  public userType = "Server";
+  public userType = "Service";
 
   public maxBirthDate: Date = new Date();
   public minValidFromDate: Date = new Date();
@@ -70,12 +67,23 @@ export class CertFormComponent implements OnInit {
 
   public newCertificate = new CertificateGenDTO();
 
-  constructor(private certFormService: CertFormService, private _snackBar: MatSnackBar, private formBuilder: FormBuilder) {
+  certificateDetails : CertificateDetailsDTO;
+
+  constructor(public dialog: MatDialog, private viewCertificateService : ViewCertificateService, private certFormService: CertFormService, private _snackBar: MatSnackBar, private formBuilder: FormBuilder) {
     this.generateData();
   }
 
   ngOnInit(): void {
-    this.generateData();
+  }
+
+  viewDetails(serialNumber: string) {
+    this.viewCertificateService.getDetails(serialNumber).subscribe(
+      (data: CertificateDetailsDTO) => {
+        this.certificateDetails = data;
+        this.dialog.open(CertificateDetailsComponent, {data : this.certificateDetails,
+          maxHeight: '90vh'})
+      }
+    )
   }
 
   get f() { return this.subjectForm.controls; }
@@ -124,7 +132,7 @@ export class CertFormComponent implements OnInit {
     }
   }
 
-  openExtensions() {
+  openValidityDate() {
     // Proveravam da li je validan kod za drzavu
     if (this.countryCtrl.value == undefined || this.countryCtrl.value == "") {
       this.countryEmpty = true;
@@ -183,13 +191,7 @@ export class CertFormComponent implements OnInit {
 
     this.newCertificate.entityType = this.userType;
 
-    this.myStepper.next();
-
-  }
-
-  openValidityDate() {
-    this.newCertificate.extensions = [];
-  }
+    this.myStepper.next();  }
 
   openDone() {
     if (this.selectedValidFromDate.getTime() > this.selectedValidToDate.getTime()) {
@@ -214,18 +216,13 @@ export class CertFormComponent implements OnInit {
         this.subjectForm.reset();
         this.certFormService.getAllCAs()
         .subscribe(cas => {
-          this.validCAs = cas;
-          this.certFormService.getAllExtensions()
-            .subscribe(extensions => {
-              this.certFormService.getAllUIDs()
-                .subscribe(uids => {
-                  this.extensions = extensions;
-                  this.systemUsers = uids;
-                  this.selectedCA = this.validCAs[0];
-                  this.selectedExtension = this.extensions[0];
-                  this.selectedUser = this.systemUsers[0];
-                });
-            });
+          this.certFormService.getAllUIDs()
+            .subscribe(uids => {
+              this.validCAs = cas;
+              this.systemUsers = uids;
+              this.selectedCA = this.validCAs[0];
+              this.selectedUser = this.systemUsers[0];
+          });
         });
       });
   }
@@ -238,19 +235,13 @@ export class CertFormComponent implements OnInit {
     this.certFormService.getAllCAs()
       .subscribe(cas => {
         this.validCAs = cas;
-        this.certFormService.getAllExtensions()
-          .subscribe(extensions => {
-            this.certFormService.getAllUIDs()
-              .subscribe(uids => {
-                this.extensions = extensions;
-                this.systemUsers = uids;
-                this.selectedCA = this.validCAs[0];
-                this.selectedExtension = this.extensions[0];
-                this.selectedUser = this.systemUsers[0];
-              });
+        this.certFormService.getAllUIDs()
+          .subscribe(uids => {
+            this.systemUsers = uids;
+            this.selectedCA = this.validCAs[0];
+            this.selectedUser = this.systemUsers[0];
           });
       });
-    this.dataSource = this.data;
 
     this.filteredCountries = this.countryCtrl.valueChanges
       .pipe(

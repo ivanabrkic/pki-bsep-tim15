@@ -10,9 +10,13 @@ import tim15.pki.dto.CertificateDetailsDTO;
 import tim15.pki.dto.CertificateViewDTO;
 import tim15.pki.model.Certificate;
 import tim15.pki.model.ValidityPeriod;
+import tim15.pki.model.enums.RevokeReason;
 import tim15.pki.repository.CertificateRepository;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -36,7 +40,10 @@ public class CertificateViewService {
     private CertificateRepository certificateRepository;
 
     @Autowired
-    private CertificateReaderService certificateReaderService;
+    private AutomatedRevokeService automatedRevokeService;
+
+    @Autowired
+    private VerificationService verificationService;
     /*
     * Getting one specific keyStore,
     * params are key store path and password for keystore
@@ -47,13 +54,19 @@ public class CertificateViewService {
         char[] keyStorePassArray = keyStorePassword.toCharArray();
         String keyStoreFileName = "";
         if (keyStorePath.equals("ca")) {
-             keyStoreFileName = "./keystore/keystoreCA.jks";
+             keyStoreFileName = "./keystore/keystoreCA.p12";
         } else if (keyStorePath.equals("end-entity")) {
-             keyStoreFileName = "./keystore/keystoreEE.jks";
+             keyStoreFileName = "./keystore/keystoreEE.p12";
         } else {
             System.out.println("nije dobio dobar parametar sa fronta!");
         }
-        KeyStore ks = KeyStore.getInstance("JKS", "SUN");
+        KeyStore ks = KeyStore.getInstance("PKCS12");
+
+        Path path = Paths.get(keyStoreFileName);
+        if(!Files.exists(path)) {
+            return null;
+        }
+
         try {
             BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFileName));
             ks.load(in, keyStorePassArray);
@@ -73,13 +86,25 @@ public class CertificateViewService {
 
         List<X509Certificate> certificates = new ArrayList<>();
         String keyStorePath = role;
+
         try {
             KeyStore ks = getKeyStore(keyStorePath, keyStorePassword);
 
+            if (ks == null){
+                return certificates;
+            }
+
             Enumeration<String> aliases = ks.aliases();
             while (aliases.hasMoreElements()) {
-                certificates.add((X509Certificate) ks.getCertificate(aliases.nextElement()));
+                X509Certificate currentCertificate = (X509Certificate)ks.getCertificate(aliases.nextElement());
+                java.security.cert.Certificate[] certChain = ks.getCertificateChain(currentCertificate.getSerialNumber().toString());
+                Certificate c = certificateRepository.findBySerialNumber(currentCertificate.getSerialNumber().toString());
+
+                if (automatedRevokeService.catchRevokeReason(currentCertificate, certChain, c) == RevokeReason.NOT_REVOKED){
+                    certificates.add(currentCertificate);
+                }
             }
+
             return certificates;
         } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException e) {
             return null;
@@ -99,6 +124,14 @@ public class CertificateViewService {
 
         certDTO.setIssuerName(databaseCertificate.getIssuedBy());
         certDTO.setSubjectName(databaseCertificate.getIssuedTo());
+
+        switch (databaseCertificate.getRevokeReason()) {
+            case NOT_REVOKED:
+                certDTO.setRevokeReason("ACTIVE");
+                break;
+            default:
+                certDTO.setRevokeReason("REVOKED");
+        }
 
         ValidityPeriod vp = new ValidityPeriod(cert.getNotBefore(),cert.getNotAfter());
 
@@ -158,7 +191,7 @@ public class CertificateViewService {
     public CertificateDetailsDTO getDetails(String serialNumber) throws CertificateEncodingException {
         CertificateDetailsDTO cdd = new CertificateDetailsDTO();
         Certificate certificateDatabase = certificateRepository.findBySerialNumber(serialNumber);
-        
+
         String ca = certificateDatabase.getIsCA() ? "ca" : "end-entity";
         X509Certificate fromKeyStore = getCertificate(ca, "bsep", serialNumber);
 
@@ -166,7 +199,6 @@ public class CertificateViewService {
 
         String date1 = dateFormat.format(fromKeyStore.getNotBefore());
         String date2 = dateFormat.format(fromKeyStore.getNotAfter());
-
 
         X500Name issuerName = new JcaX509CertificateHolder((X509Certificate) fromKeyStore).getIssuer();
         X500Name subjectName = new JcaX509CertificateHolder((X509Certificate) fromKeyStore).getSubject();
@@ -268,20 +300,28 @@ public class CertificateViewService {
         return stringToCheck;
     }
 
-    public String download(String serialNumber) throws IOException, CertificateEncodingException {
+    public byte[] download(String serialNumber) throws IOException, CertificateEncodingException, InterruptedException {
+        System.out.println("Sending donwload link...");
         Certificate certificateDatabase = certificateRepository.findBySerialNumber(serialNumber);
         String ca = certificateDatabase.getIsCA() ? "ca" : "end-entity";
         java.security.cert.Certificate fromKeyStore = (java.security.cert.Certificate) getCertificate(ca, "bsep", serialNumber);
 
-        String Path = "..//front-pki/src/assets/certificates/";
+        //String Path = "..//front-pki/src/assets/certificates/";
+        String Path = "./src/main/resources/static/";
         String file = Path + ca + "_" + serialNumber + ".cer";
-        String fileFrontend = "assets/certificates/" + ca + "_" + serialNumber + ".cer";
-        FileOutputStream os = new FileOutputStream(file);
+        String fileFrontend = "localhost:8080/" + ca + "_" + serialNumber + ".cer";
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+
         os.write("-----BEGIN CERTIFICATE-----\n".getBytes("US-ASCII"));
         os.write(Base64.encodeBase64(fromKeyStore.getEncoded(), true));
         os.write("-----END CERTIFICATE-----\n".getBytes("US-ASCII"));
+
+        byte output[] = os.toByteArray();
+
+        System.out.println(output);
         os.close();
 
-        return fileFrontend;
+        return output;
     }
 }

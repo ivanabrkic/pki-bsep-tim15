@@ -1,11 +1,9 @@
 package tim15.pki.dto.builders;
 
 import tim15.pki.dto.CertificateGenDTO;
-import tim15.pki.dto.ExtensionDTO;
 import tim15.pki.dto.X500NameCustom;
 
 import java.util.Date;
-import java.util.Set;
 
 public class CertificateGenDTOBuilder {
     private Long id;
@@ -14,7 +12,6 @@ public class CertificateGenDTOBuilder {
     private String parentSerialNumber;
     private Date startDate;
     private Date endDate;
-    private Set<ExtensionDTO> extensions;
     private X500NameCustom x500NameCustom;
     private String entityType;
 
@@ -53,17 +50,12 @@ public class CertificateGenDTOBuilder {
         return this;
     }
 
-    public CertificateGenDTOBuilder setExtensions(Set<ExtensionDTO> extensions) {
-        this.extensions = extensions;
-        return this;
-    }
-
     public CertificateGenDTOBuilder setX500NameCustom(X500NameCustom x500NameCustom) {
         this.x500NameCustom = x500NameCustom;
         return this;
     }
 
     public CertificateGenDTO createCertificateGenDTO() {
-        return new CertificateGenDTO(id, serialNumber, isCA, parentSerialNumber, startDate, endDate, extensions, x500NameCustom, entityType);
+        return new CertificateGenDTO(id, serialNumber, isCA, parentSerialNumber, startDate, endDate, x500NameCustom, entityType);
     }
 }

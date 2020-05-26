@@ -13,7 +13,7 @@ export class ViewCertificateService {
   private requestUrl: string;
 
   constructor(private httpClient: HttpClient) { }
-  
+
   public getCertificates(keyStoreLevel: string, keyStorePassword: string) {
     let params = new HttpParams();
     params = params.append('role', keyStoreLevel);
@@ -40,11 +40,11 @@ return this.httpClient.get(this.requestUrl + '/certificateDetails', optionsAndPa
 public revoke(serialNumber: string) {
   let params = new HttpParams();
   params = params.append('serialNumber', serialNumber);
-  this.requestUrl = 'server/certificate_revoke/';
+  this.requestUrl = 'server/certificate_revoke';
   const optionsAndParams = {
-    headers: { 'Content-Type': 'application/json' },
+    headers: {  'Content-Type': 'application/json' },
     params: params
-};
+  };
 return this.httpClient.get(this.requestUrl + '/revoke', optionsAndParams);
 }
 
@@ -54,7 +54,7 @@ public download(serialNumber: string) {
   this.requestUrl = 'server/api/certificate';
   const optionsAndParams = {
     headers: { 'Content-Type': 'application/json' },
-    params: params
+    params: params,
 };
 return this.httpClient.get(this.requestUrl + '/download', optionsAndParams);
 }

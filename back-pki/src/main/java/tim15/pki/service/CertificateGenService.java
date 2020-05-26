@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import tim15.pki.dto.CertificateGenDTO;
 import tim15.pki.dto.TextMessage;
 import tim15.pki.dto.X500NameCustom;
-import tim15.pki.model.Extension;
 import tim15.pki.model.SubjectData;
 import tim15.pki.model.SystemEntity;
 import tim15.pki.model.ValidityPeriod;
@@ -29,7 +28,6 @@ import tim15.pki.model.enums.CertificateStatus;
 import tim15.pki.model.enums.EntityType;
 import tim15.pki.model.enums.RevokeReason;
 import tim15.pki.repository.CertificateRepository;
-import tim15.pki.repository.ExtensionRepository;
 import tim15.pki.repository.SystemEntityRepository;
 import tim15.pki.repository.ValidityPeriodRepository;
 
@@ -46,6 +44,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -54,9 +53,6 @@ public class CertificateGenService {
 
     @Autowired
     private CertificateRepository certificateRepository;
-
-    @Autowired
-    private ExtensionRepository extensionRepository;
 
     @Autowired
     private SystemEntityRepository systemEntityRepository;
@@ -68,31 +64,108 @@ public class CertificateGenService {
     private LoggerService loggerService;
 
     @Autowired
+    private VerificationService verificationService;
+
+    @Autowired
     private CertificateReaderService certificateReaderService;
 
-    public List<tim15.pki.model.Certificate> getAllCAs(){
-        List<tim15.pki.model.Certificate> certificates = certificateRepository.findByIsCAAndIsActiveAndCertificateStatus(true, true, CertificateStatus.VALID);
-        for(tim15.pki.model.Certificate c : certificates){
-            c.setValidityPeriod(validityPeriodRepository.findByCertificate(c));
+    @Autowired
+    private AutomatedRevokeService automatedRevokeService;
+
+    public List<tim15.pki.model.Certificate> getAllCAs() throws ParseException {
+
+        List<tim15.pki.model.Certificate> certificates = certificateRepository.findByIsCAAndCertificateStatus(true, CertificateStatus.VALID);
+        if (certificates.size() != 0) {
+            for (tim15.pki.model.Certificate c : certificates) {
+                Certificate cert = certificateReaderService.readCertificate("./keystore/keystoreCA.p12", "bsep", c.getSerialNumber());
+                Certificate[] chain = certificateReaderService.readChain("./keystore/keystoreCA.p12", "bsep", c.getSerialNumber());
+                automatedRevokeService.catchRevokeReason(cert, chain, c);
+            }
+
+            return  certificateRepository.findByIsCAAndCertificateStatus(true, CertificateStatus.VALID);
         }
-        return certificates;
+        return new ArrayList<>();
     }
 
     public List<SystemEntity> getAllUIDs() {return  systemEntityRepository.findAll();}
 
-    public List<Extension> getAllExtensions(){
-        return extensionRepository.findAll();
+    public void generateServerRootCertificate(){
+        CertificateGenDTO certGen = new CertificateGenDTO();
+
+        certGen.setEntityType("SERVICE");
+        certGen.setIsCA(true);
+        certGen.setStartDate(new Date());
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, 5);
+        Date nextYear = cal.getTime();
+        certGen.setEndDate(nextYear);
+
+        certGen.setParentSerialNumber("");
+
+        certGen.setX500NameCustom(tim15.pki.dto.X500NameCustom.builder()
+                .setCommonName("front-pki")
+                .setOrganization("Public Key Infrastructure")
+                .setOrganizationalUnit("Public Key Infrastructure")
+                .setStateProvince("Vojvodina")
+                .setLocalityCity("Novi Sad")
+                .setCountryCode("RS")
+                .createX500NameCustom());
+
+        generateCertificate(certGen);
+    }
+
+    public void generateTestDataCertificates(){
+        CertificateGenDTO certGen = new CertificateGenDTO();
+
+        certGen.setEntityType("SERVICE");
+        certGen.setIsCA(true);
+        certGen.setStartDate(new Date());
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, 5);
+        Date nextYear = cal.getTime();
+        certGen.setEndDate(nextYear);
+
+        certGen.setParentSerialNumber("");
+
+        certGen.setX500NameCustom(tim15.pki.dto.X500NameCustom.builder()
+                .setCommonName("cert-root-1")
+                .setOrganization("Public Key Infrastructure")
+                .setOrganizationalUnit("Public Key Infrastructure")
+                .setStateProvince("Vojvodina")
+                .setLocalityCity("Novi Sad")
+                .setCountryCode("RS")
+                .createX500NameCustom());
+
+        generateCertificate(certGen);
+
+        certGen.setX500NameCustom(tim15.pki.dto.X500NameCustom.builder()
+                .setCommonName("cert-root-2")
+                .setOrganization("Public Key Infrastructure")
+                .setOrganizationalUnit("Public Key Infrastructure")
+                .setStateProvince("Vojvodina")
+                .setLocalityCity("Novi Sad")
+                .setCountryCode("RS")
+                .createX500NameCustom());
+
+        generateCertificate(certGen);
+
+        certGen.setX500NameCustom(tim15.pki.dto.X500NameCustom.builder()
+                .setCommonName("cert-root-3")
+                .setOrganization("Public Key Infrastructure")
+                .setOrganizationalUnit("Public Key Infrastructure")
+                .setStateProvince("Vojvodina")
+                .setLocalityCity("Novi Sad")
+                .setCountryCode("RS")
+                .createX500NameCustom());
+
+        generateCertificate(certGen);
     }
 
     public TextMessage generateCertificate(CertificateGenDTO certificateGenDTO) {
 
         try {
-//            loggerService.print("..................................................................................");
-//            loggerService.print("Checking generateCertificate() data");
-//            loggerService.print(certificateGenDTO.toString());
-//            loggerService.print("Done checking");
-//            loggerService.print("..................................................................................");
-
             char [] password = {'b','s','e','p'};
             List<Object> subjectKey =  createSubjectData(certificateGenDTO.getX500NameCustom());
 
@@ -114,9 +187,21 @@ public class CertificateGenService {
                 issuerCommonName = certificateGenDTO.getX500NameCustom().getCommonName();
             }
             else{
-                parentName = certificateReaderService.readIssuerFromStore("./keystore/keystoreCA.jks", certificateGenDTO.getParentSerialNumber(), password, password).getName();
-                contentSigner = builder.build(certificateReaderService.readPrivateKey("./keystore/keystoreCA.jks", "bsep", certificateGenDTO.getParentSerialNumber(), "bsep"));
-                issuerPublicKey = certificateReaderService.readCertificate("./keystore/keystoreCA.jks", "bsep", certificateGenDTO.getParentSerialNumber()).getPublicKey();
+                // CHECK PARENT VALIDTY
+                Certificate cert = certificateReaderService.readCertificate("./keystore/keystoreCA.p12", "bsep", certificateGenDTO.getParentSerialNumber());
+                Certificate[] chain = certificateReaderService.readChain("./keystore/keystoreCA.p12", "bsep", certificateGenDTO.getParentSerialNumber());
+                loggerService.print("Checking parent validity!");
+
+                if (automatedRevokeService.catchRevokeReason(cert, chain, certificateRepository.findBySerialNumber(certificateGenDTO.getParentSerialNumber())) != RevokeReason.NOT_REVOKED)
+                {
+                    loggerService.print("Invalid parent certificate in function generateCertificate()");
+                    return new TextMessage("Invalid parent certificate!");
+                }
+                loggerService.print("Parent valid!");
+                //
+                parentName = certificateReaderService.readIssuerFromStore("./keystore/keystoreCA.p12", certificateGenDTO.getParentSerialNumber(), password, password).getName();
+                contentSigner = builder.build(certificateReaderService.readPrivateKey("./keystore/keystoreCA.p12", "bsep", certificateGenDTO.getParentSerialNumber(), "bsep"));
+                issuerPublicKey = certificateReaderService.readCertificate("./keystore/keystoreCA.p12", "bsep", certificateGenDTO.getParentSerialNumber()).getPublicKey();
                 issuerCommonName = parentName.getRDNs(BCStyle.CN)[0].getFirst().getValue().toString();
             }
 
@@ -127,32 +212,29 @@ public class CertificateGenService {
                 serialNumber = rand.nextLong();
             }
 
+            System.out.println(Math.abs(serialNumber));
+
             X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(parentName,
-                    new BigInteger(String.valueOf(Math.abs(rand.nextLong()))),
+                    new BigInteger(String.valueOf(Math.abs(serialNumber))),
                     certificateGenDTO.getStartDate(),
                     certificateGenDTO.getEndDate(),
                     subjectData.getName(),
                     subjectData.getPublicKey());
 
-            // Kako se setuje verzija sertifikata??
-            // CertTemplateBuilder certTemplateBuilder = new CertTemplateBuilder(); -- ovde postoji ta opcija
-
             ///////////// EKSTENZIJE////////////////
             BasicConstraints basicConstraints = new BasicConstraints(certificateGenDTO.getIsCA());
-            certGen.addExtension(new ASN1ObjectIdentifier(extensionRepository.findByName("Basic Constraints").getOid()), true, basicConstraints);
+            certGen.addExtension(new ASN1ObjectIdentifier("2.5.29.19"), true, basicConstraints);
 
             JcaX509ExtensionUtils extensionUtils = new JcaX509ExtensionUtils();
             AuthorityKeyIdentifier authorityKeyIdentifier = extensionUtils
                     .createAuthorityKeyIdentifier(issuerPublicKey);
-            certGen.addExtension(new ASN1ObjectIdentifier(extensionRepository.findByName("Authority Key Identifier").getOid()), false, authorityKeyIdentifier);
+            certGen.addExtension(new ASN1ObjectIdentifier("2.5.29.35"), false, authorityKeyIdentifier);
 
             SubjectKeyIdentifier subjectKeyIdentifier = extensionUtils
                     .createSubjectKeyIdentifier(subjectData.getPublicKey());
-            certGen.addExtension(new ASN1ObjectIdentifier(extensionRepository.findByName("Subject Key Identifier").getOid()), false, subjectKeyIdentifier);
+            certGen.addExtension(new ASN1ObjectIdentifier("2.5.29.14"), false, subjectKeyIdentifier);
 
-//            InvalidityDateExtension invalidityDateExtension = new InvalidityDateExtension(true, certificateGenDTO.getEndDate()); // EVENTUALNO OVO
-            //////////////////////////////////////////
-
+            ///// POTPISIVANJE
             X509CertificateHolder certHolder = certGen.build(contentSigner);
 
             JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
@@ -192,27 +274,15 @@ public class CertificateGenService {
     }
 
     // NULL - situacija - saljem intermediate sa izabranim roditeljem
-    private void saveDatabase(List<Object> certificateKeySerialIsCA, String serialNumber, ValidityPeriod validityPeriod, String subjectName, String issuerName, EntityType entityType){
+    private void saveDatabase(List<Object> certificateKeySerialIsCA, String serialNumber, ValidityPeriod validityPeriod, String subjectName, String issuerName, EntityType entityType, boolean notActive){
         try {
-//            loggerService.print("..................................................................................");
-//            loggerService.print("Checking saveDatabase() data");
-//            loggerService.print(certificateKeySerialIsCA.get(3).toString());
-//            loggerService.print(certificateKeySerialIsCA.get(2).toString());
-//            loggerService.print(serialNumber);
-//            loggerService.print(validityPeriod.toString());
-//            loggerService.print(subjectName);
-//            loggerService.print(issuerName);
-//            loggerService.print(entityType.toString());
-//            loggerService.print("Done checking");
-//            loggerService.print("..................................................................................");
-
-            tim15.pki.model.Certificate certificate = tim15.pki.model.Certificate.builder().setIsActive(true)
+            tim15.pki.model.Certificate certificate = tim15.pki.model.Certificate.builder().setIsActive(!notActive)
                     .setIsCA((Boolean) certificateKeySerialIsCA.get(3))
                     .setIssuedTo(subjectName)
                     .setIssuedBy(issuerName)
                     .setCertificateStatus(CertificateStatus.VALID)
                     .setSerialNumber(serialNumber)
-                    .setRevokeReason(RevokeReason.NOT_REVOKED) /// MOZDA BUDE PRAVILO PROBLEM ZBOG NULL POLJA
+                    .setRevokeReason(RevokeReason.NOT_REVOKED)
                     .setEntityType(entityType)
                     .createCertificate();
 
@@ -239,29 +309,26 @@ public class CertificateGenService {
     }
 
     private void saveKeyStore(List<Object> certificateKeySerialIsCA, char[] password, CertificateGenDTO certificateGenDTO, String issuerCommonName){
-                try {
-//            loggerService.print("..................................................................................");
-//            loggerService.print("Checking saveKeyStore() data");
-//            loggerService.print(certificateKeySerialIsCA.get(0).toString());
-//            loggerService.print(certificateKeySerialIsCA.get(1).toString());
-//            loggerService.print(certificateKeySerialIsCA.get(2).toString());
-//            loggerService.print(certificateKeySerialIsCA.get(3).toString());
-//            loggerService.print("Done checking");
-//            loggerService.print("..................................................................................");
-
+            try {
 
             X509Certificate x500Certificate = (X509Certificate) certificateKeySerialIsCA.get(0);
             PrivateKey privateKey = (PrivateKey) certificateKeySerialIsCA.get(1);
             String parentSerialNumber = (String) certificateKeySerialIsCA.get(2);
             boolean isCA = (Boolean) certificateKeySerialIsCA.get(3);
 
-            KeyStore keyStore = KeyStore.getInstance("JKS", "SUN");
+            // proveri jos jednom validnost datuma pre cuvanja u keystore
+            if (verificationService.expired(x500Certificate)){
+                loggerService.print("Invalid certificate validity date!");
+                return;
+            }
+
+            KeyStore keyStore = KeyStore.getInstance("PKCS12");
 
             java.security.cert.Certificate[] newChain;
 
-            Path path = Paths.get("./keystore/keystoreCA.jks");
+            Path path = Paths.get("./keystore/keystoreCA.p12");
             if(Files.exists(path)) {
-                keyStore.load(new FileInputStream("./keystore/keystoreCA.jks"), password);
+                keyStore.load(new FileInputStream("./keystore/keystoreCA.p12"), password);
                 // Preuzmi chain roditelja
                 if (!parentSerialNumber.equals("")) {
                     java.security.cert.Certificate[] chain = keyStore.getCertificateChain(parentSerialNumber);
@@ -290,9 +357,9 @@ public class CertificateGenService {
             }
 
             if (!isCA){
-                path = Paths.get("./keystore/keystoreEE.jks");
+                path = Paths.get("./keystore/keystoreEE.p12");
                 if(Files.exists(path)) {
-                    keyStore.load(new FileInputStream("./keystore/keystoreEE.jks"), password);
+                    keyStore.load(new FileInputStream("./keystore/keystoreEE.p12"), password);
                 } else {
                     keyStore.load(null, password);
                 }
@@ -301,20 +368,19 @@ public class CertificateGenService {
             keyStore.setKeyEntry(x500Certificate.getSerialNumber().toString(), privateKey, password, newChain);
 
             if (isCA){
-                keyStore.store(new FileOutputStream("./keystore/keystoreCA.jks"), password);
+                keyStore.store(new FileOutputStream("./keystore/keystoreCA.p12"), password);
             }
             else{
-                keyStore.store(new FileOutputStream("./keystore/keystoreEE.jks"), password);
+                keyStore.store(new FileOutputStream("./keystore/keystoreEE.p12"), password);
             }
-            loggerService.print("Certificate successfully saved.");
-            // KADA SACUVAS U KEYSTORE SACUVAJ I U BAZU
+            loggerService.print("Certificate successfully saved in keystore.");
+
+            boolean notActive = verificationService.notActive(x500Certificate);
             ValidityPeriod validityPeriod = new ValidityPeriod(certificateGenDTO.getStartDate(), certificateGenDTO.getEndDate());
-            saveDatabase(certificateKeySerialIsCA, x500Certificate.getSerialNumber().toString(), validityPeriod, certificateGenDTO.getX500NameCustom().getCommonName(), issuerCommonName, EntityType.toEnum(certificateGenDTO.getEntityType()));
+            saveDatabase(certificateKeySerialIsCA, x500Certificate.getSerialNumber().toString(), validityPeriod, certificateGenDTO.getX500NameCustom().getCommonName(), issuerCommonName, EntityType.toEnum(certificateGenDTO.getEntityType()), notActive);
 
         } catch (KeyStoreException e) {
             loggerService.print("KeyStoreException in function saveKeyStore():" + e.getMessage());
-        } catch (NoSuchProviderException e) {
-            loggerService.print("NoSuchProviderException in function saveKeyStore():" + e.getMessage());
         } catch (NoSuchAlgorithmException e) {
             loggerService.print("NoSuchAlgorithmException in function saveKeyStore():" + e.getMessage());
         } catch (CertificateException e) {
@@ -333,11 +399,6 @@ public class CertificateGenService {
     private List<Object> createSubjectData(X500NameCustom x500NameCustom){
 
         try {
-//            loggerService.print("..................................................................................");
-//            loggerService.print("Checking saveKeyStore() data");
-//            loggerService.print(x500NameCustom.toString());
-//            loggerService.print("Done checking");
-//            loggerService.print("..................................................................................");
             // GENERISANJE PAROVA KLJUCEVA ZA SUBJEKTA
             KeyPair keyPairSubject = generateKeyPair();
 
@@ -382,7 +443,6 @@ public class CertificateGenService {
             }
 
             // ADDITIONAL ATTRIBUTES
-
             // RANDOM UID
             if (x500NameCustom.getUid() != null){
                 if (x500NameCustom.getUid().equals("newUID")){
@@ -405,10 +465,7 @@ public class CertificateGenService {
                     builder.addRDN(BCStyle.UID, (ASN1Encodable) systemEntityRepository.findByUid(x500NameCustom.getUid()));
                 }
             }
-//            // Generisanje random vrednosti serijskog broja - long
-//            while (certificateRepository.getOneBySerialNumber(String.valueOf(rand.nextLong())) != null){
-//                rand = new Random();
-//            } // OVO JE SERIJSKI BROJ ZA BIZNIS ... NIJE OD SERTIFIKATA????
+
             if (x500NameCustom.getSerialNumber() != null) {
                 if (!x500NameCustom.getSerialNumber().equals("")) {
                     builder.addRDN(BCStyle.SERIALNUMBER, x500NameCustom.getSerialNumber());
@@ -434,13 +491,11 @@ public class CertificateGenService {
                 }
             }
 
-
             if (x500NameCustom.getGivenName() != null) {
                 if (!x500NameCustom.getGivenName().equals("")) {
                     builder.addRDN(BCStyle.GIVENNAME, x500NameCustom.getGivenName());
                 }
             }
-
 
             if (x500NameCustom.getInitials() != null) {
                 if (!x500NameCustom.getInitials().equals("")) {
@@ -450,13 +505,10 @@ public class CertificateGenService {
 
             if (x500NameCustom.getDateOfBirth() != null){
                 if (!x500NameCustom.getDateOfBirth().equals("")) {
-                    loggerService.print(".............................DOB1..............................");
                     SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMDD000000Z");
                     builder.addRDN(BCStyle.DATE_OF_BIRTH, sdf.format(x500NameCustom.getDateOfBirth()));
                 }
             }
-
-            loggerService.print(".............................DOB2..............................");
 
             if (x500NameCustom.getPlaceOfBirth() != null) {
                 if (!x500NameCustom.getPlaceOfBirth().equals("")) {
