@@ -10,6 +10,7 @@ import { CertificateDetailsComponent } from '../certificate-details/certificate-
 import { TextMessage } from 'src/app/pki/pki-model-dto/backend-dtos/text-message';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RevokeReasonDialogComponent } from '../revoke-reason-dialog/revoke-reason-dialog.component';
+import { getCertificatesDTO } from 'src/app/pki/pki-model-dto/backend-dtos/get-certificates-DTO';
 
 
 @Component({
@@ -28,6 +29,7 @@ export class CertTableComponent implements OnInit {
   arrayBuffer: ArrayBuffer;
   revokeReason: string;
   certificateDTORevoke: CertificateViewDTO = new CertificateViewDTO();
+  getCertificatesDTO : getCertificatesDTO = new getCertificatesDTO();
   
 
   constructor(private formBuilder: FormBuilder,
@@ -44,7 +46,9 @@ export class CertTableComponent implements OnInit {
   }
 
   getCertificates() {
-    this.viewCertificateService.getCertificates(this.keyStoreForm.value.certRole, this.keyStoreForm.value.keyStorePassword).subscribe(
+    this.getCertificatesDTO.certType = this.keyStoreForm.value.certRole;
+    this.getCertificatesDTO.password = this.keyStoreForm.value.keyStorePassword;
+    this.viewCertificateService.getCertificates(this.getCertificatesDTO).subscribe(
       (data: CertificateViewDTO[]) => {
         this.certificatesDataSource = new MatTableDataSource(data)
         if (data.length == 0) {
