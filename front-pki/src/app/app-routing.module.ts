@@ -5,23 +5,32 @@ import { Routes, RouterModule } from "@angular/router";
 
 import { AdminLayoutComponent } from "./layouts/admin-layout/admin-layout.component";
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
+import {LoginComponent} from "./pki/pki-components/login/login.component";
+import {AuthGuard} from "./pki/pki-security/AuthGuard";
+import {Certificate} from "./pki/pki-model-dto/backend-model/certificate";
 
 const routes: Routes = [
   {
-    path: "",
-    redirectTo: "certificates",
-    pathMatch: "full"
+    path: 'login',
+    component: LoginComponent,
   },
   {
-    path: "",
+    path: '',
+    redirectTo: 'certificates',
+    pathMatch: 'full',
+    canActivate: [AuthGuard]
+  },
+  {
+    path: '',
     component: AdminLayoutComponent,
     children: [
       {
-        path: "",
+        path: '',
         loadChildren:
-          "./layouts/admin-layout/admin-layout.module#AdminLayoutModule"
+          './layouts/admin-layout/admin-layout.module#AdminLayoutModule'
       }
-    ]
+    ],
+    canActivate: [AuthGuard]
   }, {
     path: '',
     component: AuthLayoutComponent,
@@ -30,11 +39,13 @@ const routes: Routes = [
         path: '',
         loadChildren: './layouts/auth-layout/auth-layout.module#AuthLayoutModule'
       }
-    ]
+    ],
+    canActivate: [AuthGuard]
   },
   {
-    path: "**",
-    redirectTo: "certificates"
+    path: '**',
+    redirectTo: 'certificates',
+    canActivate: [AuthGuard]
   }
 ];
 

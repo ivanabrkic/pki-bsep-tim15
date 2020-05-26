@@ -36,6 +36,7 @@ public class JwtRequestFileter extends OncePerRequestFilter {
             //izbacujemo Bearer(i razmak)
             jwt = authorizationHeader.substring(7);
             username = username = jwtUtil.extractUsername(jwt);
+            System.out.println("TOKEN: " + jwt);
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication()==null) {

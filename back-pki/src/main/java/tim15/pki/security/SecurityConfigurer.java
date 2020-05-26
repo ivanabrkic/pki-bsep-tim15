@@ -26,6 +26,10 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.inMemoryAuthentication()
+//            .withUser("admin").password(passwordEncoder().encode("admin")).roles("ADMIN", "USER")
+//            .and()
+//            .withUser("user").password(passwordEncoder().encode("user")).roles("USER");
         auth.userDetailsService(myUserDetailsService);
     }
 
@@ -33,12 +37,9 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests().antMatchers("/login").permitAll()
-                .and()
-                .authorizeRequests().antMatchers("/api/certificate").hasAnyRole("ADMIN", "USER")
-                .and()
-                .authorizeRequests().antMatchers("/download/certificate").hasAnyRole("ADMIN", "USER")
-                .and()
-                .authorizeRequests().antMatchers("/**").hasRole("ADMIN")
+                .antMatchers("/api/certificate").hasAnyRole("ADMIN", "USER")
+                .antMatchers("/download/certificate").hasAnyRole("ADMIN", "USER")
+                .antMatchers("/certificate_gen").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
