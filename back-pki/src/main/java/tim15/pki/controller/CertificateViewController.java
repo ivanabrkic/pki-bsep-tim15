@@ -25,10 +25,14 @@ public class CertificateViewController {
     @Autowired
     private CertificateViewService certificateViewService;
 
+    @GetMapping(value = "/test")
+    public ResponseEntity<String> getTest() {
+        return new ResponseEntity<>("Success", HttpStatus.OK);
+    }
 
+//    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping(value = "/all", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<CertificateViewDTO>> getCertificates(@RequestBody getCertificatesDTO getCertificatesDTO) throws Exception {
-
         return new ResponseEntity<>(certificateViewService.convertCertificatesToDTOList(certificateViewService.getCertificates(getCertificatesDTO.getCertType(), getCertificatesDTO.getPassword())), HttpStatus.OK);
     }
 
