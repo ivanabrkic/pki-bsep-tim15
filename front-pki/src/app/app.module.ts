@@ -34,13 +34,10 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { CertificateDetailsComponent } from './pki/pki-components/certificate/certificate-details/certificate-details/certificate-details.component';
 import { MatTabsModule } from '@angular/material/tabs';
-<<<<<<< HEAD
 import { RevokeReasonDialogComponent } from './pki/pki-components/certificate/revoke-reason-dialog/revoke-reason-dialog.component';
-=======
 import { LoginComponent } from './pki/pki-components/login/login.component';
 import {MatCardModule} from "@angular/material/card";
 import {TokenInterceptor} from "./pki/pki-security/TokenInterceptor";
->>>>>>> b4d451222e67db6e2a95ebf7464a9589952640bf
 
 
 @NgModule({
@@ -72,17 +69,12 @@ import {TokenInterceptor} from "./pki/pki-security/TokenInterceptor";
     MatTabsModule,
     MatCardModule
   ],
-<<<<<<< HEAD
-  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, CertFormComponent, CertTableComponent, CertificateDetailsComponent, RevokeReasonDialogComponent],
-  providers: [],
-=======
   declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, CertFormComponent, CertTableComponent, CertificateDetailsComponent, LoginComponent],
   providers: [{
     provide: HTTP_INTERCEPTORS,
     useClass: TokenInterceptor,
     multi: true
   }],
->>>>>>> b4d451222e67db6e2a95ebf7464a9589952640bf
   bootstrap: [AppComponent]
 })
 export class AppModule {}

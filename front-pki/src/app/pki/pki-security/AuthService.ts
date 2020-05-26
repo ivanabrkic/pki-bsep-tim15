@@ -1,10 +1,10 @@
 import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable, of} from "rxjs";
 import {catchError, mapTo, tap} from 'rxjs/operators';
 import {Creds} from "./Creds";
-import {environment} from "../../../environments/environment";
-import {Router} from "@angular/router";
+
+const httpOptions = {headers: new HttpHeaders({'Content-Type' : 'application/json'})};
 
 @Injectable({
   providedIn: 'root'
@@ -22,12 +22,12 @@ export class AuthService {
 
 
   login(user: Creds): Observable<boolean> {
-    return this.http.post<any>(environment.apiUrl+'/login', user)
+    return this.http.post<any>('/server/user/login', JSON.stringify(user), httpOptions)
       .pipe(
         tap(token => this.doLoginUser(user.username, token.jwt)),
         mapTo(true),
         catchError(error => {
-          alert(error.error);
+          alert("Error!");
           return of(false);
         })
       );

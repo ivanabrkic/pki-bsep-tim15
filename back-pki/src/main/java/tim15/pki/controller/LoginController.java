@@ -15,7 +15,7 @@ import tim15.pki.security.MyUserDetailsService;
 
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/user")
 public class LoginController {
 
     @Autowired
@@ -27,8 +27,7 @@ public class LoginController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @CrossOrigin(origins = "http://localhost:4200")
-    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<JwtDTO> login(@RequestBody LoginRequestDTO loginRequestDTO) throws Exception{
         try {
             System.out.println("POGODIO ENDPOINT");
