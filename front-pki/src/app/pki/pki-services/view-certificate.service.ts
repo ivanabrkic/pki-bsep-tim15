@@ -37,9 +37,10 @@ public getDetails(serialNumber: string) {
 return this.httpClient.get(this.requestUrl + '/certificateDetails', optionsAndParams);
 }
 
-public revoke(serialNumber: string) {
+public revoke(serialNumber: string, revokeReason: string) {
   let params = new HttpParams();
   params = params.append('serialNumber', serialNumber);
+  params = params.append('revokeReason', revokeReason);
   this.requestUrl = 'server/certificate_revoke';
   const optionsAndParams = {
     headers: {  'Content-Type': 'application/json' },

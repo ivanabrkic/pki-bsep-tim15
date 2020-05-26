@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject} from '@angular/core';
 import {MatSelectModule} from '@angular/material/select';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
@@ -9,6 +9,7 @@ import { CertificateDetailsDTO } from 'src/app/pki/pki-model-dto/backend-dtos/ce
 import { CertificateDetailsComponent } from '../certificate-details/certificate-details/certificate-details.component';
 import { TextMessage } from 'src/app/pki/pki-model-dto/backend-dtos/text-message';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { RevokeReasonDialogComponent } from '../revoke-reason-dialog/revoke-reason-dialog.component';
 
 
 @Component({
@@ -16,19 +17,22 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './cert-table.component.html',
   styleUrls: ['./cert-table.component.scss']
 })
+
 export class CertTableComponent implements OnInit {
 
   keyStoreForm: FormGroup;
-  displayedColumns: string[] = ['serialNumber', 'subjectName', 'issuerName', 'validFrom', 'validTo', 'status','buttons'];
+  displayedColumns: string[] = ['serialNumber', 'subjectName', 'issuerName', 'validFrom', 'validTo', 'status','revokeReason', 'buttons'];
   certificatesDataSource: MatTableDataSource<CertificateViewDTO>;
   certificateDetails : CertificateDetailsDTO;
   tm: TextMessage;
   arrayBuffer: ArrayBuffer;
+  revokeReason: string;
+  certificateDTORevoke: CertificateViewDTO = new CertificateViewDTO();
   
 
   constructor(private formBuilder: FormBuilder,
     private viewCertificateService: ViewCertificateService,
-    public dialog: MatDialog,
+    public dialog: MatDialog, public revokeDialog: MatDialog,
     private _snackBar: MatSnackBar) {
    }
 
@@ -92,8 +96,31 @@ export class CertTableComponent implements OnInit {
    )
  }
 
- revoke(SerialNumber: string) {
-   this.viewCertificateService.revoke(SerialNumber).subscribe(
+ openDialog(serialNumber : string): void {
+   this.certificateDTORevoke.revokeReason = this.revokeReason;
+   this.certificateDTORevoke.serialNumber = serialNumber; 
+  const dialogRef = this.dialog.open(RevokeReasonDialogComponent, {
+    width: '250px',
+    data: {certificateDTORevoke: this.certificateDTORevoke}
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    console.log('The dialog was closed');
+    this.revokeReason = result;
+    
+    if (this.revokeReason != null) {
+        if (!(this.revokeReason === 'NOT REVOKED' )) {
+          this.certificateDTORevoke.revokeReason = this.revokeReason;
+          alert(this.certificateDTORevoke.revokeReason)
+          alert(this.certificateDTORevoke.serialNumber);
+          this.revoke(this.certificateDTORevoke.serialNumber, this.certificateDTORevoke.revokeReason);
+        }
+    }
+  });
+}
+
+ revoke(serialNumber: string, revokeReason: string) {
+   this.viewCertificateService.revoke(serialNumber, revokeReason).subscribe(
      (data: TextMessage) => {
       this._snackBar.open(data.text.toString(), "", {
         duration: 2000,

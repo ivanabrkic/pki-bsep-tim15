@@ -115,6 +115,13 @@
                             <ng-container matColumnDef="status">
                                 <th mat-header-cell *matHeaderCellDef>Status</th>
                                 <td mat-cell *matCellDef="let element">
+                                    {{element.status}}
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="revokeReason">
+                                <th mat-header-cell *matHeaderCellDef>Revoke Reason</th>
+                                <td mat-cell *matCellDef="let element">
                                     {{element.revokeReason}}
                                 </td>
                             </ng-container>
@@ -126,7 +133,10 @@
                                         (click)="viewDetails(element.serialNumber)">Details</button>
                                     <button mat-raised-button class="download-btn"
                                         (click)="download(element.serialNumber)">Download</button>
-                                    <button mat-raised-button color="warn" (click)="revoke(element)">Revoke</button>
+                                    <div *ngIf="element.status === 'ACTIVE'">
+                                        <button  mat-raised-button color="warn"
+                                            (click)="openDialog(element.serialNumber)">Revoke</button>
+                                    </div>
                                 </td>
                             </ng-container>
 

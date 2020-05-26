@@ -18,6 +18,8 @@ public class CertificateViewDTO {
 
     private String serialNumber;
 
+    private String status;
+
     private String revokeReason;
 
     public CertificateViewDTO() {
@@ -78,5 +80,13 @@ public class CertificateViewDTO {
 
     public void setRevokeReason(String revokeReason) {
         this.revokeReason = revokeReason;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
