@@ -34,6 +34,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { CertificateDetailsComponent } from './pki/pki-components/certificate/certificate-details/certificate-details/certificate-details.component';
 import { MatTabsModule } from '@angular/material/tabs';
+import { RevokeReasonDialogComponent } from './pki/pki-components/certificate/revoke-reason-dialog/revoke-reason-dialog.component';
 
 
 @NgModule({
@@ -64,7 +65,7 @@ import { MatTabsModule } from '@angular/material/tabs';
     MatSnackBarModule,
     MatTabsModule
   ],
-  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, CertFormComponent, CertTableComponent, CertificateDetailsComponent],
+  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, CertFormComponent, CertTableComponent, CertificateDetailsComponent, RevokeReasonDialogComponent],
   providers: [],
   bootstrap: [AppComponent]
 })

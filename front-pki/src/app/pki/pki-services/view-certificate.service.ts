@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient, HttpParams } from '@angular/common/http';
+import { getCertificatesDTO } from '../pki-model-dto/backend-dtos/get-certificates-DTO';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json'})
@@ -14,16 +15,12 @@ export class ViewCertificateService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public getCertificates(keyStoreLevel: string, keyStorePassword: string) {
-    let params = new HttpParams();
-    params = params.append('role', keyStoreLevel);
-    params = params.append('keyStorePassword', keyStorePassword);
+  public getCertificates(getCertificatesDTO: getCertificatesDTO) {
     this.requestUrl = '/server/api/certificate';
     const optionsAndParams = {
-      headers: { 'Content-Type': 'application/json' },
-      params: params
+      headers: { 'Content-Type': 'application/json' }
   };
-    return this.httpClient.get(this.requestUrl + '/all', optionsAndParams);
+    return this.httpClient.post(this.requestUrl + '/all', JSON.stringify(getCertificatesDTO), optionsAndParams);
 }
 
 public getDetails(serialNumber: string) {
@@ -37,9 +34,10 @@ public getDetails(serialNumber: string) {
 return this.httpClient.get(this.requestUrl + '/certificateDetails', optionsAndParams);
 }
 
-public revoke(serialNumber: string) {
+public revoke(serialNumber: string, revokeReason: string) {
   let params = new HttpParams();
   params = params.append('serialNumber', serialNumber);
+  params = params.append('revokeReason', revokeReason);
   this.requestUrl = 'server/certificate_revoke';
   const optionsAndParams = {
     headers: {  'Content-Type': 'application/json' },

@@ -1,0 +1,16 @@
+table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+th, td {
+    overflow: hidden;
+    width: 50px;
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-wrap: break-word;
+  }
+
+button{
+    white-space: normal;
+}
