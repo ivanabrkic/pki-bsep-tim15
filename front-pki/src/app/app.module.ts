@@ -1,7 +1,7 @@
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { HttpClientModule } from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import { RouterModule } from "@angular/router";
 import { ToastrModule } from 'ngx-toastr';
 
@@ -11,8 +11,8 @@ import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component
 
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
-import { AppRoutingModule } from "./app-routing.module";
-import { ComponentsModule } from "./components/components.module";
+import { AppRoutingModule } from './app-routing.module';
+import { ComponentsModule } from './components/components.module';
 import { CertFormComponent } from './pki/pki-components/certificate/cert-form/cert-form.component';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatStepperModule} from '@angular/material/stepper';
@@ -35,6 +35,9 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { CertificateDetailsComponent } from './pki/pki-components/certificate/certificate-details/certificate-details/certificate-details.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RevokeReasonDialogComponent } from './pki/pki-components/certificate/revoke-reason-dialog/revoke-reason-dialog.component';
+import { LoginComponent } from './pki/pki-components/login/login.component';
+import {MatCardModule} from "@angular/material/card";
+import {TokenInterceptor} from "./pki/pki-security/TokenInterceptor";
 
 
 @NgModule({
@@ -63,10 +66,15 @@ import { RevokeReasonDialogComponent } from './pki/pki-components/certificate/re
     MatExpansionModule,
     MatCheckboxModule,
     MatSnackBarModule,
-    MatTabsModule
+    MatTabsModule,
+    MatCardModule
   ],
-  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, CertFormComponent, CertTableComponent, CertificateDetailsComponent, RevokeReasonDialogComponent],
-  providers: [],
+  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, CertFormComponent, CertTableComponent, CertificateDetailsComponent, LoginComponent],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: TokenInterceptor,
+    multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

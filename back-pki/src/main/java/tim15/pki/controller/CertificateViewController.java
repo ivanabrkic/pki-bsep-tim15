@@ -9,7 +9,6 @@ import tim15.pki.dto.CertificateDetailsDTO;
 import tim15.pki.dto.CertificateViewDTO;
 import tim15.pki.dto.TextMessage;
 import tim15.pki.dto.getCertificatesDTO;
-import tim15.pki.model.Certificate;
 import tim15.pki.service.CertificateReaderService;
 import tim15.pki.service.CertificateViewService;
 
@@ -25,10 +24,13 @@ public class CertificateViewController {
     @Autowired
     private CertificateViewService certificateViewService;
 
+    @GetMapping(value = "/test")
+    public ResponseEntity<String> getTest() {
+        return new ResponseEntity<>("Success", HttpStatus.OK);
+    }
 
     @PostMapping(value = "/all", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<CertificateViewDTO>> getCertificates(@RequestBody getCertificatesDTO getCertificatesDTO) throws Exception {
-
         return new ResponseEntity<>(certificateViewService.convertCertificatesToDTOList(certificateViewService.getCertificates(getCertificatesDTO.getCertType(), getCertificatesDTO.getPassword())), HttpStatus.OK);
     }
 
