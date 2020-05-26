@@ -28,10 +28,13 @@ public class CertificateRevokeController {
      * @return string which indicates status of operation revoking certificate
      */
     @GetMapping(value = "/revoke", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TextMessage> revokeCertificate(@RequestParam(value = "serialNumber", required = true) String serialNumber) throws Exception {
+    public ResponseEntity<TextMessage> revokeCertificate(@RequestParam(value = "serialNumber", required = true) String serialNumber,
+                                                         @RequestParam(value = "revokeReason", required = true) String revokeReason) throws Exception {
+
+
         System.out.println("REVOKE REQUEST FOR SERIAL " + serialNumber);
         loggerService.print("Request: \"Revoke certificate\" received");
-        TextMessage textMessage = certificateRevokeService.revokeCertificate(serialNumber, RevokeReason.CA_COMPROMISE);
+        TextMessage textMessage = certificateRevokeService.revokeCertificate(serialNumber, RevokeReason.toEnum(revokeReason));
         return new ResponseEntity<>(textMessage, HttpStatus.OK);
     }
 }

@@ -99,7 +99,15 @@ public class CertificateViewService {
                 X509Certificate currentCertificate = (X509Certificate)ks.getCertificate(aliases.nextElement());
                 java.security.cert.Certificate[] certChain = ks.getCertificateChain(currentCertificate.getSerialNumber().toString());
                 Certificate c = certificateRepository.findBySerialNumber(currentCertificate.getSerialNumber().toString());
-
+                if (currentCertificate == null) {
+                    System.out.println("current je null");
+                }
+                if (certChain == null) {
+                    System.out.println("certChain je null");
+                }
+                if (c == null) {
+                    System.out.println("c je null");
+                }
                 if (automatedRevokeService.catchRevokeReason(currentCertificate, certChain, c) == RevokeReason.NOT_REVOKED){
                     certificates.add(currentCertificate);
                 }
@@ -127,11 +135,13 @@ public class CertificateViewService {
 
         switch (databaseCertificate.getRevokeReason()) {
             case NOT_REVOKED:
-                certDTO.setRevokeReason("ACTIVE");
+                certDTO.setStatus("ACTIVE");
                 break;
             default:
-                certDTO.setRevokeReason("REVOKED");
+                certDTO.setStatus("REVOKED");
         }
+
+        certDTO.setRevokeReason(databaseCertificate.getRevokeReason().toString());
 
         ValidityPeriod vp = new ValidityPeriod(cert.getNotBefore(),cert.getNotAfter());
 

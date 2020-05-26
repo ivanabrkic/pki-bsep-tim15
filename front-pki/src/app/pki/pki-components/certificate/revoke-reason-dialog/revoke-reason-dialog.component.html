@@ -1,0 +1,23 @@
+<div mat-dialog-content>
+    <p>What is revoke reason?</p>
+    <mat-form-field>
+      <mat-label>Revoke reason</mat-label>
+  <mat-select [(value)]="selected">
+    <mat-option value="NOT REVOKED">NOT REVOKED</mat-option>
+    <mat-option value="EXPIRED">EXPIRED</mat-option>
+    <mat-option value="KEY COMPROMISE">KEY COMPROMISE</mat-option>
+    <mat-option value="CA COMPROMISE">CA COMPROMISE</mat-option>
+    <mat-option value="AFFILIATION CHANGED">AFFILIATION CHANGED</mat-option>
+    <mat-option value="SUPERSEDED">SUPERSEDED</mat-option>
+    <mat-option value="CESSATION OF OPERATION">CESSATION OF OPERATION</mat-option>
+    <mat-option value="CERTIFICATE HOLD">CERTIFICATE HOLD</mat-option>
+    <mat-option value="PRIVILEGE WITHDRAWN">PRIVILEGE WITHDRAWN</mat-option>
+    <mat-option value="AA COMPROMISE">AA COMPROMISE</mat-option>
+    <mat-option value="UNKNOWN">UNKNOWN</mat-option>
+  </mat-select>
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button mat-button (click)="onOkClick()" cdkFocusInitial>Ok</button>
+  </div>

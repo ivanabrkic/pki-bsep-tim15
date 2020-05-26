@@ -26,5 +26,9 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
     @Query("select c from Certificate c where c.revokeReason is not null")
     List<Certificate> findRevokedCertificates();
 
+    //  EXAMPLES OF PARAMETERIZED QUERY
+    @Query("select c from Certificate c where c.serialNumber = ?1")
+    Certificate getCertificateSerialNumber(String serialNumber);
+
     Certificate findOneBySerialNumber(String serialNumber);
 }

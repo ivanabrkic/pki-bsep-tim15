@@ -4,4 +4,6 @@ export class CertificateViewDTO {
     validFrom: Date
     validTo: Date;
     serialNumber: string;
+    status: string;
+    revokeReason: string;
 }
